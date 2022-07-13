@@ -248,12 +248,12 @@ import { EntityLike, MessageIDLike } from "../define.d.ts";
 import { CustomMessage } from "./custom/message.ts";
 import { TelegramClient } from "../client/telegram_client.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts"
-import { BigInteger, Buffer } from "../../../deps.ts";
+import { BigInteger, Buffer } from "../../deps.ts";;
 
 export namespace Api {
   // deno-lint-ignore no-explicit-any
   type AnyLiteral = Record<string, any> | void;
-  type Reader = BinaryReader; // To be defined.
+  type Reader = BinaryReader;
   type Client = TelegramClient;
   // deno-lint-ignore no-explicit-any
   type Utils = any; // To be defined.

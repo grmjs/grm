@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { MemorySession } from "./memory_session.ts";
 import { AuthKey } from "../crypto/authkey.ts";
-import { BigInteger, Buffer } from "deps.ts";
+import { BigInteger, Buffer } from "deps";
 
 export class StoreSession extends MemorySession {
   private readonly sessionName: string;

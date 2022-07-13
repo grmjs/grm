@@ -1,6 +1,6 @@
 import { Api } from "./tl/api.js";
 import { EntityLike } from "./define.d.ts";
-import { bigInt, BigInteger, Buffer, createHash, randomBytes } from "deps.ts";
+import { bigInt, BigInteger, Buffer, createHash, randomBytes } from "deps";
 
 export function readBigIntFromBuffer(
   buffer: Buffer,

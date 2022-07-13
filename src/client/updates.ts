@@ -1,7 +1,7 @@
 import type { EventBuilder } from "../events/common.ts";
 import { Api } from "../tl/api.js";
 import type { TelegramClient } from "./telegram_client.ts";
-import { bigInt } from "deps.ts";
+import { bigInt } from "deps";
 import { UpdateConnectionState } from "../network/mod.ts";
 import type { Raw } from "../events/raw.ts";
 import { getPeerId } from "../utils.ts";

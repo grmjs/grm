@@ -2,7 +2,7 @@ import { Api } from "../tl/api.js";
 import { getDisplayName } from "../utils.ts";
 import { sleep } from "../helpers.ts";
 import { computeCheck } from "../password.ts";
-import { Buffer } from "deps.ts";
+import { Buffer } from "deps";
 import type { TelegramClient } from "./telegram_client.ts";
 
 export interface UserAuthParams {

@@ -3,7 +3,7 @@ import { getPeerId, sanitizeParseMode } from "../utils.ts";
 import type { EntityLike } from "../define.d.ts";
 import type { TelegramClient } from "./telegram_client.ts";
 import { EntityType_, entityType_, isArrayLike } from "../helpers.ts";
-import { BigInteger } from "deps.ts";
+import { BigInteger } from "deps";
 
 export type messageEntities =
   | typeof Api.MessageEntityBold

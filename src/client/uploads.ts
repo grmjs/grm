@@ -21,7 +21,7 @@ import {
   sleep,
 } from "../helpers.ts";
 import { FloodWaitError } from "../errors/mod.ts";
-import { basename, bigInt, Buffer } from "deps.ts";
+import { basename, bigInt, Buffer } from "deps";
 
 interface OnProgress {
   (progress: number): void;

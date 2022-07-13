@@ -26,7 +26,7 @@ import {
 import { Connection } from "./connection/connection.ts";
 import type { TelegramClient } from "../client/telegram_client.ts";
 import { Logger, LogLevel } from "../extensions/logger.ts";
-import { bigInt, BigInteger } from "deps.ts";
+import { bigInt, BigInteger } from "deps";
 
 export class UpdateConnectionState {
   static disconnected = -1;

@@ -1,7 +1,7 @@
 import { Api } from "../api.js";
 import { GZIPPacked } from "./gzip_packed.ts";
 import type { BinaryReader } from "../../extensions/binary_reader.ts";
-import { BigInteger, Buffer } from "deps.ts";
+import { BigInteger, Buffer } from "deps";
 
 export class RPCResult {
   static CONSTRUCTOR_ID = 0xf35c6d01;

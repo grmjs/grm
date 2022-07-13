@@ -22,7 +22,7 @@ import {
   join,
   resolve,
   WriteStream,
-} from "deps.ts";
+} from "deps";
 
 export interface progressCallback {
   // deno-lint-ignore no-explicit-any

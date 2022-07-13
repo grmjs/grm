@@ -12,7 +12,7 @@ import {
   Buffer,
   getExtension as mGetExtension,
   getType,
-} from "deps.ts";
+} from "deps";
 import type { Entity, EntityLike, MessageIDLike } from "./define.d.ts";
 
 import TypeInputFile = Api.TypeInputFile;

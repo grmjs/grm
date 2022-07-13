@@ -20,7 +20,7 @@ import {
   ProxyInterface,
 } from "../network/connection/tcpmt_proxy.ts";
 import { LogLevel } from "../extensions/logger.ts";
-import { Semaphore } from "deps.ts";
+import { Semaphore } from "deps";
 
 const EXPORTED_SENDER_RECONNECT_TIMEOUT = 1000; // 1 sec
 const EXPORTED_SENDER_RELEASE_TIMEOUT = 30000; // 30 sec

@@ -1,5 +1,5 @@
 import { modExp } from "../helpers.ts";
-import { bigInt, BigInteger } from "deps.ts";
+import { bigInt, BigInteger } from "deps";
 
 export class Factorizator {
   static gcd(a: BigInteger, b: BigInteger) {

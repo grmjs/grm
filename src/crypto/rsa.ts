@@ -5,7 +5,7 @@ import {
   readBufferFromBigInt,
   sha1,
 } from "../helpers.ts";
-import { bigInt, BigInteger, Buffer } from "deps.ts";
+import { bigInt, BigInteger, Buffer } from "deps";
 
 const PUBLIC_KEYS = [
   {

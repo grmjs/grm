@@ -7,7 +7,7 @@ import {
   readBufferFromBigInt,
   sha256,
 } from "./helpers.ts";
-import { bigInt, BigInteger, Buffer, pbkdf2Sync } from "deps.ts";
+import { bigInt, BigInteger, Buffer, pbkdf2Sync } from "deps";
 const SIZE_FOR_HASH = 256;
 
 function checkPrimeAndGood(primeBytes: Buffer, g: number) {

@@ -18,7 +18,7 @@ import {
   sleep,
 } from "../helpers.ts";
 import type { TelegramClient } from "./telegram_client.ts";
-import { BigInteger } from "deps.ts";
+import { BigInteger } from "deps";
 import { LogLevel } from "../extensions/logger.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import {

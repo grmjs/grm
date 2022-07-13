@@ -1,6 +1,6 @@
 import { Api } from "../tl/api.js";
 import { stripText } from "../helpers.ts";
-import { Handler, Parser } from "deps.ts";
+import { Handler, Parser } from "deps";
 
 class HTMLToTelegramParser implements Handler {
   text: string;

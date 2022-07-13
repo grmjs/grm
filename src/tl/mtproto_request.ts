@@ -1,4 +1,4 @@
-import { Buffer } from "deps.ts";
+import { Buffer } from "deps";
 
 export class MTProtoRequest {
   private sent: boolean;

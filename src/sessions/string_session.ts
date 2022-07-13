@@ -1,7 +1,7 @@
 import { MemorySession } from "./memory_session.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import { AuthKey } from "../crypto/authkey.ts";
-import { Buffer } from "deps.ts";
+import { Buffer } from "deps";
 
 const CURRENT_VERSION = "1";
 

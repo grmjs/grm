@@ -39,7 +39,7 @@ export {
 } from "https://cdn.skypack.dev/@cryptography/aes@0.1.1?dts";
 export { inflate } from "https://cdn.skypack.dev/pako@v2.0.4?dts";
 export { getExtension, getType } from "https://cdn.skypack.dev/mime?dts";
-export { w3cwebsocket } from "https://cdn.skypack.dev/websocket@1.0.34?dts";
+export { w3cwebsocket } from "https://esm.sh/websocket@1.0.34";
 
 // ghc.deno.dev
 export {

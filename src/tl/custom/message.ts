@@ -15,7 +15,7 @@ import {
 } from "../../client/messages.ts";
 import { DownloadMediaInterface } from "../../client/downloads.ts";
 import { _selfId } from "../../client/users.ts";
-import { BigInteger, Buffer } from "deps";
+import { BigInteger, Buffer } from "../../../deps.ts";
 import type { Entity, EntityLike } from "../../define.d.ts";
 import type { TelegramClient } from "../../client/telegram_client.ts";
 

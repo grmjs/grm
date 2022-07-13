@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer, createCipheriv } from "deps";
+import { Buffer, createCipheriv } from "../../deps.ts";
 
 export class CTR {
   private cipher: any;

@@ -2,7 +2,7 @@
 import { Api } from "./tl/api.js";
 import { getInputPeer, getPeerId } from "./utils.ts";
 import { isArrayLike, returnBigInt } from "./helpers.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../deps.ts";
 
 export class EntityCache {
   private cacheMap: Map<string, any>;

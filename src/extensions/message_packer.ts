@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer } from "deps";
+import { Buffer } from "../../deps.ts";
 import { MessageContainer, TLMessage } from "../tl/core/mod.ts";
 import { BinaryWriter } from "./binary_writer.ts";
 import type { MTProtoState } from "../network/mtproto_state.ts";

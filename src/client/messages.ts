@@ -24,7 +24,7 @@ import {
   getPeerId,
   parseID,
 } from "../utils.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../deps.ts";
 import { _getPeer } from "./users.ts";
 import { _parseMessageText } from "./message_parse.ts";
 import { _fileToMedia } from "./uploads.ts";

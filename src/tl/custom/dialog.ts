@@ -2,7 +2,7 @@ import { Api } from "../api.js";
 import { Draft } from "./draft.ts";
 import { getDisplayName, getInputPeer, getPeerId } from "../../utils.ts";
 import { returnBigInt } from "../../helpers.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../../deps.ts";
 import type { Entity } from "../../define.d.ts";
 import type { TelegramClient } from "../../client/telegram_client.ts";
 

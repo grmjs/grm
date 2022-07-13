@@ -10,7 +10,7 @@ import {
 import { getDisplayName, getPeerId } from "../utils.ts";
 import { RequestIter } from "../request_iter.ts";
 import { Api } from "../tl/api.js";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../deps.ts";
 
 const _MAX_PARTICIPANTS_CHUNK_SIZE = 200;
 const _MAX_ADMIN_LOG_CHUNK_SIZE = 100;

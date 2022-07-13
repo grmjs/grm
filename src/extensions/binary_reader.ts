@@ -2,7 +2,7 @@ import { TypeNotFoundError } from "../errors/mod.ts";
 import { coreObjects } from "../tl/core/mod.ts";
 import { tlObjects } from "../tl/all_tl_objects.ts";
 import { readBigIntFromBuffer } from "../helpers.ts";
-import { Buffer } from "deps";
+import { Buffer } from "../../deps.ts";
 
 export class BinaryReader {
   private readonly stream: Buffer;

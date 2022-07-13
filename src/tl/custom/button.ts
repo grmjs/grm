@@ -1,6 +1,6 @@
 import { Api } from "../api.js";
 import { getInputUser } from "../../utils.ts";
-import { Buffer } from "deps";
+import { Buffer } from "../../../deps.ts";
 import type { ButtonLike, EntityLike } from "../../define.d.ts";
 
 export class Button {

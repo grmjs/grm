@@ -16,7 +16,7 @@ import {
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import type { BinaryWriter } from "../extensions/binary_writer.ts";
 import { InvalidBufferError, SecurityError } from "../errors/mod.ts";
-import { bigInt, BigInteger, Buffer } from "deps";
+import { bigInt, BigInteger, Buffer } from "../../deps.ts";
 
 export class MTProtoState {
   private readonly authKey?: AuthKey;

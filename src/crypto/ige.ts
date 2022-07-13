@@ -1,5 +1,5 @@
 import { convertToLittle, generateRandomBytes } from "../helpers.ts";
-import { Buffer, IGE as IGE_ } from "deps";
+import { Buffer, IGE as IGE_ } from "../../deps.ts";
 
 export class IGE {
   // deno-lint-ignore no-explicit-any

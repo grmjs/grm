@@ -1,4 +1,4 @@
-import { dirname, fromFileUrl, resolve } from "deps";
+import { dirname, fromFileUrl, resolve } from "../../deps.ts";
 
 const DIR_PATH = dirname(fromFileUrl(import.meta.url));
 

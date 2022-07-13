@@ -3,7 +3,7 @@ import { crc32 } from "../../helpers.ts";
 import { InvalidChecksumError } from "../../errors/mod.ts";
 import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
-import { Buffer } from "deps";
+import { Buffer } from "../../../deps.ts";
 
 export class FullPacketCodec extends PacketCodec {
   private _sendCounter: number;

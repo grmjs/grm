@@ -2,7 +2,7 @@ import { Api } from "../tl/api.js";
 import { generateRandomBytes } from "../helpers.ts";
 import { computeCheck, computeDigest } from "../password.ts";
 import { EmailUnconfirmedError } from "../errors/mod.ts";
-import { Buffer } from "deps";
+import { Buffer } from "../../deps.ts";
 import type { TelegramClient } from "./telegram_client.ts";
 
 export interface TwoFaParams {

@@ -4,7 +4,7 @@ import {
   NewMessageEvent,
   NewMessageInterface,
 } from "./new_message.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../deps.ts";
 
 export interface EditedMessageInterface extends NewMessageInterface {
   func?: { (event: EditedMessageEvent): boolean };

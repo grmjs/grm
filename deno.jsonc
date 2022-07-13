@@ -1,5 +1,4 @@
 {
-  "importMap": "./import_map.json",
   "tasks": {
     "generate-mod": "deno run --allow-read --allow-env --allow-write src/tl/generate_module.ts"
   }

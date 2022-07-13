@@ -1,7 +1,7 @@
 import { Api } from "../tl/api.js";
 import { EntityLike } from "../define.d.ts";
 import { DefaultEventInterface, EventBuilder, EventCommon } from "./common.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../deps.ts";
 
 export class DeletedMessage extends EventBuilder {
   constructor(eventParams: DefaultEventInterface) {

@@ -1,7 +1,7 @@
 import { Api } from "./tl/api.js";
 import { CustomFile } from "./client/uploads.ts";
 import { Button } from "./tl/custom/button.ts";
-import { BigInteger, Buffer } from "deps";
+import { BigInteger, Buffer } from "../deps.ts";
 
 import TypeUser = Api.TypeUser;
 import TypeChat = Api.TypeChat;

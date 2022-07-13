@@ -5,7 +5,7 @@ import { Dialog } from "../tl/custom/dialog.ts";
 import { DateLike, EntityLike } from "../define.d.ts";
 import { TotalList } from "../helpers.ts";
 import { LogLevel } from "../extensions/logger.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
 
 const _MAX_CHUNK_SIZE = 100;

@@ -1,6 +1,6 @@
 import { Api } from "../api.js";
 import { ChatGetter } from "./chat_getter.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../../deps.ts";
 import type { Entity } from "../../define.d.ts";
 import type { TelegramClient } from "../../client/telegram_client.ts";
 

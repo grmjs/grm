@@ -4,7 +4,7 @@ import { AbridgedPacketCodec } from "./tcpa_bridged.ts";
 import { CTR } from "../../crypto/ctr.ts";
 import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
-import { Buffer } from "deps";
+import { Buffer } from "../../../deps.ts";
 
 class ObfuscatedIO {
   header?: Buffer = undefined;

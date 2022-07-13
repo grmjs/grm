@@ -8,7 +8,7 @@ import type { Entity, EntityLike } from "../define.d.ts";
 import type { TelegramClient } from "../client/telegram_client.ts";
 import { Api } from "../tl/api.js";
 import { LogLevel } from "../extensions/logger.ts";
-import { BigInteger } from "deps";
+import { BigInteger } from "../../deps.ts";
 
 export interface NewMessageInterface extends DefaultEventInterface {
   func?: { (event: NewMessageEvent): boolean };

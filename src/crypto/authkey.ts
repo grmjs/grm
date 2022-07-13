@@ -6,7 +6,7 @@ import {
   toSignedLittleBuffer,
 } from "../helpers.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
-import { BigInteger, Buffer } from "deps";
+import { BigInteger, Buffer } from "../../deps.ts";
 
 export class AuthKey {
   private _key?: Buffer;

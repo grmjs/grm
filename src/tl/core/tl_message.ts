@@ -1,4 +1,4 @@
-import { BigInteger } from "deps";
+import { BigInteger } from "../../../deps.ts";
 
 export class TLMessage {
   static SIZE_OVERHEAD = 12;

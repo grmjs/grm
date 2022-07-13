@@ -5,7 +5,7 @@ import { CTR } from "../../crypto/ctr.ts";
 import type { Logger } from "../../extensions/logger.ts";
 import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
-import { Buffer } from "deps";
+import { Buffer } from "../../../deps.ts";
 
 export interface ProxyInterface {
   socksType?: 4 | 5;

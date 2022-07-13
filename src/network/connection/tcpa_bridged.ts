@@ -2,7 +2,7 @@ import { Connection, PacketCodec } from "./connection.ts";
 import { readBufferFromBigInt } from "../../helpers.ts";
 import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
-import { bigInt, Buffer } from "deps";
+import { bigInt, Buffer } from "../../../deps.ts";
 
 export class AbridgedPacketCodec extends PacketCodec {
   static tag = Buffer.from("ef", "hex");

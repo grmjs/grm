@@ -41,7 +41,7 @@ When you've successfully created the application set the API ID and hash you
 just got from Telegram in the following code.
 
 ```ts
-import { StringSession, TelegramClient } from "https://deno.land/x/gram/mod.ts";
+import { StringSession, TelegramClient } from "https://deno.land/x/grm/mod.ts";
 
 const apiId = 123456;
 const apiHash = "abcd1234";

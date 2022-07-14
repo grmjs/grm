@@ -1,11 +1,11 @@
-import type { EventBuilder } from "../events/common.ts";
 import { Api } from "../tl/api.js";
-import type { TelegramClient } from "./telegram_client.ts";
 import { bigInt } from "../../deps.ts";
 import { UpdateConnectionState } from "../network/mod.ts";
-import type { Raw } from "../events/raw.ts";
 import { getPeerId } from "../utils.ts";
 import { getRandomInt, returnBigInt, sleep } from "../helpers.ts";
+import type { Raw } from "../events/raw.ts";
+import type { EventBuilder } from "../events/common.ts";
+import type { TelegramClient } from "./telegram_client.ts";
 
 const PING_INTERVAL = 9000; // 9 sec
 const PING_TIMEOUT = 10000; // 10 sec
@@ -31,10 +31,13 @@ export function addEventHandler(
     // recursive imports :(
     import("../events/raw.ts").then((r) => {
       event = new r.Raw({}) as Raw;
+      event.client = client;
+      client._eventBuilders.push([event, callback]);
     });
+  } else {
+    event.client = client;
+    client._eventBuilders.push([event, callback]);
   }
-  event!.client = client;
-  client._eventBuilders.push([event!, callback]);
 }
 
 export function removeEventHandler(

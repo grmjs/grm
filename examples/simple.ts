@@ -1,4 +1,4 @@
-import { StringSession, TelegramClient } from "../mod.ts";
+import { StringSession, TelegramClient } from "https://deno.land/x/grm/mod.ts";
 
 // Login and create an application on https://my.telegram.org
 // to get values for API ID and API Hash.

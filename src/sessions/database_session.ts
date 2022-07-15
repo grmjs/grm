@@ -163,7 +163,8 @@ export class DatabaseSession extends MemorySession {
         model.phone = row[3] ? row[3].toString() : null;
         model.name = row[4] ? row[4].toString() : null;
         await model.update()
-      } else {
+      } else if (Number(row[1]) > 0) {
+        // The above is to ensure we have a hash
         await Entity.create({
           id: id.toString(),
           hash: row[1] ? row[1].toString() : null,

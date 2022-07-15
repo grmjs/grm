@@ -99,7 +99,6 @@ export class DatabaseSession extends MemorySession {
     await this.configureDatabase();
     const session = this.session = await Session.where({ name: this.sessionName }).first();
     if (session) {
-      console.log(session)
       if (session.authKey) {
         let authKey = JSON.parse(session.authKey as string);
         this._authKey = new AuthKey();
@@ -117,7 +116,6 @@ export class DatabaseSession extends MemorySession {
     } else {
       const session = await Session.create({ name: this.sessionName });
       this.session = session;
-      console.log(session)
     }
   }
 

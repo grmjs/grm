@@ -4,7 +4,7 @@ import { VERSION } from "../version.ts";
 import { sleep } from "../helpers.ts";
 import { Connection, ConnectionTCPFull } from "../network/mod.ts";
 import { Session, StoreSession } from "../sessions/mod.ts";
-import { Logger } from "../extensions/logger.ts";
+import { Logger, LogLevel } from "../extensions/logger.ts";
 import { PromisedNetSockets } from "../extensions/promised_net_sockets.ts";
 import { PromisedWebSockets } from "../extensions/promised_web_sockets.ts";
 import { Api } from "../tl/api.js";
@@ -19,7 +19,6 @@ import {
   ConnectionTCPMTProxyAbridged,
   ProxyInterface,
 } from "../network/connection/tcpmt_proxy.ts";
-import { LogLevel } from "../extensions/logger.ts";
 import { Semaphore } from "../../deps.ts";
 
 const EXPORTED_SENDER_RECONNECT_TIMEOUT = 1000; // 1 sec
@@ -47,6 +46,7 @@ export interface TelegramClientParams {
   langCode?: string;
   systemLangCode?: string;
   baseLogger?: Logger;
+  logLevel?: LogLevel | `${LogLevel}`;
   useWSS?: boolean;
   maxConcurrentDownloads?: number;
   securityChecks?: boolean;
@@ -74,6 +74,7 @@ const clientParamsDefault = {
   _securityChecks: true,
   useWSS: false,
   testServers: false,
+  logLevel: "info" as const,
 };
 
 export abstract class TelegramBaseClient {
@@ -136,8 +137,13 @@ export abstract class TelegramBaseClient {
       this._log = clientParams.baseLogger;
     } else {
       this._log = new Logger();
+      this._log.setLevel(clientParams.logLevel ?? "info");
     }
-    this._log.info("Running gramJS version " + VERSION);
+
+    if (this._log.logLevel !== "none") {
+      this._log.info(`Running grm v${VERSION}`);
+    }
+
     if (session && typeof session == "string") {
       session = new StoreSession(session);
     }
@@ -437,7 +443,7 @@ export abstract class TelegramBaseClient {
     throw new Error("Cannot be called from here!");
   }
 
-  setLogLevel(level: LogLevel) {
+  setLogLevel(level: LogLevel | `${LogLevel}`) {
     this._log.setLevel(level);
   }
 

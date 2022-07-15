@@ -17,7 +17,7 @@ export class Logger {
     info: string;
   };
   public messageFormat: string;
-  private _logLevel: LogLevel;
+  private _logLevel: LogLevel | `${LogLevel}`;
   public tzOffset: number;
 
   constructor(level?: LogLevel) {
@@ -67,7 +67,7 @@ export class Logger {
     return this._logLevel;
   }
 
-  setLevel(level: LogLevel) {
+  setLevel(level: LogLevel | `${LogLevel}`) {
     this._logLevel = level;
   }
 

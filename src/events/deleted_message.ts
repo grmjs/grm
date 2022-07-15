@@ -1,7 +1,7 @@
 import { Api } from "../tl/api.js";
 import { EntityLike } from "../define.d.ts";
 import { DefaultEventInterface, EventBuilder, EventCommon } from "./common.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export class DeletedMessage extends EventBuilder {
   constructor(eventParams: DefaultEventInterface) {
@@ -11,7 +11,7 @@ export class DeletedMessage extends EventBuilder {
   build(
     update: Api.TypeUpdate | Api.TypeUpdates,
     _callback: undefined,
-    _selfId: BigInteger,
+    _selfId: bigInt.BigInteger,
   ) {
     if (update instanceof Api.UpdateDeleteChannelMessages) {
       return new DeletedMessageEvent(

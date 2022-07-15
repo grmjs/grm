@@ -248,7 +248,7 @@ import { EntityLike, MessageIDLike } from "../define.d.ts";
 import { CustomMessage } from "./custom/message.ts";
 import { TelegramClient } from "../client/telegram_client.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts"
-import { BigInteger, Buffer } from "../../deps.ts";;
+import { bigInt, Buffer } from "../../deps.ts";;
 
 export namespace Api {
   // deno-lint-ignore no-explicit-any
@@ -263,9 +263,9 @@ export namespace Api {
   type int = number;
   type double = number;
   type float = number;
-  type int128 = BigInteger;
-  type int256 = BigInteger;
-  type long = BigInteger;
+  type int128 = bigInt.BigInteger;
+  type int256 = bigInt.BigInteger;
+  type long = bigInt.BigInteger;
   type bytes = Buffer;
   class VirtualClass<Args extends AnyLiteral> {
     static CONSTRUCTOR_ID: number;

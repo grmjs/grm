@@ -8,7 +8,7 @@ import type { Entity, EntityLike } from "../define.d.ts";
 import type { TelegramClient } from "../client/telegram_client.ts";
 import { Api } from "../tl/api.js";
 import { LogLevel } from "../extensions/logger.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export interface NewMessageInterface extends DefaultEventInterface {
   func?: { (event: NewMessageEvent): boolean };
@@ -77,7 +77,7 @@ export class NewMessage extends EventBuilder {
   build(
     update: Api.TypeUpdate | Api.TypeUpdates,
     _callback: undefined,
-    selfId: BigInteger,
+    selfId: bigInt.BigInteger,
   ) {
     if (
       update instanceof Api.UpdateNewMessage ||

@@ -8,7 +8,6 @@ import { returnBigInt } from "./helpers.ts";
 import { EntityCache } from "./entity_cache.ts";
 import {
   bigInt,
-  BigInteger,
   Buffer,
   getExtension as mGetExtension,
   getType,
@@ -26,12 +25,12 @@ function _raiseCastFail(entity: any, target: string): never {
 }
 
 export function resolveId(
-  markedId: BigInteger,
+  markedId: bigInt.BigInteger,
 ): [
-  BigInteger,
+  bigInt.BigInteger,
   typeof Api.PeerUser | typeof Api.PeerChannel | typeof Api.PeerChat,
 ] {
-  if (markedId.greaterOrEquals(BigInteger.zero)) {
+  if (markedId.greaterOrEquals(bigInt.zero)) {
     return [markedId, Api.PeerUser];
   }
 
@@ -202,7 +201,7 @@ export function getPeer(peer: EntityLike | any) {
     peer = returnBigInt(peer);
   }
   try {
-    if (peer instanceof BigInteger) {
+    if (bigInt.isInstance(peer)) {
       const res = resolveId(peer);
       if (res[1] === Api.PeerChannel) {
         return new Api.PeerChannel({ channelId: res[0] });
@@ -257,7 +256,7 @@ export function getPeerId(peer: EntityLike, addMark = true) {
     peer = returnBigInt(peer);
   }
   // First we assert it's a Peer TLObject, or early return for integers
-  if (peer instanceof BigInteger) {
+  if (bigInt.isInstance(peer)) {
     return addMark ? peer.toString() : resolveId(peer)[0].toString();
   }
   // Tell the user to use their client to resolve InputPeerSelf if we got one
@@ -295,7 +294,7 @@ export function getInputUser(entity: EntityLike): Api.TypeInputUser {
     typeof entity === "string" ||
     typeof entity === "number" ||
     typeof entity === "bigint" ||
-    entity instanceof BigInteger
+    bigInt.isInstance(entity)
   ) {
     _raiseCastFail(entity, "InputUser");
   }
@@ -314,7 +313,7 @@ export function getInputUser(entity: EntityLike): Api.TypeInputUser {
     } else {
       return new Api.InputUser({
         userId: entity.id,
-        accessHash: entity.accessHash || BigInteger.zero,
+        accessHash: entity.accessHash || bigInt.zero,
       });
     }
   }
@@ -413,7 +412,7 @@ export function sanitizeParseMode(
   throw new Error(`Invalid parse mode type ${mode}`);
 }
 
-export function getAppropriatedPartSize(fileSize: BigInteger) {
+export function getAppropriatedPartSize(fileSize: bigInt.BigInteger) {
   if (fileSize.lesser(104857600)) return 128; // 100MB
   if (fileSize.lesser(786432000)) return 256; // 750MB
   return 512;
@@ -428,7 +427,7 @@ export function getFileInfo(
 ): {
   dcId?: number;
   location: Api.TypeInputFileLocation;
-  size?: BigInteger;
+  size?: bigInt.BigInteger;
 } {
   if (!fileLocation || !fileLocation.SUBCLASS_OF_ID) {
     _raiseCastFail(fileLocation, "InputFileLocation");
@@ -519,7 +518,7 @@ export function getInputChannel(entity: EntityLike) {
     typeof entity === "string" ||
     typeof entity === "number" ||
     typeof entity === "bigint" ||
-    entity instanceof BigInteger
+    bigInt.isInstance(entity)
   ) {
     _raiseCastFail(entity, "InputChannel");
   }
@@ -536,7 +535,7 @@ export function getInputChannel(entity: EntityLike) {
   ) {
     return new Api.InputChannel({
       channelId: entity.id,
-      accessHash: entity.accessHash || BigInteger.zero,
+      accessHash: entity.accessHash || bigInt.zero,
     });
   }
 

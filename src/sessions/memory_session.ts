@@ -13,7 +13,7 @@ import {
   resolveId,
 } from "../utils.ts";
 import { isArrayLike, returnBigInt } from "../helpers.ts";
-import { bigInt, BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export class MemorySession extends Session {
   protected _serverAddress?: string;
@@ -95,8 +95,8 @@ export class MemorySession extends Session {
   delete() {}
 
   _entityValuesToRow(
-    id: BigInteger | string,
-    hash: BigInteger | string,
+    id: bigInt.BigInteger | string,
+    hash: bigInt.BigInteger | string,
     username: string,
     phone: string,
     name: string,
@@ -126,7 +126,7 @@ export class MemorySession extends Session {
     ) {
       pHash = p.accessHash;
     } else if (p instanceof Api.InputPeerChat) {
-      pHash = BigInteger.zero;
+      pHash = bigInt.zero;
     } else {
       return;
     }
@@ -207,7 +207,7 @@ export class MemorySession extends Session {
     }
   }
 
-  getEntityRowsById(id: string | BigInteger, exact = true) {
+  getEntityRowsById(id: string | bigInt.BigInteger, exact = true) {
     if (exact) {
       for (const e of this._entities) {
         // id, hash, username, phone, name
@@ -236,7 +236,7 @@ export class MemorySession extends Session {
     let exact;
     if (
       typeof key === "object" &&
-      !(key instanceof BigInteger) &&
+      !(bigInt.isInstance(key)) &&
       key.SUBCLASS_OF_ID
     ) {
       if (
@@ -259,7 +259,7 @@ export class MemorySession extends Session {
       }
     }
     if (
-      (key as any) instanceof BigInteger ||
+      bigInt.isInstance((key as any)) ||
       typeof key === "bigint" ||
       typeof key === "number"
     ) {

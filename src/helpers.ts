@@ -2,7 +2,6 @@ import { Api } from "./tl/api.js";
 import { EntityLike } from "./define.d.ts";
 import {
   bigInt,
-  BigInteger,
   Buffer,
   createHash,
   randomBytes,
@@ -79,9 +78,9 @@ export function isArrayLike<T>(x: any): x is Array<T> {
 }
 
 export function returnBigInt(
-  num: BigInteger | string | number | bigint,
+  num: bigInt.BigInteger | string | number | bigint,
 ) {
-  if (num instanceof BigInteger) {
+  if (bigInt.isInstance(num)) {
     return num;
   }
   if (typeof num === "number") {
@@ -95,11 +94,11 @@ export function returnBigInt(
 }
 
 export function toSignedLittleBuffer(
-  big: BigInteger | string | number,
+  big: bigInt.BigInteger | string | number,
   number = 8,
 ) {
   const bigNumber = returnBigInt(big);
-  const byteArray = new Array<BigInteger>();
+  const byteArray = new Array<bigInt.BigInteger>();
 
   for (let i = 0; i < number; i++) {
     byteArray[i] = bigNumber.shiftRight(8 * i).and(255);
@@ -109,7 +108,7 @@ export function toSignedLittleBuffer(
 }
 
 export function readBufferFromBigInt(
-  bigIntVar: BigInteger,
+  bigIntVar: bigInt.BigInteger,
   bytesNumber: number,
   little = true,
   signed = false,
@@ -177,8 +176,8 @@ export function mod(n: number, m: number) {
 }
 
 export function bigIntMod(
-  n: BigInteger,
-  m: BigInteger,
+  n: bigInt.BigInteger,
+  m: bigInt.BigInteger,
 ) {
   return n.remainder(m).add(m).remainder(m);
 }
@@ -246,8 +245,8 @@ export function sha256(data: Buffer) {
 }
 
 export async function generateKeyDataFromNonce(
-  serverNonceBigInt: BigInteger,
-  newNonceBigInt: BigInteger,
+  serverNonceBigInt: bigInt.BigInteger,
+  newNonceBigInt: bigInt.BigInteger,
 ) {
   const serverNonce = toSignedLittleBuffer(serverNonceBigInt, 16);
   const newNonce = toSignedLittleBuffer(newNonceBigInt, 32);
@@ -304,17 +303,17 @@ export function crc32(buf: Buffer | string) {
 }
 
 export function modExp(
-  a: BigInteger,
-  b: BigInteger,
-  n: BigInteger,
-): BigInteger {
+  a: bigInt.BigInteger,
+  b: bigInt.BigInteger,
+  n: bigInt.BigInteger,
+): bigInt.BigInteger {
   a = a.remainder(n);
-  let result = BigInteger.one;
+  let result = bigInt.one;
   let x = a;
-  while (b.greater(BigInteger.zero)) {
+  while (b.greater(bigInt.zero)) {
     const leastSignificantBit = b.remainder(BigInt(2));
     b = b.divide(BigInt(2));
-    if (leastSignificantBit.eq(BigInteger.one)) {
+    if (leastSignificantBit.eq(bigInt.one)) {
       result = result.multiply(x);
       result = result.remainder(n);
     }
@@ -325,7 +324,7 @@ export function modExp(
 }
 
 export function getByteArray(
-  integer: BigInteger | number,
+  integer: bigInt.BigInteger | number,
   signed = false,
 ) {
   const bits = integer.toString(2).length;
@@ -339,10 +338,10 @@ export function getByteArray(
 }
 
 export function getMinBigInt(
-  arrayOfBigInts: (BigInteger | string)[],
-): BigInteger {
+  arrayOfBigInts: (bigInt.BigInteger | string)[],
+): bigInt.BigInteger {
   if (arrayOfBigInts.length === 0) {
-    return BigInteger.zero;
+    return bigInt.zero;
   }
   if (arrayOfBigInts.length === 1) {
     return returnBigInt(arrayOfBigInts[0]);

@@ -7,7 +7,7 @@ import {
   readBufferFromBigInt,
   sha256,
 } from "./helpers.ts";
-import { bigInt, BigInteger, Buffer, pbkdf2Sync } from "../deps.ts";
+import { bigInt, Buffer, pbkdf2Sync } from "../deps.ts";
 const SIZE_FOR_HASH = 256;
 
 function checkPrimeAndGood(primeBytes: Buffer, g: number) {
@@ -42,7 +42,7 @@ function checkPrimeAndGood(primeBytes: Buffer, g: number) {
   throw new Error("Changing passwords unsupported");
 }
 
-function isGoodLarge(number: BigInteger, p: BigInteger) {
+function isGoodLarge(number: bigInt.BigInteger, p: bigInt.BigInteger) {
   return number.greater(BigInt(0)) && p.subtract(number).greater(BigInt(0));
 }
 
@@ -50,11 +50,11 @@ function numBytesForHash(number: Buffer) {
   return Buffer.concat([Buffer.alloc(SIZE_FOR_HASH - number.length), number]);
 }
 
-function bigNumForHash(g: BigInteger) {
+function bigNumForHash(g: bigInt.BigInteger) {
   return readBufferFromBigInt(g, SIZE_FOR_HASH, false);
 }
 
-function isGoodModExpFirst(modexp: BigInteger, prime: BigInteger) {
+function isGoodModExpFirst(modexp: bigInt.BigInteger, prime: bigInt.BigInteger) {
   const diff = prime.subtract(modexp);
   const minDiffBitsCount = 2048 - 64;
   const maxModExpSize = 256;

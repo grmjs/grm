@@ -5,7 +5,7 @@ import {
   readBufferFromBigInt,
   sha1,
 } from "../helpers.ts";
-import { bigInt, BigInteger, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 const PUBLIC_KEYS = [
   {
@@ -36,14 +36,14 @@ const PUBLIC_KEYS = [
 
 export const _serverKeys = new Map<
   string,
-  { n: BigInteger; e: number }
+  { n: bigInt.BigInteger; e: number }
 >();
 
 PUBLIC_KEYS.forEach(({ fingerprint, ...keyInfo }) => {
   _serverKeys.set(fingerprint.toString(), keyInfo);
 });
 
-export function encrypt(fingerprint: BigInteger, data: Buffer) {
+export function encrypt(fingerprint: bigInt.BigInteger, data: Buffer) {
   const key = _serverKeys.get(fingerprint.toString());
   if (!key) {
     return undefined;

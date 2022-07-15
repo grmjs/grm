@@ -40,7 +40,7 @@ export class StoreSession extends MemorySession {
   }
 
   setDC(dcId: number, serverAddress: string, port: number) {
-    this.store.setitem(this.sessionName + "dcId", dcId.toString());
+    this.store.setItem(this.sessionName + "dcId", dcId.toString());
     this.store.setItem(this.sessionName + "port", port.toString());
     this.store.setItem(this.sessionName + "serverAddress", serverAddress);
     super.setDC(dcId, serverAddress, port);

@@ -1,9 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
-import { BigInteger, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 export class RequestState {
-  public containerId?: BigInteger;
-  public msgId?: BigInteger;
+  public containerId?: bigInt.BigInteger;
+  public msgId?: bigInt.BigInteger;
   public request: any;
   public data: Buffer;
   public after: any;

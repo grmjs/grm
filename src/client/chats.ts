@@ -10,7 +10,7 @@ import {
 import { getDisplayName, getPeerId } from "../utils.ts";
 import { RequestIter } from "../request_iter.ts";
 import { Api } from "../tl/api.js";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 const _MAX_PARTICIPANTS_CHUNK_SIZE = 200;
 const _MAX_ADMIN_LOG_CHUNK_SIZE = 100;
@@ -188,7 +188,7 @@ export class _ParticipantsIter extends RequestIter {
             }),
           offset: 0,
           limit: _MAX_PARTICIPANTS_CHUNK_SIZE,
-          hash: BigInteger.zero,
+          hash: bigInt.zero,
         }),
       );
     } else if (ty == EntityType_.CHAT) {
@@ -324,8 +324,8 @@ interface _AdminLogFilterInterface {
 interface _AdminLogSearchInterface {
   admins?: EntitiesLike;
   search?: string;
-  minId?: BigInteger;
-  maxId?: BigInteger;
+  minId?: bigInt.BigInteger;
+  maxId?: bigInt.BigInteger;
 }
 
 class _AdminLogIter extends RequestIter {
@@ -380,7 +380,7 @@ class _AdminLogIter extends RequestIter {
     for (const e of r.events) {
       eventIds.push(e.id);
     }
-    this.request.maxId = getMinBigInt([BigInteger.zero, ...eventIds]);
+    this.request.maxId = getMinBigInt([bigInt.zero, ...eventIds]);
     for (const ev of r.events) {
       if (
         ev.action instanceof Api.ChannelAdminLogEventActionEditMessage

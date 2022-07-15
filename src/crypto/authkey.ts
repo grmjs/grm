@@ -6,13 +6,13 @@ import {
   toSignedLittleBuffer,
 } from "../helpers.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
-import { BigInteger, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 export class AuthKey {
   private _key?: Buffer;
   private _hash?: Buffer;
-  private auxHash?: BigInteger;
-  keyId?: BigInteger;
+  private auxHash?: bigInt.BigInteger;
+  keyId?: bigInt.BigInteger;
 
   constructor(value?: Buffer, hash?: Buffer) {
     if (!hash || !value) return;
@@ -59,9 +59,9 @@ export class AuthKey {
   }
 
   calcNewNonceHash(
-    newNonce: BigInteger,
+    newNonce: bigInt.BigInteger,
     number: number,
-  ): BigInteger {
+  ): bigInt.BigInteger {
     if (this.auxHash) {
       const nonce = toSignedLittleBuffer(newNonce, 32);
       const n = Buffer.alloc(1);

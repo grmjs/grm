@@ -19,7 +19,7 @@ import { _serverKeys } from "../crypto/rsa.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import { AuthKey } from "../crypto/authkey.ts";
 import { IGE } from "../crypto/ige.ts";
-import { bigInt, BigInteger, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 const RETRIES = 20;
 
@@ -199,7 +199,7 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
   const clientDhInner = new Api.ClientDHInnerData({
     nonce: resPQ.nonce,
     serverNonce: resPQ.serverNonce,
-    retryId: BigInteger.zero, // TODO Actual retry ID
+    retryId: bigInt.zero, // TODO Actual retry ID
     gB: getByteArray(gb, false),
   }).getBytes();
 

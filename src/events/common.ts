@@ -5,7 +5,7 @@ import type { TelegramClient } from "../client/telegram_client.ts";
 import { isArrayLike, returnBigInt } from "../helpers.ts";
 import { getPeerId, parseID } from "../utils.ts";
 import { SenderGetter } from "../tl/custom/sender_getter.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export async function _intoIdSet(
   client: TelegramClient,
@@ -23,7 +23,7 @@ export async function _intoIdSet(
       typeof chat == "number" ||
       typeof chat == "bigint" ||
       (typeof chat == "string" && parseID(chat)) ||
-      chat instanceof BigInteger
+      bigInt.isInstance(chat)
     ) {
       chat = returnBigInt(chat);
       if (chat.lesser(0)) {
@@ -90,7 +90,7 @@ export class EventBuilder {
   build(
     update: Api.TypeUpdate,
     _callback?: CallableFunction,
-    _selfId?: BigInteger,
+    _selfId?: bigInt.BigInteger,
     // deno-lint-ignore no-explicit-any
   ): any {
     if (update) return update;

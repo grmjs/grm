@@ -2,7 +2,7 @@
 import { Api } from "./tl/api.js";
 import { getInputPeer, getPeerId } from "./utils.ts";
 import { isArrayLike, returnBigInt } from "./helpers.ts";
-import { BigInteger } from "../deps.ts";
+import { bigInt } from "../deps.ts";
 
 export class EntityCache {
   private cacheMap: Map<string, any>;
@@ -48,12 +48,12 @@ export class EntityCache {
     }
   }
 
-  get(item: BigInteger | string | undefined) {
+  get(item: bigInt.BigInteger | string | undefined) {
     if (item === undefined) {
       throw new Error("No cached entity for the given key");
     }
     item = returnBigInt(item);
-    if (item.lesser(BigInteger.zero)) {
+    if (item.lesser(bigInt.zero)) {
       let res;
       try {
         res = this.cacheMap.get(getPeerId(item).toString());

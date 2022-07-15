@@ -24,7 +24,7 @@ import {
   getPeerId,
   parseID,
 } from "../utils.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 import { _getPeer } from "./users.ts";
 import { _parseMessageText } from "./message_parse.ts";
 import { _fileToMedia } from "./uploads.ts";
@@ -134,7 +134,7 @@ export class _MessagesIter extends RequestIter {
         limit: 0,
         maxId: 0,
         minId: 0,
-        hash: BigInteger.zero,
+        hash: bigInt.zero,
       });
     } else if (
       search !== undefined ||
@@ -154,7 +154,7 @@ export class _MessagesIter extends RequestIter {
         limit: 0,
         maxId: 0,
         minId: 0,
-        hash: BigInteger.zero,
+        hash: bigInt.zero,
         fromId: fromUser,
       });
       if (
@@ -181,7 +181,7 @@ export class _MessagesIter extends RequestIter {
         minId: 0,
         maxId: 0,
         addOffset: addOffset,
-        hash: BigInteger.zero,
+        hash: bigInt.zero,
       });
     }
     if (this.limit <= 0) {

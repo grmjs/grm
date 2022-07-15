@@ -15,7 +15,7 @@ import {
 } from "../../client/messages.ts";
 import { DownloadMediaInterface } from "../../client/downloads.ts";
 import { _selfId } from "../../client/users.ts";
-import { BigInteger, Buffer } from "../../../deps.ts";
+import { bigInt, Buffer } from "../../../deps.ts";
 import type { Entity, EntityLike } from "../../define.d.ts";
 import type { TelegramClient } from "../../client/telegram_client.ts";
 
@@ -84,7 +84,7 @@ export class CustomMessage extends SenderGetter {
   fromId?: Api.TypePeer;
   peerId!: Api.TypePeer;
   fwdFrom?: Api.TypeMessageFwdHeader;
-  viaBotId?: BigInteger;
+  viaBotId?: bigInt.BigInteger;
   replyTo?: Api.MessageReplyHeader;
   date!: number;
   message!: string;
@@ -96,7 +96,7 @@ export class CustomMessage extends SenderGetter {
   replies?: Api.TypeMessageReplies;
   editDate?: number;
   postAuthor?: string;
-  groupedId?: BigInteger;
+  groupedId?: bigInt.BigInteger;
   restrictionReason?: Api.TypeRestrictionReason[];
   action!: Api.TypeMessageAction;
 

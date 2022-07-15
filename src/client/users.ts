@@ -18,7 +18,7 @@ import {
   sleep,
 } from "../helpers.ts";
 import type { TelegramClient } from "./telegram_client.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import {
@@ -254,7 +254,7 @@ export async function getInputEntity(
     if (
       typeof peer === "number" ||
       typeof peer === "bigint" ||
-      peer instanceof BigInteger
+      bigInt.isInstance(peer)
     ) {
       const res = client._entityCache.get(peer.toString());
       if (res) {
@@ -264,7 +264,7 @@ export async function getInputEntity(
     // 0x2d45687 == crc32(b'Peer')
     if (
       typeof peer == "object" &&
-      !(peer instanceof BigInteger) &&
+      !(bigInt.isInstance(peer)) &&
       peer.SUBCLASS_OF_ID === 0x2d45687
     ) {
       const res = client._entityCache.get(utils.getPeerId(peer));
@@ -304,7 +304,7 @@ export async function getInputEntity(
         id: [
           new Api.InputUser({
             userId: peer.userId,
-            accessHash: BigInteger.zero,
+            accessHash: bigInt.zero,
           }),
         ],
       }),
@@ -323,7 +323,7 @@ export async function getInputEntity(
           id: [
             new Api.InputChannel({
               channelId: peer.channelId,
-              accessHash: BigInteger.zero,
+              accessHash: bigInt.zero,
             }),
           ],
         }),
@@ -353,7 +353,7 @@ export async function _getEntityFromString(
     try {
       const result = await client.invoke(
         new Api.contacts.GetContacts({
-          hash: BigInteger.zero,
+          hash: bigInt.zero,
         }),
       );
       if (!(result instanceof Api.contacts.ContactsNotModified)) {
@@ -441,7 +441,7 @@ export async function getPeerId(
   if (
     typeof peer == "number" ||
     typeof peer == "bigint" ||
-    peer instanceof BigInteger
+    bigInt.isInstance(peer)
   ) {
     return getPeerId_(peer, addMark);
   }

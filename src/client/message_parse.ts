@@ -3,7 +3,7 @@ import { getPeerId, sanitizeParseMode } from "../utils.ts";
 import type { EntityLike } from "../define.d.ts";
 import type { TelegramClient } from "./telegram_client.ts";
 import { EntityType_, entityType_, isArrayLike } from "../helpers.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export type messageEntities =
   | typeof Api.MessageEntityBold
@@ -195,7 +195,7 @@ export function _getResponseMessage(
   if (
     isArrayLike(request) ||
     typeof request === "number" ||
-    request instanceof BigInteger
+    bigInt.isInstance(request)
   ) {
     randomId = request;
   } else {

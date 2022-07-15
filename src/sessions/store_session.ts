@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { MemorySession } from "./memory_session.ts";
 import { AuthKey } from "../crypto/authkey.ts";
-import { BigInteger, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 export class StoreSession extends MemorySession {
   private readonly sessionName: string;
@@ -40,18 +40,20 @@ export class StoreSession extends MemorySession {
   }
 
   setDC(dcId: number, serverAddress: string, port: number) {
-    this.store.setitem(this.sessionName + "dcId", dcId.toString());
+    this.store.setItem(this.sessionName + "dcId", dcId.toString());
     this.store.setItem(this.sessionName + "port", port.toString());
     this.store.setItem(this.sessionName + "serverAddress", serverAddress);
     super.setDC(dcId, serverAddress, port);
   }
 
   set authKey(value: AuthKey | undefined) {
-    this._authKey = value;
-    this.store.setItem(
-      this.sessionName + "authKey",
-      JSON.stringify(value?.getKey()),
-    );
+    if (value) {
+      this._authKey = value;
+      this.store.setItem(
+        this.sessionName + "authKey",
+        JSON.stringify(value.getKey()),
+      );
+    }
   }
 
   get authKey() {
@@ -68,7 +70,7 @@ export class StoreSession extends MemorySession {
   }
 
   getEntityRowsById(
-    id: string | BigInteger,
+    id: string | bigInt.BigInteger,
     _exact = true,
   ): any {
     return this.store.getItem(this.sessionName + id.toString());

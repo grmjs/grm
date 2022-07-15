@@ -26,7 +26,7 @@ import {
 import { Connection } from "./connection/connection.ts";
 import type { TelegramClient } from "../client/telegram_client.ts";
 import { Logger, LogLevel } from "../extensions/logger.ts";
-import { bigInt, BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export class UpdateConnectionState {
   static disconnected = -1;
@@ -453,7 +453,7 @@ export class MTProtoSender {
     await handler(message);
   }
 
-  _popStates(msgId: BigInteger) {
+  _popStates(msgId: bigInt.BigInteger) {
     const state = this._pendingState.get(msgId.toString());
     if (state) {
       this._pendingState.delete(msgId.toString());

@@ -1,19 +1,19 @@
 import { Api } from "../api.js";
 import { GZIPPacked } from "./gzip_packed.ts";
 import type { BinaryReader } from "../../extensions/binary_reader.ts";
-import { BigInteger, Buffer } from "../../../deps.ts";
+import { bigInt, Buffer } from "../../../deps.ts";
 
 export class RPCResult {
   static CONSTRUCTOR_ID = 0xf35c6d01;
   static classType = "constructor";
   private CONSTRUCTOR_ID: number;
-  private reqMsgId: BigInteger;
+  private reqMsgId: bigInt.BigInteger;
   private body?: Buffer;
   private error?: Api.RpcError;
   private classType: string;
 
   constructor(
-    reqMsgId: BigInteger,
+    reqMsgId: bigInt.BigInteger,
     body?: Buffer,
     error?: Api.RpcError,
   ) {

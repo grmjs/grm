@@ -16,16 +16,16 @@ import {
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import type { BinaryWriter } from "../extensions/binary_writer.ts";
 import { InvalidBufferError, SecurityError } from "../errors/mod.ts";
-import { bigInt, BigInteger, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 export class MTProtoState {
   private readonly authKey?: AuthKey;
   private _log: any;
   timeOffset: number;
-  salt: BigInteger;
-  private id: BigInteger;
+  salt: bigInt.BigInteger;
+  private id: bigInt.BigInteger;
   _sequence: number;
-  private _lastMsgId: BigInteger;
+  private _lastMsgId: bigInt.BigInteger;
   private msgIds: string[];
   private securityChecks: boolean;
 
@@ -33,9 +33,9 @@ export class MTProtoState {
     this.authKey = authKey;
     this._log = loggers;
     this.timeOffset = 0;
-    this.salt = BigInteger.zero;
+    this.salt = bigInt.zero;
     this._sequence = 0;
-    this.id = this._lastMsgId = BigInteger.zero;
+    this.id = this._lastMsgId = bigInt.zero;
     this.msgIds = [];
     this.securityChecks = securityChecks;
     this.reset();
@@ -44,7 +44,7 @@ export class MTProtoState {
   reset() {
     this.id = generateRandomLong(true);
     this._sequence = 0;
-    this._lastMsgId = BigInteger.zero;
+    this._lastMsgId = bigInt.zero;
     this.msgIds = [];
   }
 
@@ -76,7 +76,7 @@ export class MTProtoState {
     buffer: BinaryWriter,
     data: Buffer,
     contentRelated: boolean,
-    afterId?: BigInteger,
+    afterId?: bigInt.BigInteger,
   ) {
     const msgId = this._getNewMsgId();
     const seqNo = this._getSeqNo(contentRelated);
@@ -217,7 +217,7 @@ export class MTProtoState {
     return newMsgId;
   }
 
-  updateTimeOffset(correctMsgId: BigInteger) {
+  updateTimeOffset(correctMsgId: bigInt.BigInteger) {
     const bad = this._getNewMsgId();
     const old = this.timeOffset;
     const now = Math.floor(new Date().getTime() / 1000);
@@ -225,7 +225,7 @@ export class MTProtoState {
     this.timeOffset = correct - now;
 
     if (this.timeOffset !== old) {
-      this._lastMsgId = BigInteger.zero;
+      this._lastMsgId = bigInt.zero;
       this._log.debug(
         `Updated time offset (old offset ${old}, bad ${bad}, good ${correctMsgId}, new ${this.timeOffset})`,
       );

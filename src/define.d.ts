@@ -1,7 +1,7 @@
 import { Api } from "./tl/api.js";
 import { CustomFile } from "./client/uploads.ts";
 import { Button } from "./tl/custom/button.ts";
-import { BigInteger, Buffer } from "../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
 
 import TypeUser = Api.TypeUser;
 import TypeChat = Api.TypeChat;
@@ -20,7 +20,7 @@ type FullEntity =
   | Api.ChatFull
   | Api.ChannelFull;
 type EntityLike =
-  | BigInteger
+  | bigInt.BigInteger
   | Phone
   | Username
   | PeerID
@@ -65,8 +65,8 @@ type OutFile =
   // deno-lint-ignore ban-types
   | { write: Function; close?: Function };
 type ProgressCallback = (
-  total: BigInteger,
-  downloaded: BigInteger,
+  total: bigInt.BigInteger,
+  downloaded: bigInt.BigInteger,
 ) => void;
 type ButtonLike = Api.TypeKeyboardButton | Button;
 

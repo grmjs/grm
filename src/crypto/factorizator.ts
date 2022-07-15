@@ -1,9 +1,9 @@
 import { modExp } from "../helpers.ts";
-import { bigInt, BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export class Factorizator {
-  static gcd(a: BigInteger, b: BigInteger) {
-    while (b.neq(BigInteger.zero)) {
+  static gcd(a: bigInt.BigInteger, b: bigInt.BigInteger) {
+    while (b.neq(bigInt.zero)) {
       const temp = b;
       b = a.remainder(b);
       a = temp;
@@ -11,31 +11,31 @@ export class Factorizator {
     return a;
   }
 
-  static factorize(pq: BigInteger) {
-    if (pq.remainder(2).equals(BigInteger.zero)) {
+  static factorize(pq: bigInt.BigInteger) {
+    if (pq.remainder(2).equals(bigInt.zero)) {
       return { p: bigInt(2), q: pq.divide(bigInt(2)) };
     }
-    let y = BigInteger.randBetween(bigInt(1), pq.minus(1));
-    const c = BigInteger.randBetween(bigInt(1), pq.minus(1));
-    const m = BigInteger.randBetween(bigInt(1), pq.minus(1));
+    let y = bigInt.randBetween(bigInt(1), pq.minus(1));
+    const c = bigInt.randBetween(bigInt(1), pq.minus(1));
+    const m = bigInt.randBetween(bigInt(1), pq.minus(1));
 
-    let g = BigInteger.one;
-    let r = BigInteger.one;
-    let q = BigInteger.one;
-    let x = BigInteger.zero;
-    let ys = BigInteger.zero;
+    let g = bigInt.one;
+    let r = bigInt.one;
+    let q = bigInt.one;
+    let x = bigInt.zero;
+    let ys = bigInt.zero;
     let k;
 
-    while (g.eq(BigInteger.one)) {
+    while (g.eq(bigInt.one)) {
       x = y;
       for (let i = 0; bigInt(i).lesser(r); i++) {
         y = modExp(y, bigInt(2), pq).add(c).remainder(pq);
       }
-      k = BigInteger.zero;
+      k = bigInt.zero;
 
-      while (k.lesser(r) && g.eq(BigInteger.one)) {
+      while (k.lesser(r) && g.eq(bigInt.one)) {
         ys = y;
-        const condition = BigInteger.min(m, r.minus(k));
+        const condition = bigInt.min(m, r.minus(k));
         for (let i = 0; bigInt(i).lesser(condition); i++) {
           y = modExp(y, bigInt(2), pq).add(c).remainder(pq);
           q = q.multiply(x.minus(y).abs()).remainder(pq);

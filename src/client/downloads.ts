@@ -15,7 +15,6 @@ import { FileMigrateError } from "../errors/mod.ts";
 import { BinaryWriter } from "../extensions/binary_writer.ts";
 import {
   bigInt,
-  BigInteger,
   Buffer,
   createWriteStream,
   existsSync,
@@ -26,7 +25,7 @@ import {
 
 export interface progressCallback {
   // deno-lint-ignore no-explicit-any
-  (downloaded: BigInteger, fullSize: BigInteger, ...args: any[]): void;
+  (downloaded: bigInt.BigInteger, fullSize: bigInt.BigInteger, ...args: any[]): void;
   isCanceled?: boolean;
   acceptsBuffer?: boolean;
 }
@@ -44,7 +43,7 @@ export interface DownloadFileParams {
 export interface DownloadFileParamsV2 {
   outputFile?: OutFile;
   dcId?: number;
-  fileSize?: BigInteger;
+  fileSize?: bigInt.BigInteger;
   partSizeKb?: number;
   progressCallback?: progressCallback;
   msgData?: [EntityLike, number];
@@ -57,7 +56,7 @@ export interface DownloadProfilePhotoParams {
 export interface DirectDownloadIterInterface {
   fileLocation: Api.TypeInputFileLocation;
   dcId: number;
-  offset: BigInteger;
+  offset: bigInt.BigInteger;
   stride: number;
   chunkSize: number;
   requestSize: number;
@@ -67,12 +66,12 @@ export interface DirectDownloadIterInterface {
 
 export interface IterDownloadFunction {
   file?: Api.TypeMessageMedia | Api.TypeInputFile | Api.TypeInputFileLocation;
-  offset?: BigInteger;
+  offset?: bigInt.BigInteger;
   stride?: number;
   limit?: number;
   chunkSize?: number;
   requestSize: number;
-  fileSize?: BigInteger;
+  fileSize?: bigInt.BigInteger;
   dcId?: number;
   msgData?: [EntityLike, number];
 }
@@ -249,7 +248,7 @@ function iterDownload(
   client: TelegramClient,
   {
     file,
-    offset = BigInteger.zero,
+    offset = bigInt.zero,
     stride,
     limit,
     chunkSize,
@@ -296,9 +295,9 @@ function iterDownload(
   let cls;
   if (
     chunkSize == requestSize &&
-    offset!.divide(MAX_CHUNK_SIZE).eq(BigInteger.zero) &&
+    offset!.divide(MAX_CHUNK_SIZE).eq(bigInt.zero) &&
     stride % MIN_CHUNK_SIZE == 0 &&
-    (limit == undefined || offset!.divide(limit).eq(BigInteger.zero))
+    (limit == undefined || offset!.divide(limit).eq(bigInt.zero))
   ) {
     cls = DirectDownloadIter;
     client._log.info(
@@ -386,7 +385,7 @@ export async function downloadFileV2(
   }
   const writer = getWriter(outputFile);
 
-  let downloaded = BigInteger.zero;
+  let downloaded = bigInt.zero;
   try {
     for await (
       const chunk of iterDownload(client, {
@@ -400,7 +399,7 @@ export async function downloadFileV2(
       if (progressCallback) {
         progressCallback(
           downloaded,
-          bigInt(fileSize || BigInteger.zero),
+          bigInt(fileSize || bigInt.zero),
         );
       }
       downloaded = downloaded.add(chunk.length);

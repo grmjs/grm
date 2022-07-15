@@ -15,21 +15,16 @@ const dbSession = new DatabaseSession("sessionName", {
 });
 
 console.log("Loading interactive example...");
-const client = new TelegramClient(dbSession, apiId, apiHash, {
-  connectionRetries: 5,
-});
+const client = new TelegramClient(dbSession, apiId, apiHash);
 
 await client.start({
   phoneNumber: () => prompt("Enter your phone number:")!,
-  password: async () => await prompt("Enter your password:")!,
-  phoneCode: async () => await prompt("Enter the code you received:")!,
+  password: () => prompt("Enter your password:")!,
+  phoneCode: () => prompt("Enter the code you received:")!,
   onError: (err: Error) => console.log(err),
 });
 
 console.log("You should now be connected.");
-// Save the output of the following and use it in `new SessionString("")`
-// to avoid logging in again next time.
-console.log(client.session.save());
 
 // Send a message to yourself
 await client.sendMessage("me", { message: "Hello!" });

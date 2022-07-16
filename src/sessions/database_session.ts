@@ -2,10 +2,9 @@
 import { Api } from "../tl/api.js";
 import { MemorySession } from "./memory_session.ts";
 import { AuthKey } from "../crypto/authkey.ts";
-import { Buffer, denodb } from "../../deps.ts";
+import { Buffer, denodb, bigInt } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
 import { returnBigInt } from "../helpers.ts";
-import { bigInt } from "../../deps.ts";
 
 // Avoiding this export in deps.ts
 import type { ConnectorOptions } from 'https://deno.land/x/denodb@v1.0.39/lib/connectors/connector.ts'
@@ -44,7 +43,7 @@ export enum DatabaseType {
   MongoDB
 }
 
-export interface ConnectionOptions<T extends ConnectorOptions> {
+export interface ConnectionOptions {
   adapter: DatabaseType;
   tables?: {
     session?: string;
@@ -60,11 +59,7 @@ export class DatabaseSession extends MemorySession {
   private dbInitialized = false;
   private session?: Session;
 
-  constructor(sessionName: string, connectionOptions: ConnectionOptions<denodb.PostgresOptions>)
-  constructor(sessionName: string, connectionOptions: ConnectionOptions<denodb.MySQLOptions>)
-  constructor(sessionName: string, connectionOptions: ConnectionOptions<denodb.SQLite3Options>)
-  constructor(sessionName: string, connectionOptions: ConnectionOptions<denodb.MongoDBOptions>)
-  constructor(sessionName: string, connectionOptions: ConnectionOptions<any>) {
+  constructor(sessionName: string, connectionOptions: ConnectionOptions) {
     super();
 
     this.sessionName = sessionName;

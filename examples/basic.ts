@@ -5,7 +5,7 @@ import { StringSession, TelegramClient } from "https://deno.land/x/grm/mod.ts";
 const apiId = 123456;
 const apiHash = "abcd1234";
 
-// Fill in this later with the value from client.session.save(),
+// Fill in this later with the value from `client.session.save()`,
 // so you don't have to login each time you run the file.
 const stringSession = new StringSession("");
 

@@ -1,13 +1,18 @@
-> **Warning**: Considered as unstable. I haven't tested everything yet, so I'm
-> not entirely sure.
+> **Warning**: Considered as unstable. But, most of the commonly used features
+> are working as expected.
 
-# GramJS for Deno
+<div align="center">
 
-[GramJS](https://github.com/gram-js/gramjs) is a popular Telegram client written
-in JavaScript for Node.js and browsers, with its core being based on
+# grm
+
+[![deno module](https://shield.deno.dev/x/grm)](https://deno.land/x/grm)
+
+</div>
+
+grm is a improved Deno port of [GramJS](https://github.com/gram-js/gramjs),
+written in TypeScript. GramJS is a popular MTProto API Telegram client library
+written in JavaScript for Node.js and browsers, with its core being based on
 [Telethon](https://github.com/LonamiWebs/Telethon).
-
-This is a port of **GramJS for Deno**, written in TypeScript.
 
 Deno Land module: https://deno.land/x/grm
 
@@ -15,30 +20,31 @@ Deno Land module: https://deno.land/x/grm
 
 ## Documentation
 
-Consider following the original documentation by original GramJS maintainers.
+Consider following the documentation by GramJS maintainers.
 
-- https://gram.js.org/
+- https://gram.js.org
 - https://painor.gitbook.io/gramjs
 
-See the [Quick Start](#quick-start) section, for a minimal example.
+See the [Quick Start](#quick-start) section for a minimal example to get
+started.
 
 ## Quick Start
 
-Here you'll learn how to obtain necessary information to create Telegram
+Here you'll learn how to obtain necessary information to create a Telegram
 application, authorize into your account and send yourself a message.
 
 First, you'll need to obtain an API ID and hash:
 
-1. Login into your [Telegram account](https://my.telegram.org)
+1. Login into your [Telegram account](https://my.telegram.org).
 2. Then click "API development tools" and fill your application details (only
-   app title and short name are required)
-3. Finally, click "Create application"
+   app title and short name are required).
+3. Finally, click "Create application".
 
 > **Warning**: Never share any API/authorization details, that will compromise
 > your application and account.
 
-When you've successfully created the application, set the API ID and hash you
-just got from Telegram in the following code.
+When you've successfully created the application, replace the API ID and hash
+you got from Telegram in the following code.
 
 ```ts
 import { StringSession, TelegramClient } from "https://deno.land/x/grm/mod.ts";
@@ -48,7 +54,7 @@ import { StringSession, TelegramClient } from "https://deno.land/x/grm/mod.ts";
 const apiId = 123456;
 const apiHash = "abcd1234";
 
-// Fill in this later with the value from client.session.save(),
+// Fill in this later with the value from `client.session.save()`,
 // so you don't have to login each time you run the file.
 const stringSession = new StringSession("");
 
@@ -82,27 +88,24 @@ deno run -A file-name.ts
 You'll be prompted to enter your phone number (in international format), and the
 code you received from Telegram. Save the output of `client.session.save()`
 somewhere and use it in `new StringSession("")` to avoid logging again later.
-After connecting successfully, you should have a "Hello" message in your Saved
-Messages.
+After connecting successfully, you should have a text message saying "Hello" in
+your Saved Messages.
+
+Check out the **examples/** directory for more examples.
 
 ## Notes
 
 This is a _direct_ port of GramJS for Deno. This was just an attempt, which
-turned out to be a successful one. At least, the startup, the getting started
-example, and file uploading and downloading works. And I'm happy about it. And I
-don't know if this works for you or not, but it works for me :)
+turned out to be a successful one. Most of the commonly used features are
+confirmed as working as expected.
 
-It took me like 4 days. Total of 20h6m for this repository alone. And including
+It took me like 4 days; a total of 20h6m for this repository alone. Including
 dependency porting and figuring out the original code, its a total of almost
 34.8h for the first release. I didn't just copy and paste stuff — I did, but I
 manually wrote lot of the files.
 
-I haven't added any JSDocs yet. I'll add them later. I didn't add any because
-its a mess if there are a lot of comments while porting (We can just collapse
-them, I know. But my machine can't take too much load, its an old one).
-
-I had to port the following Node packages to Deno. I know that some of them is
-not even have to be ported, but I didn't realised that then.
+I had to port the following Node modules to Deno. I know that some of them is
+not even have to be ported, but I didn't realized that then.
 
 - [JoshGlazebrook/socks](https://github.com/JoshGlazebrook/socks) —
   [deno_socks](https://github.com/dcdunkan/deno_socks)
@@ -115,29 +118,26 @@ not even have to be ported, but I didn't realised that then.
 
 ## Contributing
 
-Pull requests are welcome. **But**, I only suggest you to open pull requests if
-they are related to fixes or improvments with the porting, migrating from Node
-packages to Deno's built-in or std stuff, etc. Pull requests related to GramJS
-core itself are not very welcomed here, because I was thinking about following
-the original GramJS repository and keeping up with their changes.
+Feel free to open pull requests related to improvements to the core library and
+documentation, fixes for issues with the porting are welcome. We are currently
+following API changes in GramJS core library and applying them here.
 
-I am not experienced in most of the core stuff used in GramJS. Most importantly,
-websockets. I really want to migrate from using Node modules such as
-[socks](https://github.com/JoshGlazebrook/socks) and
-[websocket](https://github.com/theturtle32/WebSocket-Node) to using Deno's
-built-in websocket stuff, if it is possible (it should be). If you can help
-migrating it, that would be great!
+We'd appreciate if you could help with...
+
+- Migrating from using Node modules such as
+  [socks](https://github.com/JoshGlazebrook/socks) and
+  [websocket](https://github.com/theturtle32/WebSocket-Node) to using Deno's
+  built-in websocket support.
 
 ## Credits
 
-I only ported the library by changing some imports and porting some dependencies
-to Deno, anyone could do it.
-
-All actual credits goes to
+This port wouldn't exist without these wonderful people. Thanks to
 
 - the original
   [authors and contributors](https://github.com/gram-js/gramjs/graphs/contributors)
   of GramJS,
 - authors of the dependencies,
 - authors of already ported dependencies,
-- and everyone else who was a part of this.
+- [contributors](https://github.com/dcdunkan/deno_gramjs/graphs/contributors) of
+  this repository,
+- and everyone else who were a part of this.

@@ -118,9 +118,9 @@ not even have to be ported, but I didn't realized that then.
 
 ## Contributing
 
-Feel free to open pull requests related to improvements to the core library and
-documentation, fixes for issues with the porting are welcome. We are currently
-following API changes in GramJS core library and applying them here.
+Feel free to open pull requests related to improvements and fixes to the core
+library and documentation. We are currently following API changes in GramJS core
+library and applying them here.
 
 We'd appreciate if you could help with...
 

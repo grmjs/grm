@@ -16,13 +16,10 @@ await client.start({
   phoneNumber: () => prompt("Enter your phone number:")!,
   password: () => prompt("Enter your password:")!,
   phoneCode: () => prompt("Enter the code you received:")!,
-  onError: (err) => console.log(err),
+  onError: (err: Error) => console.log(err),
 });
 
 console.log("You should now be connected.");
-// Save the output of the following and use it in `new SessionString("")`
-// to avoid logging in again next time.
-console.log(client.session.save());
 
 // Send a message to yourself
 await client.sendMessage("me", { message: "Hello!" });

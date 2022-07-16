@@ -59,14 +59,12 @@ const apiHash = "abcd1234";
 const stringSession = new StringSession("");
 
 console.log("Loading interactive example...");
-const client = new TelegramClient(stringSession, apiId, apiHash, {
-  connectionRetries: 5,
-});
+const client = new TelegramClient(stringSession, apiId, apiHash);
 
 await client.start({
   phoneNumber: () => prompt("Enter your phone number:")!,
-  password: async () => await prompt("Enter your password:")!,
-  phoneCode: async () => await prompt("Enter the code you received:")!,
+  password: () => prompt("Enter your password:")!,
+  phoneCode: () => prompt("Enter the code you received:")!,
   onError: (err) => console.log(err),
 });
 

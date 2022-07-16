@@ -91,7 +91,7 @@ somewhere and use it in `new StringSession("")` to avoid logging again later.
 After connecting successfully, you should have a text message saying "Hello" in
 your Saved Messages.
 
-Check out the **examples/** directory for more examples.
+Check out the **[examples/](examples/)** directory for more examples.
 
 ## Notes
 

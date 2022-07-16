@@ -9,7 +9,7 @@
 
 </div>
 
-grm is a improved Deno port of [GramJS](https://github.com/gram-js/gramjs),
+grm is an improved Deno port of [GramJS](https://github.com/gram-js/gramjs),
 written in TypeScript. GramJS is a popular MTProto API Telegram client library
 written in JavaScript for Node.js and browsers, with its core being based on
 [Telethon](https://github.com/LonamiWebs/Telethon).

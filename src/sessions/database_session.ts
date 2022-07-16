@@ -6,9 +6,6 @@ import { Buffer, denodb, bigInt } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
 import { returnBigInt } from "../helpers.ts";
 
-// Avoiding this export in deps.ts
-import type { ConnectorOptions } from 'https://deno.land/x/denodb@v1.0.39/lib/connectors/connector.ts'
-
 const DataTypes = denodb.DataTypes;
 
 class Session extends denodb.Model {
@@ -29,7 +26,7 @@ class Entity extends denodb.Model {
   static fields = {
     id: { type: DataTypes.STRING, primaryKey: true },
     hash: { type: DataTypes.INTEGER, allowNull: false },
-    name: DataTypes.STRING,
+    name: { type: DataTypes.STRING, allowNull: false },
     username: DataTypes.STRING,
     phone: DataTypes.STRING,
   }
@@ -152,13 +149,13 @@ export class DatabaseSession extends MemorySession {
     const rows = this._entitiesToRows(tlo);
     for (const row of rows) {
       const id = row[0];
-      const model = await Entity.find(id.toString());
+      const model = await Entity.where({ id: id.toString(), hash: row[1].toString() }).first();
       if (model) {
         model.username = row[2] ? row[2].toString() : null;
         model.phone = row[3] ? row[3].toString() : null;
         model.name = row[4] ? row[4].toString() : null;
         await model.update()
-      } else if (Number(row[1]) > 0) {
+      } else {
         // The above is to ensure we have a hash
         await Entity.create({
           id: id.toString(),

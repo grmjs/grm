@@ -130,11 +130,11 @@ export class MemorySession extends Session {
       return;
     }
 
-    let username = e.username;
+    let username = e.username || null;
     if (username) {
       username = username.toLowerCase();
     }
-    const phone = e.phone;
+    const phone = e.phone || null;
     const name = getDisplayName(e);
     return this._entityValuesToRow(markedId, pHash, username, phone, name);
   }
@@ -172,6 +172,7 @@ export class MemorySession extends Session {
     }
     return rows;
   }
+
   processEntities(tlo: any) {
     const entitiesSet = this._entitiesToRows(tlo);
     for (const e of entitiesSet) {

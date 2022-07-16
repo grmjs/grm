@@ -127,7 +127,7 @@ export abstract class TelegramBaseClient {
     session: string | Session,
     apiId: number,
     apiHash: string,
-    clientParams: TelegramClientParams,
+    clientParams?: TelegramClientParams,
   ) {
     clientParams = { ...clientParamsDefault, ...clientParams };
     if (!apiId || !apiHash) {

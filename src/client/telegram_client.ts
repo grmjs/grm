@@ -40,7 +40,7 @@ export class TelegramClient extends TelegramBaseClient {
     session: string | Session,
     apiId: number,
     apiHash: string,
-    clientParams: TelegramClientParams,
+    clientParams?: TelegramClientParams,
   ) {
     super(session, apiId, apiHash, clientParams);
   }

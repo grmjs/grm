@@ -5,10 +5,12 @@ import { computeCheck } from "../password.ts";
 import { Buffer } from "../../deps.ts";
 import type { TelegramClient } from "./telegram_client.ts";
 
+type MaybePromise<T> = T | Promise<T>;
+
 export interface UserAuthParams {
-  phoneNumber: string | (() => Promise<string> | string);
-  phoneCode: (isCodeViaApp?: boolean) => Promise<string>;
-  password?: (hint?: string) => Promise<string>;
+  phoneNumber: string | (() => MaybePromise<string>);
+  phoneCode: (isCodeViaApp?: boolean) => MaybePromise<string>;
+  password?: (hint?: string) => MaybePromise<string>;
   firstAndLastNames?: () => Promise<[string, string?]>;
   qrCode?: (qrCode: { token: Buffer; expires: number }) => Promise<void>;
   onError: (err: Error) => Promise<boolean> | void;
@@ -16,7 +18,7 @@ export interface UserAuthParams {
 }
 
 export interface UserPasswordAuthParams {
-  password?: (hint?: string) => Promise<string>;
+  password?: (hint?: string) => MaybePromise<string>;
   onError: (err: Error) => Promise<boolean> | void;
 }
 
@@ -42,7 +44,7 @@ const QR_CODE_TIMEOUT = 30000;
 
 export async function start(
   client: TelegramClient,
-  authParams: UserAuthParams | BotAuthParams,
+  authParams?: UserAuthParams | BotAuthParams,
 ) {
   if (!client.connected) {
     await client.connect();
@@ -50,6 +52,10 @@ export async function start(
 
   if (await client.checkAuthorization()) {
     return;
+  }
+
+  if (!authParams) {
+    throw new Error("Not enough details to sign in");
   }
 
   const apiCredentials = {

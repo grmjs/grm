@@ -45,7 +45,7 @@ export class TelegramClient extends TelegramBaseClient {
     super(session, apiId, apiHash, clientParams);
   }
 
-  start(authParams: authMethods.UserAuthParams | authMethods.BotAuthParams) {
+  start(authParams?: authMethods.UserAuthParams | authMethods.BotAuthParams) {
     return authMethods.start(this, authParams);
   }
 

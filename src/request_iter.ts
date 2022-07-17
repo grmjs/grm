@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { sleep, TotalList } from "./helpers.ts";
-import type { TelegramClient } from "./client/telegram_client.ts";
+import { AbstractTelegramClient } from "./client/abstract_telegram_client.ts";
 
 interface BaseRequestIterInterface {
   reverse?: boolean;
@@ -8,7 +8,7 @@ interface BaseRequestIterInterface {
 }
 
 export class RequestIter implements AsyncIterable<any> {
-  public client: TelegramClient;
+  public client: AbstractTelegramClient;
   public reverse: boolean | undefined;
   public waitTime: number | undefined;
   protected readonly limit: number;
@@ -20,7 +20,7 @@ export class RequestIter implements AsyncIterable<any> {
   kwargs: Record<never, never>;
 
   constructor(
-    client: TelegramClient,
+    client: AbstractTelegramClient,
     limit?: number,
     params: BaseRequestIterInterface = {},
     args = {},

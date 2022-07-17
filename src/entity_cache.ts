@@ -4,6 +4,26 @@ import { getInputPeer, getPeerId } from "./utils.ts";
 import { isArrayLike, returnBigInt } from "./helpers.ts";
 import { bigInt } from "../deps.ts";
 
+export function getEntityPair_(
+  entityId: string,
+  entities: Map<string, Api.TypeEntity>,
+  cache: EntityCache,
+  getInputPeerFunction: any = getInputPeer,
+): [Api.TypeEntity?, Api.TypeInputPeer?] {
+  const entity = entities.get(entityId);
+  let inputEntity;
+  try {
+    inputEntity = cache.get(entityId);
+  } catch (_e) {
+    try {
+      inputEntity = getInputPeerFunction(inputEntity);
+    } catch (_e) {
+      //
+    }
+  }
+  return [entity, inputEntity];
+}
+
 export class EntityCache {
   private cacheMap: Map<string, any>;
 

@@ -1,5 +1,5 @@
 import { Api } from "../tl/api.js";
-import type { TelegramClient } from "../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { EventBuilder, EventCommon } from "./common.ts";
 
 export interface RawInterface {
@@ -18,7 +18,7 @@ export class Raw extends EventBuilder {
   }
 
   // deno-lint-ignore require-await
-  async resolve(_client: TelegramClient) {
+  async resolve(_client: AbstractTelegramClient) {
     this.resolved = true;
   }
 

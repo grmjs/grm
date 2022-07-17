@@ -1,6 +1,5 @@
 import { Api } from "../tl/api.js";
 import type { AuthKey } from "../crypto/authkey.ts";
-import type { EntityLike } from "../define.d.ts";
 
 export abstract class Session {
   abstract setDC(dcId: number, serverAddress: string, port: number): void;
@@ -12,7 +11,7 @@ export abstract class Session {
   abstract load(): Promise<void>;
   abstract setAuthKey(authKey?: AuthKey, dcId?: number): void;
   abstract getAuthKey(dcId?: number): AuthKey | undefined;
-  abstract getInputEntity(key: EntityLike): Api.TypeInputPeer;
+  abstract getInputEntity(key: Api.TypeEntityLike): Api.TypeInputPeer;
   abstract close(): void;
   abstract save(): void;
   abstract delete(): void;

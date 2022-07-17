@@ -1,7 +1,6 @@
 import { Api } from "../api.js";
 import { InlineResult } from "./inline_result.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
-import type { EntityLike } from "../../define.d.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export class InlineResults extends Array<InlineResult> {
   private result: Api.messages.TypeBotResults;
@@ -14,9 +13,9 @@ export class InlineResults extends Array<InlineResult> {
   private switchPm: Api.TypeInlineBotSwitchPM | undefined;
 
   constructor(
-    client: TelegramClient,
+    client: AbstractTelegramClient,
     original: Api.messages.TypeBotResults,
-    entity?: EntityLike,
+    entity?: Api.TypeEntityLike,
   ) {
     super(
       ...original.results.map(

@@ -1,22 +1,22 @@
 import { Api } from "../api.js";
 import { Button } from "./button.ts";
 import { computeCheck } from "../../password.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
-import type { ButtonLike, EntityLike, MessageIDLike } from "../../define.d.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
+import type { ButtonLike } from "../../define.d.ts";
 
 export class MessageButton {
-  private readonly _client: TelegramClient;
-  private readonly _chat: EntityLike;
+  private readonly _client: AbstractTelegramClient;
+  private readonly _chat: Api.TypeEntityLike;
   public readonly button: ButtonLike;
-  private readonly _bot?: EntityLike;
-  private readonly _msgId: MessageIDLike;
+  private readonly _bot?: Api.TypeEntityLike;
+  private readonly _msgId: Api.TypeMessageIDLike;
 
   constructor(
-    client: TelegramClient,
+    client: AbstractTelegramClient,
     original: ButtonLike,
-    chat: EntityLike,
-    bot: EntityLike | undefined,
-    msgId: MessageIDLike,
+    chat: Api.TypeEntityLike,
+    bot: Api.TypeEntityLike | undefined,
+    msgId: Api.TypeMessageIDLike,
   ) {
     this.button = original;
     this._bot = bot;

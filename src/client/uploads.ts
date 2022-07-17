@@ -1,18 +1,11 @@
 import { Api } from "../tl/api.js";
 import {
   getAppropriatedPartSize,
-  getAttributes,
   getInputMedia,
   getMessageId,
-  isImage,
 } from "../utils.ts";
-import {
-  EntityLike,
-  FileLike,
-  MarkupLike,
-  MessageIDLike,
-} from "../define.d.ts";
-import { TelegramClient } from "./telegram_client.ts";
+import { FileLike } from "../define.d.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { _parseMessageText } from "./message_parse.ts";
 import { getCommentData } from "./messages.ts";
 import {
@@ -21,32 +14,10 @@ import {
   sleep,
 } from "../helpers.ts";
 import { FloodWaitError } from "../errors/mod.ts";
-import { basename, bigInt, Buffer } from "../../deps.ts";
-
-interface OnProgress {
-  (progress: number): void;
-  isCanceled?: boolean;
-}
-
-export interface UploadFileParams {
-  file: File | CustomFile;
-  workers: number;
-  onProgress?: OnProgress;
-}
-
-export class CustomFile {
-  name: string;
-  size: number;
-  path: string;
-  buffer?: Buffer;
-
-  constructor(name: string, size: number, path: string, buffer?: Buffer) {
-    this.name = name;
-    this.size = size;
-    this.path = path;
-    this.buffer = buffer;
-  }
-}
+import { bigInt, Buffer } from "../../deps.ts";
+import { OnProgress, SendFileInterface, UploadFileParams } from "./types.ts";
+import { CustomFile } from "../classes.ts";
+import { _fileToMedia } from "./utils.ts";
 
 const KB_TO_BYTES = 1024;
 const LARGE_FILE_THRESHOLD = 10 * 1024 * 1024;
@@ -54,7 +25,7 @@ const _UPLOAD_TIMEOUT = 15 * 1000;
 const DISCONNECT_SLEEP = 1000;
 
 export async function uploadFile(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   fileParams: UploadFileParams,
 ): Promise<Api.InputFile | Api.InputFileBig> {
   const { file, onProgress } = fileParams;
@@ -158,30 +129,6 @@ export async function uploadFile(
     });
 }
 
-export interface SendFileInterface {
-  file: FileLike | FileLike[];
-  caption?: string | string[];
-  forceDocument?: boolean;
-  fileSize?: number;
-  clearDraft?: boolean;
-  progressCallback?: OnProgress;
-  replyTo?: MessageIDLike;
-  attributes?: Api.TypeDocumentAttribute[];
-  thumb?: FileLike;
-  voiceNote?: boolean;
-  videoNote?: boolean;
-  supportsStreaming?: boolean;
-  // deno-lint-ignore no-explicit-any
-  parseMode?: any;
-  formattingEntities?: Api.TypeMessageEntity[];
-  silent?: boolean;
-  scheduleDate?: number;
-  buttons?: MarkupLike;
-  workers?: number;
-  noforwards?: boolean;
-  commentTo?: number | Api.Message;
-}
-
 interface FileToMediaInterface {
   file: FileLike;
   forceDocument?: boolean;
@@ -197,194 +144,9 @@ interface FileToMediaInterface {
   workers?: number;
 }
 
-export async function _fileToMedia(
-  client: TelegramClient,
-  {
-    file,
-    forceDocument,
-    progressCallback,
-    attributes,
-    thumb,
-    voiceNote = false,
-    videoNote = false,
-    supportsStreaming = false,
-    mimeType,
-    asImage,
-    workers = 1,
-  }: FileToMediaInterface,
-): Promise<{
-  // deno-lint-ignore no-explicit-any
-  fileHandle?: any;
-  media?: Api.TypeInputMedia;
-  image?: boolean;
-}> {
-  if (!file) {
-    return { fileHandle: undefined, media: undefined, image: undefined };
-  }
-  const isImage_ = isImage(file);
-
-  if (asImage === undefined) {
-    asImage = isImage_ && !forceDocument;
-  }
-  if (
-    typeof file === "object" &&
-    !Buffer.isBuffer(file) &&
-    !(file instanceof Api.InputFile) &&
-    !(file instanceof Api.InputFileBig) &&
-    !(file instanceof CustomFile) &&
-    !("read" in file)
-  ) {
-    try {
-      return {
-        fileHandle: undefined,
-        media: getInputMedia(file, {
-          isPhoto: asImage,
-          attributes: attributes,
-          forceDocument: forceDocument,
-          voiceNote: voiceNote,
-          videoNote: videoNote,
-          supportsStreaming: supportsStreaming,
-        }),
-        image: asImage,
-      };
-    } catch (_e) {
-      return {
-        fileHandle: undefined,
-        media: undefined,
-        image: isImage_,
-      };
-    }
-  }
-  let media;
-  let fileHandle;
-  let createdFile;
-
-  if (file instanceof Api.InputFile || file instanceof Api.InputFileBig) {
-    fileHandle = file;
-  } else if (
-    typeof file === "string" &&
-    (file.startsWith("https://") || file.startsWith("http://"))
-  ) {
-    if (asImage) {
-      media = new Api.InputMediaPhotoExternal({ url: file });
-    } else {
-      media = new Api.InputMediaDocumentExternal({ url: file });
-    }
-  } else if (!(typeof file === "string") || (await Deno.lstat(file)).isFile) {
-    if (typeof file === "string") {
-      createdFile = new CustomFile(
-        basename(file),
-        (await Deno.stat(file)).size,
-        file,
-      );
-    } else if (
-      (typeof File !== "undefined" && file instanceof File) ||
-      file instanceof CustomFile
-    ) {
-      createdFile = file;
-    } else {
-      let name;
-      if ("name" in file) {
-        // @ts-ignore wut
-        name = file.name;
-      } else {
-        name = "unnamed";
-      }
-      if (Buffer.isBuffer(file)) {
-        createdFile = new CustomFile(name, file.length, "", file);
-      }
-    }
-    if (!createdFile) {
-      throw new Error(
-        `Could not create file from ${JSON.stringify(file)}`,
-      );
-    }
-    fileHandle = await uploadFile(client, {
-      file: createdFile,
-      onProgress: progressCallback,
-      workers: workers,
-    });
-  } else {
-    throw new Error(`"Not a valid path nor a url ${file}`);
-  }
-  if (media !== undefined) { //
-  } else if (fileHandle === undefined) {
-    throw new Error(
-      `Failed to convert ${file} to media. Not an existing file or an HTTP URL`,
-    );
-  } else if (asImage) {
-    media = new Api.InputMediaUploadedPhoto({
-      file: fileHandle,
-    });
-  } else {
-    // @ts-ignore x
-    const res = getAttributes(file, {
-      mimeType: mimeType,
-      attributes: attributes,
-      forceDocument: forceDocument && !isImage_,
-      voiceNote: voiceNote,
-      videoNote: videoNote,
-      supportsStreaming: supportsStreaming,
-      thumb: thumb,
-    });
-    attributes = res.attrs;
-    mimeType = res.mimeType;
-
-    let uploadedThumb;
-    if (!thumb) {
-      uploadedThumb = undefined;
-    } else {
-      // todo refactor
-      if (typeof thumb === "string") {
-        uploadedThumb = new CustomFile(
-          basename(thumb),
-          (await Deno.stat(thumb)).size,
-          thumb,
-        );
-      } else if (typeof File !== "undefined" && thumb instanceof File) {
-        uploadedThumb = thumb;
-      } else {
-        let name;
-        if ("name" in thumb) {
-          name = thumb.name;
-        } else {
-          name = "unnamed";
-        }
-        if (Buffer.isBuffer(thumb)) {
-          uploadedThumb = new CustomFile(
-            name,
-            thumb.length,
-            "",
-            thumb,
-          );
-        }
-      }
-      if (!uploadedThumb) {
-        throw new Error(`Could not create file from ${file}`);
-      }
-      uploadedThumb = await uploadFile(client, {
-        file: uploadedThumb,
-        workers: 1,
-      });
-    }
-    media = new Api.InputMediaUploadedDocument({
-      file: fileHandle,
-      mimeType: mimeType!,
-      attributes: attributes!,
-      thumb: uploadedThumb,
-      forceFile: forceDocument && !isImage_,
-    });
-  }
-  return {
-    fileHandle: fileHandle,
-    media: media,
-    image: asImage,
-  };
-}
-
 export async function _sendAlbum(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   {
     file,
     caption,
@@ -497,8 +259,8 @@ export async function _sendAlbum(
 }
 
 export async function sendFile(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   {
     file,
     caption,

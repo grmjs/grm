@@ -4,7 +4,7 @@ import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.t
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
 import { bigInt, Buffer } from "../../../deps.ts";
 
-export class AbridgedPacketCodec extends PacketCodec {
+export class AbridgedPacketCodec extends PacketCodec implements PacketCodec {
   static tag = Buffer.from("ef", "hex");
   static obfuscateTag = Buffer.from("efefefef", "hex");
   private tag: Buffer;

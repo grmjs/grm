@@ -1,20 +1,7 @@
 import { Api } from "../tl/api.js";
-import {
-  DateLike,
-  EntityLike,
-  FileLike,
-  MarkupLike,
-  MessageIDLike,
-  MessageLike,
-} from "../define.d.ts";
-import {
-  EntityType_,
-  entityType_,
-  groupBy,
-  isArrayLike,
-  TotalList,
-} from "../helpers.ts";
-import { TelegramClient } from "./telegram_client.ts";
+import { groupBy, isArrayLike, TotalList } from "../helpers.ts";
+import { EntityType_, entityType_ } from "../tl/helpers.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { RequestIter } from "../request_iter.ts";
 import {
   chunks,
@@ -27,23 +14,18 @@ import {
 import { bigInt } from "../../deps.ts";
 import { _getPeer } from "./users.ts";
 import { _parseMessageText } from "./message_parse.ts";
-import { _fileToMedia } from "./uploads.ts";
+import { _fileToMedia } from "./utils.ts";
+import {
+  EditMessageParams,
+  ForwardMessagesParams,
+  IterMessagesParams,
+  MarkAsReadParams,
+  MessageIterParams,
+  SendMessageParams,
+  UpdatePinMessageParams,
+} from "./types.ts";
 
 const _MAX_CHUNK_SIZE = 100;
-
-interface MessageIterParams {
-  entity: EntityLike;
-  offsetId: number;
-  minId: number;
-  maxId: number;
-  fromUser?: EntityLike;
-  offsetDate: DateLike;
-  addOffset: number;
-  // deno-lint-ignore no-explicit-any
-  filter: any;
-  search: string;
-  replyTo: MessageIDLike;
-}
 
 export class _MessagesIter extends RequestIter {
   entity?: Api.TypeInputPeer;
@@ -314,7 +296,7 @@ export class _MessagesIter extends RequestIter {
 }
 
 interface IDsIterInterface {
-  entity: EntityLike;
+  entity: Api.TypeEntityLike;
   ids: Api.TypeInputMessage[];
 }
 
@@ -405,23 +387,6 @@ export class _IDsIter extends RequestIter {
   }
 }
 
-export interface IterMessagesParams {
-  limit?: number;
-  offsetDate?: DateLike;
-  offsetId: number;
-  maxId: number;
-  minId: number;
-  addOffset: number;
-  search?: string;
-  filter?: Api.TypeMessagesFilter | Api.TypeMessagesFilter[];
-  fromUser?: EntityLike;
-  waitTime?: number;
-  ids?: number | number[] | Api.TypeInputMessage | Api.TypeInputMessage[];
-  reverse?: boolean;
-  replyTo?: number;
-  scheduled: boolean;
-}
-
 const IterMessagesDefaults: IterMessagesParams = {
   limit: undefined,
   offsetDate: undefined,
@@ -439,60 +404,9 @@ const IterMessagesDefaults: IterMessagesParams = {
   scheduled: false,
 };
 
-export interface SendMessageParams {
-  message?: MessageLike;
-  replyTo?: number | Api.Message;
-  attributes?: Api.TypeDocumentAttribute[];
-  // deno-lint-ignore no-explicit-any
-  parseMode?: any;
-  formattingEntities?: Api.TypeMessageEntity[];
-  linkPreview?: boolean;
-  file?: FileLike | FileLike[];
-  thumb?: FileLike;
-  forceDocument?: false;
-  clearDraft?: false;
-  buttons?: MarkupLike;
-  silent?: boolean;
-  supportStreaming?: boolean;
-  schedule?: DateLike;
-  noforwards?: boolean;
-  commentTo?: number | Api.Message;
-}
-
-export interface ForwardMessagesParams {
-  messages: MessageIDLike | MessageIDLike[];
-  fromPeer: EntityLike;
-  silent?: boolean;
-  schedule?: DateLike;
-  noforwards?: boolean;
-}
-
-export interface EditMessageParams {
-  message: Api.Message | number;
-  text?: string;
-  // deno-lint-ignore no-explicit-any
-  parseMode?: any;
-  formattingEntities?: Api.TypeMessageEntity[];
-  linkPreview?: boolean;
-  file?: FileLike;
-  forceDocument?: false;
-  buttons?: MarkupLike;
-  schedule?: DateLike;
-}
-
-export interface UpdatePinMessageParams {
-  notify?: boolean;
-  pmOneSide?: boolean;
-}
-
-export interface MarkAsReadParams {
-  maxId?: number;
-  clearMentions?: boolean;
-}
-
 export function iterMessages(
-  client: TelegramClient,
-  entity: EntityLike | undefined,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike | undefined,
   options: Partial<IterMessagesParams>,
 ) {
   const {
@@ -544,8 +458,8 @@ export function iterMessages(
 }
 
 export async function getMessages(
-  client: TelegramClient,
-  entity: EntityLike | undefined,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike | undefined,
   params: Partial<IterMessagesParams>,
 ): Promise<TotalList<Api.Message>> {
   if (Object.keys(params).length == 1 && params.limit === undefined) {
@@ -564,12 +478,16 @@ export async function getMessages(
     }
     return [];
   }
-  return (await it.collect()) as TotalList<Api.Message>;
+  const messages = new TotalList<Api.Message>();
+  for await (const message of messages) {
+    messages.push(message);
+  }
+  return messages;
 }
 
 export async function sendMessage(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   {
     message,
     replyTo,
@@ -701,8 +619,8 @@ export async function sendMessage(
 }
 
 export async function forwardMessages(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   { messages, fromPeer, silent, schedule, noforwards }: ForwardMessagesParams,
 ) {
   if (!isArrayLike(messages)) {
@@ -764,8 +682,8 @@ export async function forwardMessages(
 }
 
 export async function editMessage(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   {
     message,
     text,
@@ -845,9 +763,9 @@ export async function editMessage(
 }
 
 export async function deleteMessages(
-  client: TelegramClient,
-  entity: EntityLike | undefined,
-  messageIds: MessageIDLike[],
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike | undefined,
+  messageIds: Api.TypeMessageIDLike[],
   { revoke = false },
 ) {
   let ty = EntityType_.USER;
@@ -898,9 +816,9 @@ export async function deleteMessages(
 }
 
 export async function pinMessage(
-  client: TelegramClient,
-  entity: EntityLike,
-  message?: MessageIDLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
+  message?: Api.TypeMessageIDLike,
   pinMessageParams?: UpdatePinMessageParams,
 ) {
   return await _pin(
@@ -914,9 +832,9 @@ export async function pinMessage(
 }
 
 export async function unpinMessage(
-  client: TelegramClient,
-  entity: EntityLike,
-  message?: MessageIDLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
+  message?: Api.TypeMessageIDLike,
   unpinMessageParams?: UpdatePinMessageParams,
 ) {
   return await _pin(
@@ -930,9 +848,9 @@ export async function unpinMessage(
 }
 
 export async function _pin(
-  client: TelegramClient,
-  entity: EntityLike,
-  message: MessageIDLike | undefined,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
+  message: Api.TypeMessageIDLike | undefined,
   unpin: boolean,
   notify = false,
   pmOneSide = false,
@@ -975,9 +893,9 @@ export async function _pin(
 }
 
 export async function markAsRead(
-  client: TelegramClient,
-  entity: EntityLike,
-  message?: MessageIDLike | MessageIDLike[],
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
+  message?: Api.TypeMessageIDLike | Api.TypeMessageIDLike[],
   markAsReadParams?: MarkAsReadParams,
 ): Promise<boolean> {
   let maxId: number = markAsReadParams?.maxId || 0;
@@ -1015,8 +933,8 @@ export async function markAsRead(
 }
 
 export async function getCommentData(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   message: number | Api.Message,
 ) {
   const result = await client.invoke(

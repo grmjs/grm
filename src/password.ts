@@ -54,7 +54,10 @@ function bigNumForHash(g: bigInt.BigInteger) {
   return readBufferFromBigInt(g, SIZE_FOR_HASH, false);
 }
 
-function isGoodModExpFirst(modexp: bigInt.BigInteger, prime: bigInt.BigInteger) {
+function isGoodModExpFirst(
+  modexp: bigInt.BigInteger,
+  prime: bigInt.BigInteger,
+) {
   const diff = prime.subtract(modexp);
   const minDiffBitsCount = 2048 - 64;
   const maxModExpSize = 256;

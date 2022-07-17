@@ -3,6 +3,8 @@ import * as twoFA from "./2fa.ts";
 import * as authMethods from "./auth.ts";
 import * as botMethods from "./bots.ts";
 import * as buttonsMethods from "./buttons.ts";
+
+import { Dialog, InlineResults } from "../tl/custom/mod.ts";
 import * as downloadMethods from "./downloads.ts";
 import * as parseMethods from "./message_parse.ts";
 import * as messageMethods from "./messages.ts";
@@ -11,18 +13,13 @@ import * as uploadMethods from "./uploads.ts";
 import * as userMethods from "./users.ts";
 import * as chatMethods from "./chats.ts";
 import * as dialogMethods from "./dialogs.ts";
-import type {
-  ButtonLike,
-  Entity,
-  EntityLike,
-  MessageIDLike,
-} from "../define.d.ts";
+import type { ButtonLike } from "../define.d.ts";
 import { Api } from "../tl/api.js";
 import { sanitizeParseMode } from "../utils.ts";
 import type { EventBuilder } from "../events/common.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import { LAYER } from "../tl/all_tl_objects.ts";
-import { DownloadMediaInterface } from "./downloads.ts";
+import { DownloadMediaInterface } from "./types.ts";
 import { _handleUpdate, _updateLoop } from "./updates.ts";
 import { Session } from "../sessions/mod.ts";
 import { Album, AlbumEvent } from "../events/album.ts";
@@ -34,8 +31,12 @@ import {
   DeletedMessageEvent,
 } from "../events/deleted_message.ts";
 import { LogLevel } from "../extensions/logger.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
+import * as types from "./types.ts";
+import { TotalList } from "../helpers.ts";
 
-export class TelegramClient extends TelegramBaseClient {
+export class TelegramClient extends TelegramBaseClient
+  implements AbstractTelegramClient {
   constructor(
     session: string | Session,
     apiId: number,
@@ -45,25 +46,27 @@ export class TelegramClient extends TelegramBaseClient {
     super(session, apiId, apiHash, clientParams);
   }
 
-  start(authParams?: authMethods.UserAuthParams | authMethods.BotAuthParams) {
+  start(
+    authParams?: types.UserAuthParams | types.BotAuthParams,
+  ): Promise<void> {
     return authMethods.start(this, authParams);
   }
 
-  checkAuthorization() {
+  checkAuthorization(): Promise<boolean> {
     return authMethods.checkAuthorization(this);
   }
 
   signInUser(
-    apiCredentials: authMethods.ApiCredentials,
-    authParams: authMethods.UserAuthParams,
-  ) {
+    apiCredentials: types.ApiCredentials,
+    authParams: types.UserAuthParams,
+  ): Promise<Api.TypeUser> {
     return authMethods.signInUser(this, apiCredentials, authParams);
   }
 
   signInUserWithQrCode(
-    apiCredentials: authMethods.ApiCredentials,
-    authParams: authMethods.QrCodeAuthParams,
-  ) {
+    apiCredentials: types.ApiCredentials,
+    authParams: types.QrCodeAuthParams,
+  ): Promise<Api.TypeUser> {
     return authMethods.signInUserWithQrCode(
       this,
       apiCredentials,
@@ -72,10 +75,13 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   sendCode(
-    apiCredentials: authMethods.ApiCredentials,
+    apiCredentials: types.ApiCredentials,
     phoneNumber: string,
     forceSMS = false,
-  ) {
+  ): Promise<{
+    phoneCodeHash: string;
+    isCodeViaApp: boolean;
+  }> {
     return authMethods.sendCode(
       this,
       apiCredentials,
@@ -85,16 +91,16 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   signInWithPassword(
-    apiCredentials: authMethods.ApiCredentials,
-    authParams: authMethods.UserPasswordAuthParams,
-  ) {
+    apiCredentials: types.ApiCredentials,
+    authParams: types.UserPasswordAuthParams,
+  ): Promise<Api.TypeUser> {
     return authMethods.signInWithPassword(this, apiCredentials, authParams);
   }
 
   signInBot(
-    apiCredentials: authMethods.ApiCredentials,
-    authParams: authMethods.BotAuthParams,
-  ) {
+    apiCredentials: types.ApiCredentials,
+    authParams: types.BotAuthParams,
+  ): Promise<Api.TypeUser> {
     return authMethods.signInBot(this, apiCredentials, authParams);
   }
 
@@ -106,7 +112,7 @@ export class TelegramClient extends TelegramBaseClient {
     email,
     emailCodeCallback,
     onEmailCodeError,
-  }: twoFA.TwoFaParams) {
+  }: types.TwoFaParams): Promise<void> {
     return twoFA.updateTwoFaSettings(this, {
       isCheckPassword,
       currentPassword,
@@ -119,12 +125,12 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   inlineQuery(
-    bot: EntityLike,
+    bot: Api.TypeEntityLike,
     query: string,
     entity?: Api.InputPeerSelf,
     offset?: string,
     geoPoint?: Api.TypeInputGeoPoint,
-  ) {
+  ): Promise<InlineResults> {
     return botMethods.inlineQuery(
       this,
       bot,
@@ -149,17 +155,17 @@ export class TelegramClient extends TelegramBaseClient {
 
   downloadFile(
     inputLocation: Api.TypeInputFileLocation,
-    fileParams: downloadMethods.DownloadFileParamsV2 = {},
-  ) {
+    fileParams: types.DownloadFileParamsV2 = {},
+  ): Promise<string | Buffer | undefined> {
     return downloadMethods.downloadFileV2(this, inputLocation, fileParams);
   }
 
   downloadProfilePhoto(
-    entity: EntityLike,
-    downloadProfilePhotoParams: downloadMethods.DownloadProfilePhotoParams = {
+    entity: Api.TypeEntityLike,
+    downloadProfilePhotoParams: types.DownloadProfilePhotoParams = {
       isBig: false,
     },
-  ) {
+  ): Promise<string | Buffer | Buffer | undefined> {
     return downloadMethods.downloadProfilePhoto(
       this,
       entity,
@@ -170,7 +176,7 @@ export class TelegramClient extends TelegramBaseClient {
   downloadMedia(
     messageOrMedia: Api.Message | Api.TypeMessageMedia,
     downloadParams?: DownloadMediaInterface,
-  ) {
+  ): Promise<Buffer | string | undefined> | Buffer {
     return downloadMethods.downloadMedia(
       this,
       messageOrMedia,
@@ -189,7 +195,7 @@ export class TelegramClient extends TelegramBaseClient {
       | "md"
       | "markdown"
       | "html"
-      | parseMethods.ParseInterface
+      | types.ParseInterface
       | undefined,
   ) {
     if (mode) {
@@ -200,30 +206,30 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   iterMessages(
-    entity: EntityLike | undefined,
-    iterParams: Partial<messageMethods.IterMessagesParams> = {},
-  ) {
+    entity: Api.TypeEntityLike | undefined,
+    iterParams: Partial<types.IterMessagesParams> = {},
+  ): AsyncIterable<Api.Message> {
     return messageMethods.iterMessages(this, entity, iterParams);
   }
 
   getMessages(
-    entity: EntityLike | undefined,
-    getMessagesParams: Partial<messageMethods.IterMessagesParams> = {},
-  ) {
+    entity: Api.TypeEntityLike | undefined,
+    getMessagesParams: Partial<types.IterMessagesParams> = {},
+  ): Promise<TotalList<Api.Message>> {
     return messageMethods.getMessages(this, entity, getMessagesParams);
   }
 
   sendMessage(
-    entity: EntityLike,
-    sendMessageParams: messageMethods.SendMessageParams = {},
-  ) {
+    entity: Api.TypeEntityLike,
+    sendMessageParams: types.SendMessageParams = {},
+  ): Promise<Api.Message> {
     return messageMethods.sendMessage(this, entity, sendMessageParams);
   }
 
   forwardMessages(
-    entity: EntityLike,
-    forwardMessagesParams: messageMethods.ForwardMessagesParams,
-  ) {
+    entity: Api.TypeEntityLike,
+    forwardMessagesParams: types.ForwardMessagesParams,
+  ): Promise<Api.Message[]> {
     return messageMethods.forwardMessages(
       this,
       entity,
@@ -232,37 +238,37 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   editMessage(
-    entity: EntityLike,
-    editMessageParams: messageMethods.EditMessageParams,
-  ) {
+    entity: Api.TypeEntityLike,
+    editMessageParams: types.EditMessageParams,
+  ): Promise<Api.Message> {
     return messageMethods.editMessage(this, entity, editMessageParams);
   }
 
   deleteMessages(
-    entity: EntityLike | undefined,
-    messageIds: MessageIDLike[],
+    entity: Api.TypeEntityLike | undefined,
+    messageIds: Api.TypeMessageIDLike[],
     { revoke = true },
-  ) {
+  ): Promise<Api.messages.AffectedMessages[]> {
     return messageMethods.deleteMessages(this, entity, messageIds, {
       revoke: revoke,
     });
   }
 
   pinMessage(
-    entity: EntityLike,
+    entity: Api.TypeEntityLike,
     message?: undefined,
-    pinMessageParams?: messageMethods.UpdatePinMessageParams,
+    pinMessageParams?: types.UpdatePinMessageParams,
   ): Promise<Api.messages.AffectedHistory>;
   pinMessage(
-    entity: EntityLike,
-    message: MessageIDLike,
-    pinMessageParams?: messageMethods.UpdatePinMessageParams,
+    entity: Api.TypeEntityLike,
+    message: Api.TypeMessageIDLike,
+    pinMessageParams?: types.UpdatePinMessageParams,
   ): Promise<Api.Message>;
   pinMessage(
-    entity: EntityLike,
+    entity: Api.TypeEntityLike,
     // deno-lint-ignore no-explicit-any
     message?: any,
-    pinMessageParams?: messageMethods.UpdatePinMessageParams,
+    pinMessageParams?: types.UpdatePinMessageParams,
   ) {
     return messageMethods.pinMessage(
       this,
@@ -273,20 +279,20 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   unpinMessage(
-    entity: EntityLike,
+    entity: Api.TypeEntityLike,
     message?: undefined,
-    pinMessageParams?: messageMethods.UpdatePinMessageParams,
+    pinMessageParams?: types.UpdatePinMessageParams,
   ): Promise<Api.messages.AffectedHistory>;
   unpinMessage(
-    entity: EntityLike,
-    message: MessageIDLike,
-    pinMessageParams?: messageMethods.UpdatePinMessageParams,
+    entity: Api.TypeEntityLike,
+    message: Api.TypeMessageIDLike,
+    pinMessageParams?: types.UpdatePinMessageParams,
   ): Promise<undefined>;
   unpinMessage(
-    entity: EntityLike,
+    entity: Api.TypeEntityLike,
     // deno-lint-ignore no-explicit-any
     message?: any,
-    unpinMessageParams?: messageMethods.UpdatePinMessageParams,
+    unpinMessageParams?: types.UpdatePinMessageParams,
   ) {
     return messageMethods.unpinMessage(
       this,
@@ -297,10 +303,10 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   markAsRead(
-    entity: EntityLike,
-    message?: MessageIDLike | MessageIDLike[],
-    markAsReadParams?: messageMethods.MarkAsReadParams,
-  ) {
+    entity: Api.TypeEntityLike,
+    message?: Api.TypeMessageIDLike | Api.TypeMessageIDLike[],
+    markAsReadParams?: types.MarkAsReadParams,
+  ): Promise<boolean> {
     return messageMethods.markAsRead(
       this,
       entity,
@@ -309,25 +315,27 @@ export class TelegramClient extends TelegramBaseClient {
     );
   }
 
-  iterDialogs(iterDialogsParams: dialogMethods.IterDialogsParams = {}) {
+  iterDialogs(
+    iterDialogsParams: types.IterDialogsParams = {},
+  ): AsyncIterable<Dialog> {
     return dialogMethods.iterDialogs(this, iterDialogsParams);
   }
 
-  getDialogs(params: dialogMethods.IterDialogsParams = {}) {
+  getDialogs(params: types.IterDialogsParams = {}): Promise<TotalList<Dialog>> {
     return dialogMethods.getDialogs(this, params);
   }
 
   iterParticipants(
-    entity: EntityLike,
-    params: chatMethods.IterParticipantsParams = {},
-  ) {
+    entity: Api.TypeEntityLike,
+    params: types.IterParticipantsParams = {},
+  ): AsyncIterable<Api.User> {
     return chatMethods.iterParticipants(this, entity, params);
   }
 
   getParticipants(
-    entity: EntityLike,
-    params: chatMethods.IterParticipantsParams = {},
-  ) {
+    entity: Api.TypeEntityLike,
+    params: types.IterParticipantsParams = {},
+  ): Promise<TotalList<Api.User>> {
     return chatMethods.getParticipants(this, entity, params);
   }
 
@@ -370,18 +378,20 @@ export class TelegramClient extends TelegramBaseClient {
     return updateMethods.removeEventHandler(this, callback, event);
   }
 
-  listEventHandlers() {
+  listEventHandlers(): [EventBuilder, CallableFunction][] {
     return updateMethods.listEventHandlers(this);
   }
 
-  uploadFile(fileParams: uploadMethods.UploadFileParams) {
+  uploadFile(
+    fileParams: types.UploadFileParams,
+  ): Promise<Api.InputFile | Api.InputFileBig> {
     return uploadMethods.uploadFile(this, fileParams);
   }
 
   sendFile(
-    entity: EntityLike,
-    sendFileParams: uploadMethods.SendFileInterface,
-  ) {
+    entity: Api.TypeEntityLike,
+    sendFileParams: types.SendFileInterface,
+  ): Promise<Api.Message> {
     return uploadMethods.sendFile(this, entity, sendFileParams);
   }
 
@@ -392,42 +402,42 @@ export class TelegramClient extends TelegramBaseClient {
     return userMethods.invoke(this, request, sender);
   }
 
-  getMe(inputPeer = false) {
+  getMe(inputPeer = false): Promise<Api.InputPeerUser | Api.User> {
     return userMethods.getMe(this, inputPeer);
   }
 
-  isBot() {
+  isBot(): Promise<boolean | undefined> {
     return userMethods.isBot(this);
   }
 
-  isUserAuthorized() {
+  isUserAuthorized(): Promise<boolean> {
     return userMethods.isUserAuthorized(this);
   }
 
-  getEntity(entity: EntityLike): Promise<Entity>;
-  getEntity(entity: EntityLike[]): Promise<Entity[]>;
+  getEntity(entity: Api.TypeEntityLike): Promise<Api.TypeEntity>;
+  getEntity(entity: Api.TypeEntityLike[]): Promise<Api.TypeEntity[]>;
   // deno-lint-ignore no-explicit-any
   getEntity(entity: any) {
     return userMethods.getEntity(this, entity);
   }
 
-  getInputEntity(entity: EntityLike) {
+  getInputEntity(entity: Api.TypeEntityLike): Promise<Api.TypeInputPeer> {
     return userMethods.getInputEntity(this, entity);
   }
 
-  getPeerId(peer: EntityLike, addMark = true) {
+  getPeerId(peer: Api.TypeEntityLike, addMark = true): Promise<string> {
     return userMethods.getPeerId(this, peer, addMark);
   }
 
   /** @hidden */
   // deno-lint-ignore no-explicit-any
-  _getInputDialog(peer: any) {
+  _getInputDialog(peer: any): Promise<any> {
     return userMethods._getInputDialog(this, peer);
   }
 
   /** @hidden */
   // deno-lint-ignore no-explicit-any
-  _getInputNotify(notify: any) {
+  _getInputNotify(notify: any): Promise<any> {
     return userMethods._getInputNotify(this, notify);
   }
 
@@ -581,8 +591,18 @@ export class TelegramClient extends TelegramBaseClient {
   }
 
   /** @hidden */
-  // deno-lint-ignore no-explicit-any
-  _getResponseMessage(req: any, result: any, inputChat: any) {
+  _getResponseMessage(
+    // deno-lint-ignore no-explicit-any
+    req: any,
+    // deno-lint-ignore no-explicit-any
+    result: any,
+    // deno-lint-ignore no-explicit-any
+    inputChat: any,
+  ):
+    | Api.TypeMessage
+    | Map<number, Api.Message>
+    | (Api.Message | undefined)[]
+    | undefined {
     return parseMethods._getResponseMessage(this, req, result, inputChat);
   }
 

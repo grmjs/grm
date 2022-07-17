@@ -1,10 +1,9 @@
 import { Api } from "../api.js";
 import { getInputUser } from "../../utils.ts";
 import { Buffer } from "../../../deps.ts";
-import type { ButtonLike, EntityLike } from "../../define.d.ts";
 
 export class Button {
-  public button: ButtonLike;
+  public button: Api.TypeKeyboardButton;
   public resize: boolean | undefined;
   public selective: boolean | undefined;
   public singleUse: boolean | undefined;
@@ -21,7 +20,7 @@ export class Button {
     this.selective = selective;
   }
 
-  static _isInline(button: ButtonLike) {
+  static _isInline(button: Api.TypeKeyboardButton) {
     return (
       button instanceof Api.KeyboardButtonCallback ||
       button instanceof Api.KeyboardButtonSwitchInline ||
@@ -48,7 +47,7 @@ export class Button {
   static auth(
     text: string,
     url?: string,
-    bot?: EntityLike,
+    bot?: Api.TypeEntityLike,
     writeAccess?: boolean,
     fwdText?: string,
   ) {

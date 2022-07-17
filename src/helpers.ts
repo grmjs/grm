@@ -1,11 +1,4 @@
-import { Api } from "./tl/api.js";
-import { EntityLike } from "./define.d.ts";
-import {
-  bigInt,
-  Buffer,
-  createHash,
-  randomBytes,
-} from "../deps.ts";
+import { bigInt, Buffer, createHash, randomBytes } from "../deps.ts";
 
 export function readBigIntFromBuffer(
   buffer: Buffer,
@@ -182,47 +175,6 @@ export function bigIntMod(
   return n.remainder(m).add(m).remainder(m);
 }
 
-export function stripText(text: string, entities: Api.TypeMessageEntity[]) {
-  if (!entities || !entities.length) {
-    return text.trim();
-  }
-
-  while (text && text[text.length - 1].trim() === "") {
-    const e = entities[entities.length - 1];
-    if (e.offset + e.length === text.length) {
-      if (e.length === 1) {
-        entities.pop();
-        if (!entities.length) {
-          return text.trim();
-        }
-      } else {
-        e.length -= 1;
-      }
-    }
-    text = text.slice(0, -1);
-  }
-
-  while (text && text[0].trim() === "") {
-    for (let i = 0; i < entities.length; i++) {
-      const e = entities[i];
-      if (e.offset != 0) {
-        e.offset--;
-        continue;
-      }
-      if (e.length === 1) {
-        entities.shift();
-        if (!entities.length) {
-          return text.trimLeft();
-        }
-      } else {
-        e.length -= 1;
-      }
-    }
-    text = text.slice(1);
-  }
-  return text;
-}
-
 export function convertToLittle(buf: Buffer) {
   const correct = Buffer.alloc(buf.length * 4);
 
@@ -380,46 +332,4 @@ export class TotalList<T> extends Array<T> {
     super();
     this.total = 0;
   }
-}
-
-export const EntityType_ = {
-  USER: 0,
-  CHAT: 1,
-  CHANNEL: 2,
-};
-
-Object.freeze(EntityType_);
-
-export function entityType_(entity: EntityLike) {
-  if (typeof entity !== "object" || !("SUBCLASS_OF_ID" in entity)) {
-    throw new Error(
-      `${entity} is not a TLObject, cannot determine entity type`,
-    );
-  }
-  if (
-    ![
-      0x2d45687, // crc32('Peer')
-      0xc91c90b6, // crc32('InputPeer')
-      0xe669bf46, // crc32('InputUser')
-      0x40f202fd, // crc32('InputChannel')
-      0x2da17977, // crc32('User')
-      0xc5af5d94, // crc32('Chat')
-      0x1f4661b9, // crc32('UserFull')
-      0xd49a2697, // crc32('ChatFull')
-    ].includes(entity.SUBCLASS_OF_ID)
-  ) {
-    throw new Error(`${entity} does not have any entity type`);
-  }
-  const name = entity.className;
-  if (name.includes("User")) {
-    return EntityType_.USER;
-  } else if (name.includes("Chat")) {
-    return EntityType_.CHAT;
-  } else if (name.includes("Channel")) {
-    return EntityType_.CHANNEL;
-  } else if (name.includes("Self")) {
-    return EntityType_.USER;
-  }
-  // 'Empty' in name or not found, we don't care, not a valid entity.
-  throw new Error(`${entity} does not have any entity type`);
 }

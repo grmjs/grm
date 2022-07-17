@@ -1,9 +1,10 @@
 import { Api } from "../tl/api.js";
 import { getPeerId, sanitizeParseMode } from "../utils.ts";
-import type { EntityLike } from "../define.d.ts";
-import type { TelegramClient } from "./telegram_client.ts";
-import { EntityType_, entityType_, isArrayLike } from "../helpers.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
+import { isArrayLike } from "../helpers.ts";
+import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { bigInt } from "../../deps.ts";
+import { ParseInterface } from "./types.ts";
 
 export type messageEntities =
   | typeof Api.MessageEntityBold
@@ -20,16 +21,11 @@ export const DEFAULT_DELIMITERS: { [key: string]: messageEntities } = {
   "```": Api.MessageEntityPre,
 };
 
-export interface ParseInterface {
-  parse: (message: string) => [string, Api.TypeMessageEntity[]];
-  unparse: (text: string, entities: Api.TypeMessageEntity[]) => string;
-}
-
 export async function _replaceWithMention(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   entities: Api.TypeMessageEntity[],
   i: number,
-  user: EntityLike,
+  user: Api.TypeEntityLike,
 ) {
   try {
     entities[i] = new Api.InputMessageEntityMentionName({
@@ -45,7 +41,7 @@ export async function _replaceWithMention(
 }
 
 export async function _parseMessageText(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   message: string,
   parseMode: false | string | ParseInterface,
 ): Promise<[string, Api.TypeMessageEntity[]]> {
@@ -81,7 +77,7 @@ export async function _parseMessageText(
 }
 
 export function _getResponseMessage(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   // deno-lint-ignore no-explicit-any
   request: any,
   // deno-lint-ignore no-explicit-any

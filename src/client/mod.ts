@@ -24,7 +24,7 @@ export * as dialogs from "./dialogs.ts";
 export * as downloads from "./downloads.ts";
 export * as messageParse from "./message_parse.ts";
 export * as message from "./messages.ts";
-export * as tgClient from "./telegram_client.ts";
+export * as tgClient from "./abstract_telegram_client.ts";
 export * as updates from "./updates.ts";
 export * as uploads from "./uploads.ts";
 export * as users from "./users.ts";

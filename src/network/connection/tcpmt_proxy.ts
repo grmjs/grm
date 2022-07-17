@@ -6,17 +6,7 @@ import type { Logger } from "../../extensions/logger.ts";
 import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
 import { Buffer } from "../../../deps.ts";
-
-export interface ProxyInterface {
-  socksType?: 4 | 5;
-  ip: string;
-  port: number;
-  secret?: string;
-  MTProxy?: boolean;
-  timeout?: number;
-  username?: string;
-  password?: string;
-}
+import { ProxyInterface } from "./types.ts";
 
 export class MTProxyIO {
   header?: Buffer = undefined;

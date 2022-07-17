@@ -1,13 +1,12 @@
 import { Api } from "../tl/api.js";
 import { InlineResults } from "../tl/custom/inline_results.ts";
-import type { EntityLike } from "../define.d.ts";
-import type { TelegramClient } from "./telegram_client.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 
 import GetInlineBotResults = Api.messages.GetInlineBotResults;
 
 export async function inlineQuery(
-  client: TelegramClient,
-  bot: EntityLike,
+  client: AbstractTelegramClient,
+  bot: Api.TypeEntityLike,
   query: string,
   entity?: Api.InputPeerSelf,
   offset?: string,

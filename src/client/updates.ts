@@ -5,7 +5,7 @@ import { getPeerId } from "../utils.ts";
 import { getRandomInt, returnBigInt, sleep } from "../helpers.ts";
 import type { Raw } from "../events/raw.ts";
 import type { EventBuilder } from "../events/common.ts";
-import type { TelegramClient } from "./telegram_client.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 
 const PING_INTERVAL = 9000; // 9 sec
 const PING_TIMEOUT = 10000; // 10 sec
@@ -14,7 +14,7 @@ const PING_FAIL_INTERVAL = 100; // ms
 const PING_DISCONNECT_DELAY = 60000; // 1 min
 
 export class StopPropagation extends Error {}
-export function on(client: TelegramClient, event?: EventBuilder) {
+export function on(client: AbstractTelegramClient, event?: EventBuilder) {
   // deno-lint-ignore no-explicit-any
   return (f: { (event: any): void }) => {
     client.addEventHandler(f, event);
@@ -23,7 +23,7 @@ export function on(client: TelegramClient, event?: EventBuilder) {
 }
 
 export function addEventHandler(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   callback: CallableFunction,
   event?: EventBuilder,
 ) {
@@ -41,7 +41,7 @@ export function addEventHandler(
 }
 
 export function removeEventHandler(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   callback: CallableFunction,
   event: EventBuilder,
 ) {
@@ -50,7 +50,7 @@ export function removeEventHandler(
   });
 }
 
-export function listEventHandlers(client: TelegramClient) {
+export function listEventHandlers(client: AbstractTelegramClient) {
   return client._eventBuilders;
 }
 
@@ -59,7 +59,7 @@ export function catchUp() {
 }
 
 export function _handleUpdate(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   update: Api.TypeUpdate | number,
 ): void {
   if (typeof update === "number") {
@@ -95,7 +95,7 @@ export function _handleUpdate(
 }
 
 export function _processUpdate(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   // deno-lint-ignore no-explicit-any
   update: any,
   // deno-lint-ignore no-explicit-any
@@ -113,7 +113,7 @@ export function _processUpdate(
 }
 
 export async function _dispatchUpdate(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   // deno-lint-ignore no-explicit-any
   args: { update: UpdateConnectionState | any },
 ): Promise<void> {
@@ -169,7 +169,9 @@ export async function _dispatchUpdate(
   }
 }
 
-export async function _updateLoop(client: TelegramClient): Promise<void> {
+export async function _updateLoop(
+  client: AbstractTelegramClient,
+): Promise<void> {
   while (!client._destroyed) {
     await sleep(PING_INTERVAL);
     if (client._reconnecting || client._sender!.userDisconnected) {

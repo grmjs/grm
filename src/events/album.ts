@@ -1,7 +1,6 @@
 import { DefaultEventInterface, EventBuilder, EventCommon } from "./common.ts";
-import { Entity } from "../define.d.ts";
 import { Api } from "../tl/api.js";
-import { TelegramClient } from "../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { LogLevel } from "../extensions/logger.ts";
 
 const _ALBUM_DELAY = 500;
@@ -64,7 +63,8 @@ export class Album extends EventBuilder {
 
 export class AlbumEvent extends EventCommon {
   messages: Api.Message[];
-  originalUpdates: (Api.TypeUpdate & { _entities?: Map<string, Entity> })[];
+  originalUpdates:
+    (Api.TypeUpdate & { _entities?: Map<string, Api.TypeEntity> })[];
 
   constructor(messages: Api.Message[], originalUpdates: Api.TypeUpdate[]) {
     super({
@@ -76,7 +76,7 @@ export class AlbumEvent extends EventCommon {
     this.messages = messages;
   }
 
-  _setClient(client: TelegramClient) {
+  _setClient(client: AbstractTelegramClient) {
     super._setClient(client);
     for (let i = 0; i < this.messages.length; i++) {
       try {

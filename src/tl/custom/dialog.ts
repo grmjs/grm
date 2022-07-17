@@ -3,18 +3,17 @@ import { Draft } from "./draft.ts";
 import { getDisplayName, getInputPeer, getPeerId } from "../../utils.ts";
 import { returnBigInt } from "../../helpers.ts";
 import { bigInt } from "../../../deps.ts";
-import type { Entity } from "../../define.d.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export class Dialog {
-  _client: TelegramClient;
+  _client: AbstractTelegramClient;
   dialog: Api.Dialog;
   pinned: boolean;
   folderId?: number;
   archived: boolean;
   message?: Api.Message;
   date: number;
-  entity?: Entity;
+  entity?: Api.TypeEntity;
   inputEntity: Api.TypeInputPeer;
   id?: bigInt.BigInteger;
   name?: string;
@@ -27,9 +26,9 @@ export class Dialog {
   isChannel: boolean;
 
   constructor(
-    client: TelegramClient,
+    client: AbstractTelegramClient,
     dialog: Api.Dialog,
-    entities: Map<string, Entity>,
+    entities: Map<string, Api.TypeEntity>,
     message?: Api.Message,
   ) {
     this._client = client;

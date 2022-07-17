@@ -3,20 +3,11 @@ import { generateRandomBytes } from "../helpers.ts";
 import { computeCheck, computeDigest } from "../password.ts";
 import { EmailUnconfirmedError } from "../errors/mod.ts";
 import { Buffer } from "../../deps.ts";
-import type { TelegramClient } from "./telegram_client.ts";
-
-export interface TwoFaParams {
-  isCheckPassword?: boolean;
-  currentPassword?: string;
-  newPassword?: string;
-  hint?: string;
-  email?: string;
-  emailCodeCallback?: (length: number) => Promise<string>;
-  onEmailCodeError?: (err: Error) => void;
-}
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
+import { TwoFaParams } from "./types.ts";
 
 export async function updateTwoFaSettings(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   {
     isCheckPassword,
     currentPassword,

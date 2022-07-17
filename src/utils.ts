@@ -1,18 +1,16 @@
 // deno-lint-ignore-file no-explicit-any
 import { Api } from "./tl/api.js";
-import { ParseInterface } from "./client/message_parse.ts";
+import { ParseInterface } from "./client/types.ts";
 import { MarkdownParser } from "./extensions/markdown.ts";
 import { HTMLParser } from "./extensions/html.ts";
-import { CustomFile } from "./client/uploads.ts";
+import { CustomFile } from "./classes.ts";
 import { returnBigInt } from "./helpers.ts";
-import { EntityCache } from "./entity_cache.ts";
 import {
   bigInt,
   Buffer,
   getExtension as mGetExtension,
   getType,
 } from "../deps.ts";
-import type { Entity, EntityLike, MessageIDLike } from "./define.d.ts";
 
 import TypeInputFile = Api.TypeInputFile;
 
@@ -194,7 +192,7 @@ export function getInputPeer(
   _raiseCastFail(entity, "InputPeer");
 }
 
-export function getPeer(peer: EntityLike | any) {
+export function getPeer(peer: Api.TypeEntityLike | any) {
   if (!peer) _raiseCastFail(peer, "undefined");
   if (typeof peer === "string") _raiseCastFail(peer, "peer");
   if (typeof peer === "number" || typeof peer === "bigint") {
@@ -251,7 +249,7 @@ export function getPeer(peer: EntityLike | any) {
   _raiseCastFail(peer, "peer");
 }
 
-export function getPeerId(peer: EntityLike, addMark = true) {
+export function getPeerId(peer: Api.TypeEntityLike, addMark = true) {
   if (typeof peer === "string" && parseID(peer)) {
     peer = returnBigInt(peer);
   }
@@ -289,7 +287,7 @@ export function getPeerId(peer: EntityLike, addMark = true) {
   _raiseCastFail(peer, "int");
 }
 
-export function getInputUser(entity: EntityLike): Api.TypeInputUser {
+export function getInputUser(entity: Api.TypeEntityLike): Api.TypeInputUser {
   if (
     typeof entity === "string" ||
     typeof entity === "number" ||
@@ -359,7 +357,7 @@ export function _photoSizeByteCount(size: Api.TypePhotoSize) {
   return undefined;
 }
 
-export function getDisplayName(entity: EntityLike) {
+export function getDisplayName(entity: Api.TypeEntityLike) {
   if (entity instanceof Api.User) {
     if (entity.lastName && entity.firstName) {
       return `${entity.firstName} ${entity.lastName}`;
@@ -381,7 +379,7 @@ export function resolveInviteLink(_link: string): [number, number, number] {
 }
 
 export function getMessageId(
-  message: number | Api.TypeMessage | MessageIDLike | undefined,
+  message: number | Api.TypeMessage | Api.TypeMessageIDLike | undefined,
 ): number | undefined {
   if (!message) {
     return;
@@ -483,26 +481,6 @@ export function* chunks<T>(arr: T[], size = 100): Generator<T[]> {
   }
 }
 
-export function getEntityPair_(
-  entityId: string,
-  entities: Map<string, Entity>,
-  cache: EntityCache,
-  getInputPeerFunction: any = getInputPeer,
-): [Entity?, Api.TypeInputPeer?] {
-  const entity = entities.get(entityId);
-  let inputEntity;
-  try {
-    inputEntity = cache.get(entityId);
-  } catch (_e) {
-    try {
-      inputEntity = getInputPeerFunction(inputEntity);
-    } catch (_e) {
-      //
-    }
-  }
-  return [entity, inputEntity];
-}
-
 export function getInnerText(text: string, entities: Api.TypeMessageEntity[]) {
   const result: string[] = [];
   entities.forEach(function (value, _key) {
@@ -513,7 +491,7 @@ export function getInnerText(text: string, entities: Api.TypeMessageEntity[]) {
   return result;
 }
 
-export function getInputChannel(entity: EntityLike) {
+export function getInputChannel(entity: Api.TypeEntityLike) {
   if (
     typeof entity === "string" ||
     typeof entity === "number" ||

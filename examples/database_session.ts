@@ -1,4 +1,8 @@
-import { DatabaseSession, DatabaseType, TelegramClient } from "https://deno.land/x/grm/mod.ts";
+import {
+  DatabaseSession,
+  DatabaseType,
+  TelegramClient,
+} from "https://deno.land/x/grm/mod.ts";
 
 // Login and create an application on https://my.telegram.org
 // to get values for API ID and API Hash.
@@ -8,9 +12,9 @@ const apiHash = "abcd1234";
 // Fill in this later with the value from client.session.save(),
 // so you don't have to login each time you run the file.
 const dbSession = new DatabaseSession("sessionName", {
-  type: DatabaseType.SQLite,
+  adapter: DatabaseType.SQLite,
   adapterOptions: {
-    file: "examples/session.db",
+    filepath: "examples/session.db",
   },
 });
 

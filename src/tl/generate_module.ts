@@ -3,7 +3,7 @@ import { dirname, fromFileUrl, resolve } from "../../deps.ts";
 const DIR_PATH = dirname(fromFileUrl(import.meta.url));
 
 // Generate module
-import "./types-generator/generate.ts";
+import "./types_generator/generate.ts";
 
 function stripTl(tl: string) {
   return tl

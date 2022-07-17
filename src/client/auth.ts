@@ -2,48 +2,19 @@ import { Api } from "../tl/api.js";
 import { getDisplayName } from "../utils.ts";
 import { sleep } from "../helpers.ts";
 import { computeCheck } from "../password.ts";
-import { Buffer } from "../../deps.ts";
-import type { TelegramClient } from "./telegram_client.ts";
-
-type MaybePromise<T> = T | Promise<T>;
-
-export interface UserAuthParams {
-  phoneNumber: string | (() => MaybePromise<string>);
-  phoneCode: (isCodeViaApp?: boolean) => MaybePromise<string>;
-  password?: (hint?: string) => MaybePromise<string>;
-  firstAndLastNames?: () => Promise<[string, string?]>;
-  qrCode?: (qrCode: { token: Buffer; expires: number }) => Promise<void>;
-  onError: (err: Error) => Promise<boolean> | void;
-  forceSMS?: boolean;
-}
-
-export interface UserPasswordAuthParams {
-  password?: (hint?: string) => MaybePromise<string>;
-  onError: (err: Error) => Promise<boolean> | void;
-}
-
-export interface QrCodeAuthParams extends UserPasswordAuthParams {
-  qrCode?: (qrCode: { token: Buffer; expires: number }) => Promise<void>;
-  onError: (err: Error) => Promise<boolean> | void;
-}
-
-interface ReturnString {
-  (): string;
-}
-
-export interface BotAuthParams {
-  botAuthToken: string | ReturnString;
-}
-
-export interface ApiCredentials {
-  apiId: number;
-  apiHash: string;
-}
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
+import {
+  ApiCredentials,
+  BotAuthParams,
+  QrCodeAuthParams,
+  UserAuthParams,
+  UserPasswordAuthParams,
+} from "./types.ts";
 
 const QR_CODE_TIMEOUT = 30000;
 
 export async function start(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   authParams?: UserAuthParams | BotAuthParams,
 ) {
   if (!client.connected) {
@@ -66,7 +37,7 @@ export async function start(
   await _authFlow(client, apiCredentials, authParams);
 }
 
-export async function checkAuthorization(client: TelegramClient) {
+export async function checkAuthorization(client: AbstractTelegramClient) {
   try {
     await client.invoke(new Api.updates.GetState());
     return true;
@@ -76,7 +47,7 @@ export async function checkAuthorization(client: TelegramClient) {
 }
 
 export async function signInUser(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   apiCredentials: ApiCredentials,
   authParams: UserAuthParams,
 ): Promise<Api.TypeUser> {
@@ -222,7 +193,7 @@ export async function signInUser(
 }
 
 export async function signInUserWithQrCode(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   apiCredentials: ApiCredentials,
   authParams: QrCodeAuthParams,
 ): Promise<Api.TypeUser> {
@@ -319,7 +290,7 @@ export async function signInUserWithQrCode(
 }
 
 export async function sendCode(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   apiCredentials: ApiCredentials,
   phoneNumber: string,
   forceSMS = false,
@@ -367,7 +338,7 @@ export async function sendCode(
 }
 
 export async function signInWithPassword(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   _apiCredentials: ApiCredentials,
   authParams: UserPasswordAuthParams,
 ): Promise<Api.TypeUser> {
@@ -412,7 +383,7 @@ export async function signInWithPassword(
 }
 
 export async function signInBot(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   apiCredentials: ApiCredentials,
   authParams: BotAuthParams,
 ) {
@@ -443,7 +414,7 @@ export async function signInBot(
 }
 
 export async function _authFlow(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   apiCredentials: ApiCredentials,
   authParams: UserAuthParams | BotAuthParams,
 ) {

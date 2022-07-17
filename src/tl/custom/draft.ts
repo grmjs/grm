@@ -1,11 +1,10 @@
 import { Api } from "../api.js";
 import { getInputPeer, getPeer } from "../../utils.ts";
-import type { Entity } from "../../define.d.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export class Draft {
-  private _client: TelegramClient;
-  private readonly _entity?: Entity;
+  private _client: AbstractTelegramClient;
+  private readonly _entity?: Api.TypeEntity;
   private readonly _peer: ReturnType<typeof getPeer>;
   private _inputEntity: Api.TypeInputPeer | undefined;
   private _text?: string;
@@ -15,8 +14,8 @@ export class Draft {
   private replyToMsgId?: Api.int;
 
   constructor(
-    client: TelegramClient,
-    entity: Entity,
+    client: AbstractTelegramClient,
+    entity: Api.TypeEntity,
     draft: Api.TypeDraftMessage | undefined,
   ) {
     this._client = client;

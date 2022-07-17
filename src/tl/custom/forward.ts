@@ -1,18 +1,19 @@
 import { ChatGetter } from "./chat_getter.ts";
 import { SenderGetter } from "./sender_getter.ts";
 import { Api } from "../api.js";
-import { EntityType_, entityType_, returnBigInt } from "../../helpers.ts";
-import { getEntityPair_, getPeerId } from "../../utils.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
-import type { Entity } from "../../define.d.ts";
+import { returnBigInt } from "../../helpers.ts";
+import { EntityType_, entityType_ } from "../../tl/helpers.ts";
+import { getPeerId } from "../../utils.ts";
+import { getEntityPair_ } from "../../entity_cache.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export class Forward extends SenderGetter {
   private originalFwd: Api.MessageFwdHeader;
 
   constructor(
-    client: TelegramClient,
+    client: AbstractTelegramClient,
     original: Api.MessageFwdHeader,
-    entities: Map<string, Entity>,
+    entities: Map<string, Api.TypeEntity>,
   ) {
     super();
     // contains info for the original header sent by telegram.

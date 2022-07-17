@@ -1,12 +1,10 @@
 // deno-lint-ignore-file no-explicit-any
-import { ProxyInterface } from "./tcpmt_proxy.ts";
-import { AbridgedPacketCodec } from "./tcpa_bridged.ts";
-import { FullPacketCodec } from "./tcp_full.ts";
 import { AsyncQueue } from "../../extensions/async_queue.ts";
 import { Logger } from "../../extensions/logger.ts";
 import type { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import type { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
 import { Buffer } from "../../../deps.ts";
+import { ProxyInterface } from "./types.ts";
 
 export interface ConnectionInterfaceParams {
   ip: string;
@@ -19,7 +17,7 @@ export interface ConnectionInterfaceParams {
 }
 
 export class Connection {
-  PacketCodecClass?: typeof AbridgedPacketCodec | typeof FullPacketCodec;
+  PacketCodecClass?: typeof PacketCodec;
   readonly _ip: string;
   readonly _port: number;
   _dcId: number;
@@ -176,13 +174,13 @@ export class ObfuscatedConnection extends Connection {
 }
 
 export class PacketCodec {
-  private _conn: Buffer;
+  private _conn: Connection;
 
-  constructor(connection: Buffer) {
+  constructor(connection: Connection) {
     this._conn = connection;
   }
 
-  encodePacket(_data: Buffer) {
+  encodePacket(_data: Buffer): Buffer {
     throw new Error("Not Implemented");
   }
 

@@ -1,16 +1,16 @@
-import { EntityLike } from "../define.d.ts";
 import { EventBuilder, EventCommonSender } from "./common.ts";
 import { Api } from "../tl/api.js";
 import { returnBigInt, toSignedLittleBuffer } from "../helpers.ts";
-import { TelegramClient } from "../client/telegram_client.ts";
-import { getEntityPair_, getInputPeer } from "../utils.ts";
-import { EditMessageParams, SendMessageParams } from "../client/messages.ts";
+import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
+import { getInputPeer } from "../utils.ts";
+import { getEntityPair_ } from "../entity_cache.ts";
+import { EditMessageParams, SendMessageParams } from "../client/types.ts";
 
 export interface NewCallbackQueryInterface {
-  chats: EntityLike[];
+  chats: Api.TypeEntityLike[];
   func?: { (event: CallbackQuery): boolean };
-  fromUsers: EntityLike[];
-  blacklistUsers: EntityLike[];
+  fromUsers: Api.TypeEntityLike[];
+  blacklistUsers: Api.TypeEntityLike[];
   pattern?: RegExp;
 }
 
@@ -118,7 +118,7 @@ export class CallbackQueryEvent extends EventCommonSender {
     this._answered = false;
   }
 
-  _setClient(client: TelegramClient) {
+  _setClient(client: AbstractTelegramClient) {
     super._setClient(client);
     const [sender, inputSender] = getEntityPair_(
       this._senderId!.toString(),

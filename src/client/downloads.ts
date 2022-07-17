@@ -1,5 +1,5 @@
 import { Api } from "../tl/api.js";
-import type { TelegramClient } from "./telegram_client.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import {
   getAppropriatedPartSize,
   getExtension,
@@ -8,7 +8,7 @@ import {
   strippedPhotoToJpg,
 } from "../utils.ts";
 import { sleep } from "../helpers.ts";
-import { EntityLike, OutFile, ProgressCallback } from "../define.d.ts";
+import { OutFile, ProgressCallback } from "../define.d.ts";
 import { RequestIter } from "../request_iter.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import { FileMigrateError } from "../errors/mod.ts";
@@ -22,59 +22,14 @@ import {
   resolve,
   WriteStream,
 } from "../../deps.ts";
-
-export interface progressCallback {
-  // deno-lint-ignore no-explicit-any
-  (downloaded: bigInt.BigInteger, fullSize: bigInt.BigInteger, ...args: any[]): void;
-  isCanceled?: boolean;
-  acceptsBuffer?: boolean;
-}
-
-export interface DownloadFileParams {
-  dcId: number;
-  fileSize?: number;
-  workers?: number;
-  partSizeKb?: number;
-  start?: number;
-  end?: number;
-  progressCallback?: progressCallback;
-}
-
-export interface DownloadFileParamsV2 {
-  outputFile?: OutFile;
-  dcId?: number;
-  fileSize?: bigInt.BigInteger;
-  partSizeKb?: number;
-  progressCallback?: progressCallback;
-  msgData?: [EntityLike, number];
-}
-
-export interface DownloadProfilePhotoParams {
-  isBig?: boolean;
-}
-
-export interface DirectDownloadIterInterface {
-  fileLocation: Api.TypeInputFileLocation;
-  dcId: number;
-  offset: bigInt.BigInteger;
-  stride: number;
-  chunkSize: number;
-  requestSize: number;
-  fileSize: number;
-  msgData: number;
-}
-
-export interface IterDownloadFunction {
-  file?: Api.TypeMessageMedia | Api.TypeInputFile | Api.TypeInputFileLocation;
-  offset?: bigInt.BigInteger;
-  stride?: number;
-  limit?: number;
-  chunkSize?: number;
-  requestSize: number;
-  fileSize?: bigInt.BigInteger;
-  dcId?: number;
-  msgData?: [EntityLike, number];
-}
+import {
+  DirectDownloadIterInterface,
+  DownloadFileParamsV2,
+  DownloadMediaInterface,
+  DownloadProfilePhotoParams,
+  IterDownloadFunction,
+  progressCallback,
+} from "./types.ts";
 
 interface Deferred {
   // deno-lint-ignore no-explicit-any
@@ -245,7 +200,7 @@ class GenericDownloadIter extends DirectDownloadIter {
 }
 
 function iterDownload(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   {
     file,
     offset = bigInt.zero,
@@ -360,7 +315,7 @@ function returnWriterValue(writer: any): Buffer | string | undefined {
 }
 
 export async function downloadFileV2(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   inputLocation: Api.TypeInputFileLocation,
   {
     outputFile = undefined,
@@ -441,20 +396,14 @@ function createDeferred(): Deferred {
   return { promise, resolve: resolve! };
 }
 
-export interface DownloadMediaInterface {
-  outputFile?: OutFile;
-  thumb?: number | Api.TypePhotoSize;
-  progressCallback?: ProgressCallback;
-}
-
 export function downloadMedia(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   messageOrMedia: Api.Message | Api.TypeMessageMedia,
   outputFile?: OutFile,
   thumb?: number | Api.TypePhotoSize,
   progressCallback?: ProgressCallback,
 ): Promise<Buffer | string | undefined> | Buffer {
-  let msgData: [EntityLike, number] | undefined;
+  let msgData: [Api.TypeEntityLike, number] | undefined;
   let date;
   let media;
 
@@ -511,13 +460,13 @@ export function downloadMedia(
 }
 
 export async function _downloadDocument(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   doc: Api.MessageMediaDocument | Api.TypeDocument,
   outputFile: OutFile | undefined,
   date: number,
   thumb?: number | string | Api.TypePhotoSize,
   progressCallback?: ProgressCallback,
-  msgData?: [EntityLike, number],
+  msgData?: [Api.TypeEntityLike, number],
 ): Promise<Buffer | string | undefined> {
   if (doc instanceof Api.MessageMediaDocument) {
     if (!doc.document) return Buffer.alloc(0);
@@ -562,7 +511,7 @@ export async function _downloadDocument(
 }
 
 export function _downloadContact(
-  _client: TelegramClient,
+  _client: AbstractTelegramClient,
   _media: Api.MessageMediaContact,
   _args: DownloadMediaInterface,
 ): Promise<Buffer> {
@@ -570,7 +519,7 @@ export function _downloadContact(
 }
 
 export function _downloadWebDocument(
-  _client: TelegramClient,
+  _client: AbstractTelegramClient,
   _media: Api.WebDocument | Api.WebDocumentNoProxy,
   _args: DownloadMediaInterface,
 ): Promise<Buffer> {
@@ -682,7 +631,7 @@ function getProperFilename(
 }
 
 export function _downloadPhoto(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   photo: Api.MessageMediaPhoto | Api.Photo,
   file?: OutFile,
   date?: number,
@@ -739,8 +688,8 @@ export function _downloadPhoto(
 }
 
 export async function downloadProfilePhoto(
-  client: TelegramClient,
-  entity: EntityLike,
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike,
   fileParams: DownloadProfilePhotoParams,
 ) {
   let photo;

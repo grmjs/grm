@@ -1,7 +1,6 @@
 import { Api } from "../api.js";
 import { getMessageId } from "../../utils.ts";
-import type { EntityLike, MessageIDLike } from "../../define.d.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export class InlineResult {
   private _ARTICLE = "article";
@@ -15,16 +14,16 @@ export class InlineResult {
   private _VENUE = "venue";
   private _CONTACT = "contact";
   private _GAME = "game";
-  private readonly _entity: EntityLike | undefined;
+  private readonly _entity: Api.TypeEntityLike | undefined;
   private readonly _queryId: Api.long | undefined;
   private readonly result: Api.TypeBotInlineResult;
-  private _client: TelegramClient;
+  private _client: AbstractTelegramClient;
 
   constructor(
-    client: TelegramClient,
+    client: AbstractTelegramClient,
     original: Api.TypeBotInlineResult,
     queryId?: Api.long,
-    entity?: EntityLike,
+    entity?: Api.TypeEntityLike,
   ) {
     this._client = client;
     this.result = original;
@@ -68,8 +67,8 @@ export class InlineResult {
   }
 
   async click(
-    entity?: EntityLike,
-    replyTo?: MessageIDLike,
+    entity?: Api.TypeEntityLike,
+    replyTo?: Api.TypeMessageIDLike,
     silent = false,
     clearDraft = false,
     hideVia = false,

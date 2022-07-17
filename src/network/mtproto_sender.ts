@@ -24,7 +24,6 @@ import {
   TypeNotFoundError,
 } from "../errors/mod.ts";
 import { Connection } from "./connection/connection.ts";
-import type { TelegramClient } from "../client/telegram_client.ts";
 import { Logger, LogLevel } from "../extensions/logger.ts";
 import { bigInt } from "../../deps.ts";
 
@@ -50,7 +49,7 @@ interface DEFAULT_OPTIONS {
   isMainSender: boolean;
   dcId: number;
   senderCallback?: any;
-  client: TelegramClient;
+  client: any;
   onConnectionBreak?: CallableFunction;
   securityChecks: boolean;
 }
@@ -79,7 +78,7 @@ export class MTProtoSender {
   private _autoReconnect: boolean;
   private readonly _authKeyCallback: any;
   private readonly _updateCallback: (
-    client: TelegramClient,
+    client: any,
     update: UpdateConnectionState,
   ) => void;
   private readonly _autoReconnectCallback?: any;
@@ -97,7 +96,7 @@ export class MTProtoSender {
   private readonly _pendingAck: Set<any>;
   private readonly _lastAcks: any[];
   private readonly _handlers: any;
-  private readonly _client: TelegramClient;
+  private readonly _client: any;
   private readonly _onConnectionBreak?: CallableFunction;
   userDisconnected: boolean;
   isConnecting: boolean;

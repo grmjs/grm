@@ -1,6 +1,6 @@
 // deno-lint-ignore-file no-explicit-any
 import { Buffer, Mutex, Socket, SocksClient } from "../../deps.ts";
-import { ProxyInterface } from "../network/connection/tcpmt_proxy.ts";
+import { ProxyInterface } from "../network/connection/types.ts";
 
 const mutex = new Mutex();
 const closeError = new Error("NetSocket was closed");

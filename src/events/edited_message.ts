@@ -4,7 +4,7 @@ import {
   NewMessageEvent,
   NewMessageInterface,
 } from "./new_message.ts";
-import { BigInteger } from "../../deps.ts";
+import { bigInt } from "../../deps.ts";
 
 export interface EditedMessageInterface extends NewMessageInterface {
   func?: { (event: EditedMessageEvent): boolean };
@@ -20,7 +20,7 @@ export class EditedMessage extends NewMessage {
   build(
     update: Api.TypeUpdate | Api.TypeUpdates,
     _callback: undefined,
-    _selfId: BigInteger,
+    _selfId: bigInt.BigInteger,
   ) {
     if (
       update instanceof Api.UpdateEditChannelMessage ||

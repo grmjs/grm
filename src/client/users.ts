@@ -1,5 +1,4 @@
 import { Api } from "../tl/api.js";
-import type { Entity, EntityLike } from "../define.d.ts";
 import {
   getInputPeer,
   getPeer,
@@ -10,14 +9,9 @@ import {
   resolveId,
 } from "../utils.ts";
 import * as utils from "../utils.ts";
-import {
-  EntityType_,
-  entityType_,
-  isArrayLike,
-  returnBigInt,
-  sleep,
-} from "../helpers.ts";
-import type { TelegramClient } from "./telegram_client.ts";
+import { isArrayLike, returnBigInt, sleep } from "../helpers.ts";
+import { EntityType_, entityType_ } from "../tl/helpers.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { bigInt } from "../../deps.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
@@ -31,7 +25,7 @@ import {
 } from "../errors/mod.ts";
 
 export async function invoke<R extends Api.AnyRequest>(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   request: R,
   sender?: MTProtoSender,
 ): Promise<R["__response"]> {
@@ -100,7 +94,7 @@ export async function invoke<R extends Api.AnyRequest>(
 }
 
 export async function getMe(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   inputPeer = false,
 ): Promise<Api.InputPeerUser | Api.User> {
   if (inputPeer && client._selfInputPeer) {
@@ -121,7 +115,7 @@ export async function getMe(
   return inputPeer ? client._selfInputPeer : me;
 }
 
-export async function isBot(client: TelegramClient) {
+export async function isBot(client: AbstractTelegramClient) {
   if (client._bot === undefined) {
     const me = await client.getMe();
     if (me) {
@@ -131,7 +125,7 @@ export async function isBot(client: TelegramClient) {
   return client._bot;
 }
 
-export async function isUserAuthorized(client: TelegramClient) {
+export async function isUserAuthorized(client: AbstractTelegramClient) {
   try {
     await client.invoke(new Api.updates.GetState());
     return true;
@@ -141,12 +135,12 @@ export async function isUserAuthorized(client: TelegramClient) {
 }
 
 export async function getEntity(
-  client: TelegramClient,
-  entity: EntityLike | EntityLike[],
-): Promise<Entity | Entity[]> {
+  client: AbstractTelegramClient,
+  entity: Api.TypeEntityLike | Api.TypeEntityLike[],
+): Promise<Api.TypeEntity | Api.TypeEntity[]> {
   const single = !isArrayLike(entity);
-  let entityArray: EntityLike[] = [];
-  if (isArrayLike<EntityLike>(entity)) {
+  let entityArray: Api.TypeEntityLike[] = [];
+  if (isArrayLike<Api.TypeEntityLike>(entity)) {
     entityArray = entity;
   } else {
     entityArray.push(entity);
@@ -234,8 +228,8 @@ export async function getEntity(
 }
 
 export async function getInputEntity(
-  client: TelegramClient,
-  peer: EntityLike,
+  client: AbstractTelegramClient,
+  peer: Api.TypeEntityLike,
 ): Promise<Api.TypeInputPeer> {
   try {
     return getInputPeer(peer);
@@ -345,7 +339,7 @@ export async function getInputEntity(
 }
 
 export async function _getEntityFromString(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   string: string,
 ) {
   const phone = parsePhone(string);
@@ -426,8 +420,8 @@ export async function _getEntityFromString(
 }
 
 export async function getPeerId(
-  client: TelegramClient,
-  peer: EntityLike,
+  client: AbstractTelegramClient,
+  peer: Api.TypeEntityLike,
   addMark = true,
 ) {
   if (typeof peer == "string") {
@@ -457,7 +451,10 @@ export async function getPeerId(
   return getPeerId_(peer, addMark);
 }
 
-export async function _getPeer(client: TelegramClient, peer: EntityLike) {
+export async function _getPeer(
+  client: AbstractTelegramClient,
+  peer: Api.TypeEntityLike,
+) {
   if (!peer) return;
   const [i, cls] = resolveId(
     returnBigInt(await client.getPeerId(peer)),
@@ -469,8 +466,11 @@ export async function _getPeer(client: TelegramClient, peer: EntityLike) {
   });
 }
 
-// deno-lint-ignore no-explicit-any
-export async function _getInputDialog(client: TelegramClient, dialog: any) {
+export async function _getInputDialog(
+  client: AbstractTelegramClient,
+  // deno-lint-ignore no-explicit-any
+  dialog: any,
+) {
   try {
     if (dialog.SUBCLASS_OF_ID == 0xa21c9795) {
       // crc32(b'InputDialogPeer')
@@ -486,8 +486,11 @@ export async function _getInputDialog(client: TelegramClient, dialog: any) {
   return new Api.InputDialogPeer({ peer: dialog });
 }
 
-// deno-lint-ignore no-explicit-any
-export async function _getInputNotify(client: TelegramClient, notify: any) {
+export async function _getInputNotify(
+  client: AbstractTelegramClient,
+  // deno-lint-ignore no-explicit-any
+  notify: any,
+) {
   try {
     if (notify.SUBCLASS_OF_ID == 0x58981615) {
       if (notify instanceof Api.InputNotifyPeer) {
@@ -503,6 +506,6 @@ export async function _getInputNotify(client: TelegramClient, notify: any) {
   });
 }
 
-export function _selfId(client: TelegramClient) {
+export function _selfId(client: AbstractTelegramClient) {
   return client._selfInputPeer ? client._selfInputPeer.userId : undefined;
 }

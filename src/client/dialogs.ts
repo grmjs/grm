@@ -1,12 +1,12 @@
 import { Api } from "../tl/api.js";
 import { RequestIter } from "../request_iter.ts";
-import { TelegramClient } from "./telegram_client.ts";
+import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { Dialog } from "../tl/custom/dialog.ts";
-import { DateLike, EntityLike } from "../define.d.ts";
 import { TotalList } from "../helpers.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { bigInt } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
+import { IterDialogsParams } from "./types.ts";
 
 const _MAX_CHUNK_SIZE = 100;
 
@@ -164,19 +164,8 @@ export class _DialogsIter extends RequestIter {
   }
 }
 
-export interface IterDialogsParams {
-  limit?: number;
-  offsetDate?: DateLike;
-  offsetId?: number;
-  offsetPeer?: EntityLike;
-  ignorePinned?: boolean;
-  ignoreMigrated?: boolean;
-  folder?: number;
-  archived?: boolean;
-}
-
 export function iterDialogs(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   {
     limit = undefined,
     offsetDate = undefined,
@@ -208,8 +197,12 @@ export function iterDialogs(
 }
 
 export async function getDialogs(
-  client: TelegramClient,
+  client: AbstractTelegramClient,
   params: IterDialogsParams,
 ): Promise<TotalList<Dialog>> {
-  return (await client.iterDialogs(params).collect()) as TotalList<Dialog>;
+  const dialogs = new TotalList<Dialog>();
+  for await (const dialog of client.iterDialogs(params)) {
+    dialogs.push(dialog);
+  }
+  return dialogs;
 }

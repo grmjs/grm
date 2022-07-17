@@ -4,8 +4,7 @@ import {
   EventBuilder,
   EventCommon,
 } from "./common.ts";
-import type { Entity, EntityLike } from "../define.d.ts";
-import type { TelegramClient } from "../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { Api } from "../tl/api.js";
 import { LogLevel } from "../extensions/logger.ts";
 import { bigInt } from "../../deps.ts";
@@ -14,7 +13,7 @@ export interface NewMessageInterface extends DefaultEventInterface {
   func?: { (event: NewMessageEvent): boolean };
   incoming?: boolean;
   outgoing?: boolean;
-  fromUsers?: EntityLike[];
+  fromUsers?: Api.TypeEntityLike[];
   forwards?: boolean;
   pattern?: RegExp;
 }
@@ -23,7 +22,7 @@ export class NewMessage extends EventBuilder {
   declare func?: { (event: NewMessageEvent): boolean };
   incoming?: boolean;
   outgoing?: boolean;
-  fromUsers?: EntityLike[];
+  fromUsers?: Api.TypeEntityLike[];
   forwards?: boolean;
   pattern?: RegExp;
 
@@ -69,7 +68,7 @@ export class NewMessage extends EventBuilder {
     ].every((v) => v == undefined);
   }
 
-  async _resolve(client: TelegramClient) {
+  async _resolve(client: AbstractTelegramClient) {
     await super._resolve(client);
     this.fromUsers = await _intoIdSet(client, this.fromUsers);
   }
@@ -180,7 +179,7 @@ export class NewMessage extends EventBuilder {
 export class NewMessageEvent extends EventCommon {
   message: Api.Message;
   originalUpdate: (Api.TypeUpdate | Api.TypeUpdates) & {
-    _entities?: Map<number, Entity>;
+    _entities?: Map<number, Api.TypeEntity>;
   };
 
   constructor(
@@ -196,7 +195,7 @@ export class NewMessageEvent extends EventCommon {
     this.message = message;
   }
 
-  _setClient(client: TelegramClient) {
+  _setClient(client: AbstractTelegramClient) {
     super._setClient(client);
     const m = this.message;
     try {

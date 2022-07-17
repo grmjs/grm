@@ -3,6 +3,7 @@ import { SenderGetter } from "./sender_getter.ts";
 import { Api } from "../api.js";
 import { ChatGetter } from "./chat_getter.ts";
 import * as utils from "../../utils.ts";
+import { getEntityPair_ } from "../../entity_cache.ts";
 import { Forward } from "./forward.ts";
 import { File } from "./file.ts";
 import { returnBigInt } from "../../helpers.ts";
@@ -12,12 +13,11 @@ import {
   EditMessageParams,
   SendMessageParams,
   UpdatePinMessageParams,
-} from "../../client/messages.ts";
-import { DownloadMediaInterface } from "../../client/downloads.ts";
+} from "../../client/types.ts";
+import { DownloadMediaInterface } from "../../client/types.ts";
 import { _selfId } from "../../client/users.ts";
 import { bigInt, Buffer } from "../../../deps.ts";
-import type { Entity, EntityLike } from "../../define.d.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 interface MessageBaseInterface {
   id: any;
@@ -51,7 +51,7 @@ interface MessageBaseInterface {
   action?: any;
   reactions?: any;
   noforwards?: any;
-  _entities?: Map<string, Entity>;
+  _entities?: Map<string, Api.TypeEntity>;
 }
 
 export interface ButtonClickParam {
@@ -106,7 +106,7 @@ export class CustomMessage extends SenderGetter {
   /** @hidden */
   _actionEntities?: any;
   /** @hidden */
-  declare _client?: TelegramClient;
+  declare _client?: AbstractTelegramClient;
   /** @hidden */
   _text?: string;
   /** @hidden */
@@ -120,9 +120,9 @@ export class CustomMessage extends SenderGetter {
   /** @hidden */
   _buttonsCount?: number;
   /** @hidden */
-  _viaBot?: EntityLike;
+  _viaBot?: Api.TypeEntityLike;
   /** @hidden */
-  _viaInputBot?: EntityLike;
+  _viaInputBot?: Api.TypeEntityLike;
   /** @hidden */
   declare _inputSender?: any;
   /** @hidden */
@@ -130,7 +130,7 @@ export class CustomMessage extends SenderGetter {
   /** @hidden */
   declare _sender?: any;
   /** @hidden */
-  _entities?: Map<string, Entity>;
+  _entities?: Map<string, Api.TypeEntity>;
   /** @hidden */
 
   /* @ts-ignore */
@@ -170,7 +170,7 @@ export class CustomMessage extends SenderGetter {
     reactions = undefined,
     noforwards = undefined,
     ttlPeriod = undefined,
-    _entities = new Map<string, Entity>(),
+    _entities = new Map<string, Api.TypeEntity>(),
   }: MessageBaseInterface) {
     if (!id) throw new Error("id is a required attribute for Message");
     let senderId = undefined;
@@ -242,21 +242,21 @@ export class CustomMessage extends SenderGetter {
   }
 
   _finishInit(
-    client: TelegramClient,
-    entities: Map<string, Entity>,
-    inputChat?: EntityLike,
+    client: AbstractTelegramClient,
+    entities: Map<string, Api.TypeEntity>,
+    inputChat?: Api.TypeEntityLike,
   ) {
     this._client = client;
     const cache = client._entityCache;
     if (this.senderId) {
-      [this._sender, this._inputSender] = utils.getEntityPair_(
+      [this._sender, this._inputSender] = getEntityPair_(
         this.senderId.toString(),
         entities,
         cache,
       );
     }
     if (this.chatId) {
-      [this._chat, this._inputChat] = utils.getEntityPair_(
+      [this._chat, this._inputChat] = getEntityPair_(
         this.chatId.toString(),
         entities,
         cache,
@@ -269,7 +269,7 @@ export class CustomMessage extends SenderGetter {
     }
 
     if (this.viaBotId) {
-      [this._viaBot, this._viaInputBot] = utils.getEntityPair_(
+      [this._viaBot, this._viaInputBot] = getEntityPair_(
         this.viaBotId.toString(),
         entities,
         cache,
@@ -664,7 +664,7 @@ export class CustomMessage extends SenderGetter {
     }
   }
 
-  async forwardTo(entity: EntityLike) {
+  async forwardTo(entity: Api.TypeEntityLike) {
     if (this._client) {
       entity = await this._client.getInputEntity(entity);
       const params = {
@@ -882,7 +882,7 @@ export class CustomMessage extends SenderGetter {
     }
   }
 
-  _setButtons(chat: EntityLike, bot?: EntityLike) {
+  _setButtons(chat: Api.TypeEntityLike, bot?: Api.TypeEntityLike) {
     if (
       this.client &&
       (this.replyMarkup instanceof Api.ReplyInlineMarkup ||

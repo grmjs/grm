@@ -1,20 +1,19 @@
 import { Api } from "../api.js";
 import { ChatGetter } from "./chat_getter.ts";
 import { bigInt } from "../../../deps.ts";
-import type { Entity } from "../../define.d.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 interface SenderGetterConstructorInterface {
   senderId?: bigInt.BigInteger;
-  sender?: Entity;
+  sender?: Api.TypeEntity;
   inputSender?: Api.TypeInputPeer;
 }
 
 export class SenderGetter extends ChatGetter {
   _senderId?: bigInt.BigInteger;
-  _sender?: Entity;
+  _sender?: Api.TypeEntity;
   _inputSender?: Api.TypeInputPeer;
-  declare public _client?: TelegramClient;
+  declare public _client?: AbstractTelegramClient;
 
   static initSenderClass(
     // deno-lint-ignore no-explicit-any

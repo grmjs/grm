@@ -1,22 +1,21 @@
 import { getPeerId } from "../../utils.ts";
 import { Api } from "../api.js";
 import { returnBigInt } from "../../helpers.ts";
-import type { Entity, EntityLike } from "../../define.d.ts";
-import type { TelegramClient } from "../../client/telegram_client.ts";
+import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export interface ChatGetterConstructorParams {
-  chatPeer?: EntityLike;
-  inputChat?: EntityLike;
-  chat?: EntityLike;
+  chatPeer?: Api.TypeEntityLike;
+  inputChat?: Api.TypeEntityLike;
+  chat?: Api.TypeEntityLike;
   broadcast?: boolean;
 }
 
 export class ChatGetter {
-  _chatPeer?: EntityLike;
-  _inputChat?: EntityLike;
-  _chat?: Entity;
+  _chatPeer?: Api.TypeEntityLike;
+  _inputChat?: Api.TypeEntityLike;
+  _chat?: Api.TypeEntity;
   _broadcast?: boolean;
-  public _client?: TelegramClient;
+  public _client?: AbstractTelegramClient;
 
   static initChatClass(
     // deno-lint-ignore no-explicit-any

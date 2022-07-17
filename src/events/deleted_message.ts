@@ -1,5 +1,4 @@
 import { Api } from "../tl/api.js";
-import { EntityLike } from "../define.d.ts";
 import { DefaultEventInterface, EventBuilder, EventCommon } from "./common.ts";
 import { bigInt } from "../../deps.ts";
 
@@ -26,9 +25,9 @@ export class DeletedMessage extends EventBuilder {
 
 export class DeletedMessageEvent extends EventCommon {
   deletedIds: number[];
-  peer?: EntityLike;
+  peer?: Api.TypeEntityLike;
 
-  constructor(deletedIds: number[], peer?: EntityLike) {
+  constructor(deletedIds: number[], peer?: Api.TypeEntityLike) {
     super({
       chatPeer: peer,
       msgId: Array.isArray(deletedIds) ? deletedIds[0] : 0,

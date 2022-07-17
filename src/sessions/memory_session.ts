@@ -2,7 +2,6 @@
 import { Api } from "../tl/api.js";
 import { AuthKey } from "../crypto/authkey.ts";
 import { Session } from "./abstract.ts";
-import type { EntityLike } from "../define.d.ts";
 import {
   getDisplayName,
   getInputPeer,
@@ -232,7 +231,7 @@ export class MemorySession extends Session {
     }
   }
 
-  getInputEntity(key: EntityLike): Api.TypeInputPeer {
+  getInputEntity(key: Api.TypeEntityLike): Api.TypeInputPeer {
     let exact;
     if (
       typeof key === "object" &&
@@ -259,7 +258,7 @@ export class MemorySession extends Session {
       }
     }
     if (
-      bigInt.isInstance((key as any)) ||
+      bigInt.isInstance(key as any) ||
       typeof key === "bigint" ||
       typeof key === "number"
     ) {

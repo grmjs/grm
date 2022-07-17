@@ -1,5 +1,4 @@
 // deno-lint-ignore-file no-explicit-any
-import { TelegramClient } from "./telegram_client.ts";
 import { VERSION } from "../version.ts";
 import { sleep } from "../helpers.ts";
 import { Connection, ConnectionTCPFull } from "../network/mod.ts";
@@ -10,15 +9,15 @@ import { PromisedWebSockets } from "../extensions/promised_web_sockets.ts";
 import { Api } from "../tl/api.js";
 import type { AuthKey } from "../crypto/authkey.ts";
 import { EntityCache } from "../entity_cache.ts";
-import type { ParseInterface } from "./message_parse.ts";
+import type { ParseInterface } from "./types.ts";
 import type { EventBuilder } from "../events/common.ts";
 import { MarkdownParser } from "../extensions/markdown.ts";
 import { MTProtoSender } from "../network/mod.ts";
 import { LAYER } from "../tl/all_tl_objects.ts";
 import {
   ConnectionTCPMTProxyAbridged,
-  ProxyInterface,
 } from "../network/connection/tcpmt_proxy.ts";
+import { ProxyInterface } from "../network/connection/types.ts";
 import { Semaphore } from "../../deps.ts";
 
 const EXPORTED_SENDER_RECONNECT_TIMEOUT = 1000; // 1 sec
@@ -109,7 +108,10 @@ export abstract class TelegramBaseClient {
     string,
     [ReturnType<typeof setTimeout>, Api.TypeUpdate[]]
   >();
-  private _exportedSenderPromises = new Map<number, Promise<MTProtoSender>>();
+  private _exportedSenderPromises = new Map<
+    number,
+    Promise<MTProtoSender>
+  >();
   private _exportedSenderReleaseTimeouts = new Map<
     number,
     ReturnType<typeof setTimeout>
@@ -421,7 +423,7 @@ export abstract class TelegramBaseClient {
       authKeyCallback: this._authKeyCallback.bind(this),
       isMainSender: dcId === this.session.dcId,
       onConnectionBreak: this._cleanupExportedSender.bind(this),
-      client: this as unknown as TelegramClient,
+      client: this,
       securityChecks: this._securityChecks,
     });
   }

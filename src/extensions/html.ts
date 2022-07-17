@@ -1,6 +1,46 @@
 import { Api } from "../tl/api.js";
-import { stripText } from "../helpers.ts";
 import { Handler, Parser } from "../../deps.ts";
+
+function stripText(text: string, entities: Api.TypeMessageEntity[]) {
+  if (!entities || !entities.length) {
+    return text.trim();
+  }
+
+  while (text && text[text.length - 1].trim() === "") {
+    const e = entities[entities.length - 1];
+    if (e.offset + e.length === text.length) {
+      if (e.length === 1) {
+        entities.pop();
+        if (!entities.length) {
+          return text.trim();
+        }
+      } else {
+        e.length -= 1;
+      }
+    }
+    text = text.slice(0, -1);
+  }
+
+  while (text && text[0].trim() === "") {
+    for (let i = 0; i < entities.length; i++) {
+      const e = entities[i];
+      if (e.offset != 0) {
+        e.offset--;
+        continue;
+      }
+      if (e.length === 1) {
+        entities.shift();
+        if (!entities.length) {
+          return text.trimLeft();
+        }
+      } else {
+        e.length -= 1;
+      }
+    }
+    text = text.slice(1);
+  }
+  return text;
+}
 
 class HTMLToTelegramParser implements Handler {
   text: string;

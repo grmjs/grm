@@ -136,6 +136,6 @@ This port wouldn't exist without these wonderful people. Thanks to
   of GramJS,
 - authors of the dependencies,
 - authors of already ported dependencies,
-- [contributors](https://github.com/dcdunkan/grm/graphs/contributors) of
-  this repository,
+- [contributors](https://github.com/dcdunkan/grm/graphs/contributors) of this
+  repository,
 - and everyone else who were a part of this.

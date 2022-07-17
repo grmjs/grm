@@ -25,7 +25,7 @@ export { Socket } from "https://deno.land/std@0.148.0/node/net.ts";
 // x/
 export { SocksClient } from "https://deno.land/x/deno_socks@v2.6.1/mod.ts";
 export { getWords } from "https://deno.land/x/dryptography@v0.1.4/aes/utils/words.ts";
-export * as denodb from 'https://deno.land/x/denodb@v1.0.39/mod.ts';
+export * as denodb from "https://deno.land/x/denodb@v1.0.39/mod.ts";
 
 // cdn.skypack.dev/
 export {

@@ -2,7 +2,7 @@
 import { Api } from "../tl/api.js";
 import { MemorySession } from "./memory_session.ts";
 import { AuthKey } from "../crypto/authkey.ts";
-import { Buffer, denodb, bigInt } from "../../deps.ts";
+import { bigInt, Buffer, denodb } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
 import { returnBigInt } from "../helpers.ts";
 
@@ -17,7 +17,7 @@ class Session extends denodb.Model {
     port: DataTypes.INTEGER,
     serverAddress: DataTypes.STRING,
     authKey: DataTypes.BINARY,
-  }
+  };
 }
 
 class Entity extends denodb.Model {
@@ -29,7 +29,7 @@ class Entity extends denodb.Model {
     name: { type: DataTypes.STRING, allowNull: false },
     username: DataTypes.STRING,
     phone: DataTypes.STRING,
-  }
+  };
 }
 
 export enum DatabaseType {
@@ -37,7 +37,7 @@ export enum DatabaseType {
   MySQL,
   MariaDB,
   SQLite,
-  MongoDB
+  MongoDB,
 }
 
 export interface ConnectionOptions {
@@ -68,20 +68,26 @@ export class DatabaseSession extends MemorySession {
     let connector: denodb.DatabaseOptions;
     switch (connectionOptions.adapter) {
       case DatabaseType.Postgres:
-        connector = new denodb.PostgresConnector(connectionOptions.adapterOptions)
+        connector = new denodb.PostgresConnector(
+          connectionOptions.adapterOptions,
+        );
         break;
       case DatabaseType.MongoDB:
-        connector = new denodb.MongoDBConnector(connectionOptions.adapterOptions)
+        connector = new denodb.MongoDBConnector(
+          connectionOptions.adapterOptions,
+        );
         break;
       case DatabaseType.MySQL:
       case DatabaseType.MariaDB:
-        connector = new denodb.MySQLConnector(connectionOptions.adapterOptions)
+        connector = new denodb.MySQLConnector(connectionOptions.adapterOptions);
         break;
       case DatabaseType.SQLite:
-        connector = new denodb.SQLite3Connector(connectionOptions.adapterOptions)
+        connector = new denodb.SQLite3Connector(
+          connectionOptions.adapterOptions,
+        );
         break;
       default:
-        throw new Error("Database type not supported")
+        throw new Error("Database type not supported");
     }
 
     this.dbConnection = new denodb.Database({ debug: false, connector });
@@ -89,7 +95,9 @@ export class DatabaseSession extends MemorySession {
 
   async load() {
     await this.configureDatabase();
-    const session = this.session = await Session.where({ name: this.sessionName }).first();
+    const session = this.session = await Session.where({
+      name: this.sessionName,
+    }).first();
     if (session) {
       if (session.authKey) {
         let authKey = JSON.parse(session.authKey as string);
@@ -101,7 +109,9 @@ export class DatabaseSession extends MemorySession {
       }
 
       if (session.dcId) this._dcId = Number(session.dcId as number);
-      if (session.serverAddress) this._serverAddress = session.serverAddress as string;
+      if (session.serverAddress) {
+        this._serverAddress = session.serverAddress as string;
+      }
       if (session.port) this._port = session.port as number;
 
       await session.update();
@@ -149,12 +159,15 @@ export class DatabaseSession extends MemorySession {
     const rows = this._entitiesToRows(tlo);
     for (const row of rows) {
       const id = row[0];
-      const model = await Entity.where({ id: id.toString(), hash: row[1].toString() }).first();
+      const model = await Entity.where({
+        id: id.toString(),
+        hash: row[1].toString(),
+      }).first();
       if (model) {
         model.username = row[2] ? row[2].toString() : null;
         model.phone = row[3] ? row[3].toString() : null;
         model.name = row[4] ? row[4].toString() : null;
-        await model.update()
+        await model.update();
       } else {
         // The above is to ensure we have a hash
         await Entity.create({
@@ -169,17 +182,17 @@ export class DatabaseSession extends MemorySession {
   }
 
   async getEntityRowsByPhone(phone: string) {
-    const row = await Entity.where('phone', phone).first();
+    const row = await Entity.where("phone", phone).first();
     if (row) return [row.id, row.hash];
   }
 
   async getEntityRowsByUsername(username: string) {
-    const row = await Entity.where('username', username).first();
+    const row = await Entity.where("username", username).first();
     if (row) return [row.id, row.hash];
   }
 
   async getEntityRowsByName(name: string) {
-    const row = await Entity.where('name', name).first();
+    const row = await Entity.where("name", name).first();
     if (row) return [row.id, row.hash];
   }
 

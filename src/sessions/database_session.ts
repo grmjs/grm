@@ -10,7 +10,6 @@ const DataTypes = denodb.DataTypes;
 
 class Session extends denodb.Model {
   static timestamps = true;
-
   static fields = {
     name: { type: DataTypes.STRING, primaryKey: true },
     dcId: DataTypes.STRING,
@@ -22,7 +21,6 @@ class Session extends denodb.Model {
 
 class Entity extends denodb.Model {
   static timestamps = true;
-
   static fields = {
     id: { type: DataTypes.STRING, primaryKey: true },
     hash: { type: DataTypes.INTEGER, allowNull: false },
@@ -33,25 +31,25 @@ class Entity extends denodb.Model {
 }
 
 export enum DatabaseType {
-  Postgres,
-  MySQL,
-  MariaDB,
-  SQLite,
-  MongoDB,
+  Postgres = "Postgres",
+  MySQL = "MySQL",
+  MariaDB = "MariaDB",
+  SQLite = "SQLite",
+  MongoDB = "MongoDB",
 }
 
-export interface ConnectionOptions {
-  adapter: DatabaseType;
-  tables?: {
-    session?: string;
-    entity?: string;
-  };
-  adapterOptions: any;
-}
+type AdapterDetails =
+  | { adapter: "Postgres"; adapterOptions: denodb.PostgresOptions }
+  | { adapter: "MySQL" | "MariaDB"; adapterOptions: denodb.MySQLOptions }
+  | { adapter: "SQLite"; adapterOptions: denodb.SQLite3Options }
+  | { adapter: "MongoDB"; adapterOptions: denodb.MongoDBOptions };
+
+export type ConnectionOptions =
+  & AdapterDetails
+  & { tables?: { session?: string; entity?: string } };
 
 export class DatabaseSession extends MemorySession {
   public sessionName: string;
-
   private dbConnection: denodb.Database;
   private dbInitialized = false;
   private session?: Session;
@@ -60,7 +58,6 @@ export class DatabaseSession extends MemorySession {
     super();
 
     this.sessionName = sessionName;
-
     const tableNames = connectionOptions.tables || {};
     Session.table = tableNames.session || "sessions";
     Entity.table = tableNames.entity || "entities";
@@ -79,7 +76,9 @@ export class DatabaseSession extends MemorySession {
         break;
       case DatabaseType.MySQL:
       case DatabaseType.MariaDB:
-        connector = new denodb.MySQLConnector(connectionOptions.adapterOptions);
+        connector = new denodb.MySQLConnector(
+          connectionOptions.adapterOptions,
+        );
         break;
       case DatabaseType.SQLite:
         connector = new denodb.SQLite3Connector(
@@ -98,6 +97,7 @@ export class DatabaseSession extends MemorySession {
     const session = this.session = await Session.where({
       name: this.sessionName,
     }).first();
+
     if (session) {
       if (session.authKey) {
         let authKey = JSON.parse(session.authKey as string);
@@ -108,7 +108,7 @@ export class DatabaseSession extends MemorySession {
         this._authKey.setKey(authKey);
       }
 
-      if (session.dcId) this._dcId = Number(session.dcId as number);
+      if (session.dcId) this._dcId = Number(session.dcId);
       if (session.serverAddress) {
         this._serverAddress = session.serverAddress as string;
       }
@@ -116,8 +116,7 @@ export class DatabaseSession extends MemorySession {
 
       await session.update();
     } else {
-      const session = await Session.create({ name: this.sessionName });
-      this.session = session;
+      this.session = await Session.create({ name: this.sessionName });
     }
   }
 
@@ -137,7 +136,6 @@ export class DatabaseSession extends MemorySession {
       session.port = port;
       session.update();
     }
-
     super.setDC(dcId, serverAddress, port);
   }
 

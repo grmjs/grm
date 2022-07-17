@@ -25,7 +25,7 @@ await client.start({
   phoneNumber: () => prompt("Enter your phone number:")!,
   password: () => prompt("Enter your password:")!,
   phoneCode: () => prompt("Enter the code you received:")!,
-  onError: (err: Error) => console.log(err),
+  onError: (err) => console.log(err),
 });
 
 console.log("You should now be connected.");

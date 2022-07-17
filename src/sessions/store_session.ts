@@ -74,6 +74,6 @@ export class StoreSession extends MemorySession {
     id: string | bigInt.BigInteger,
     _exact = true,
   ): any {
-    return this.store.getItem(this.sessionName + id.toString());
+    return JSON.parse(this.store.getItem(this.sessionName + id.toString()));
   }
 }

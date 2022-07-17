@@ -130,11 +130,11 @@ export class MemorySession extends Session {
       return;
     }
 
-    let username = e.username;
+    let username = e.username || null;
     if (username) {
       username = username.toLowerCase();
     }
-    const phone = e.phone;
+    const phone = e.phone || null;
     const name = getDisplayName(e);
     return this._entityValuesToRow(markedId, pHash, username, phone, name);
   }
@@ -172,6 +172,7 @@ export class MemorySession extends Session {
     }
     return rows;
   }
+
   processEntities(tlo: any) {
     const entitiesSet = this._entitiesToRows(tlo);
     for (const e of entitiesSet) {
@@ -179,7 +180,8 @@ export class MemorySession extends Session {
     }
   }
 
-  getEntityRowsByPhone(phone: string) {
+  // deno-lint-ignore require-await
+  async getEntityRowsByPhone(phone: string) {
     for (const e of this._entities) {
       // id, hash, username, phone, name
       if (e[3] === phone) {
@@ -188,7 +190,8 @@ export class MemorySession extends Session {
     }
   }
 
-  getEntityRowsByUsername(username: string) {
+  // deno-lint-ignore require-await
+  async getEntityRowsByUsername(username: string) {
     for (const e of this._entities) {
       // id, hash, username, phone, name
       if (e[2] === username) {
@@ -197,7 +200,8 @@ export class MemorySession extends Session {
     }
   }
 
-  getEntityRowsByName(name: string) {
+  // deno-lint-ignore require-await
+  async getEntityRowsByName(name: string) {
     for (const e of this._entities) {
       // id, hash, username, phone, name
       if (e[4] === name) {
@@ -206,7 +210,8 @@ export class MemorySession extends Session {
     }
   }
 
-  getEntityRowsById(id: string | bigInt.BigInteger, exact = true) {
+  // deno-lint-ignore require-await
+  async getEntityRowsById(id: string | bigInt.BigInteger, exact = true) {
     if (exact) {
       for (const e of this._entities) {
         // id, hash, username, phone, name
@@ -231,7 +236,7 @@ export class MemorySession extends Session {
     }
   }
 
-  getInputEntity(key: Api.TypeEntityLike): Api.TypeInputPeer {
+  async getInputEntity(key: Api.TypeEntityLike): Promise<Api.TypeInputPeer> {
     let exact;
     if (
       typeof key === "object" &&
@@ -268,21 +273,21 @@ export class MemorySession extends Session {
     if (typeof key === "string") {
       const phone = parsePhone(key);
       if (phone) {
-        result = this.getEntityRowsByPhone(phone);
+        result = await this.getEntityRowsByPhone(phone);
       } else {
         const { username, isInvite } = parseUsername(key);
         if (username && !isInvite) {
-          result = this.getEntityRowsByUsername(username);
+          result = await this.getEntityRowsByUsername(username);
         }
       }
       if (!result) {
         const id = parseID(key);
         if (id) {
-          result = this.getEntityRowsById(id, exact);
+          result = await this.getEntityRowsById(id, exact);
         }
       }
       if (!result) {
-        result = this.getEntityRowsByName(key);
+        result = await this.getEntityRowsByName(key);
       }
     }
     if (result) {

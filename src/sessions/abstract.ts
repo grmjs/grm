@@ -11,7 +11,7 @@ export abstract class Session {
   abstract load(): Promise<void>;
   abstract setAuthKey(authKey?: AuthKey, dcId?: number): void;
   abstract getAuthKey(dcId?: number): AuthKey | undefined;
-  abstract getInputEntity(key: Api.TypeEntityLike): Api.TypeInputPeer;
+  abstract getInputEntity(key: Api.TypeEntityLike): Promise<Api.TypeInputPeer>;
   abstract close(): void;
   abstract save(): void;
   abstract delete(): void;

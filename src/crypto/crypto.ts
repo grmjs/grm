@@ -34,10 +34,8 @@ export class CTR {
     }
 
     this._counter = counter;
-
     this._remainingCounter = undefined;
     this._remainingCounterIndex = 16;
-
     this._aes = new AES(getWords(key));
   }
 
@@ -97,8 +95,8 @@ export class Hash {
   }
 
   update(data: Buffer) {
-    //We shouldn't be needing new Uint8Array but it doesn't
-    //work without it
+    // We shouldn't be needing new Uint8Array but it doesn't
+    // work without it
     this.data = new Uint8Array(data);
   }
 

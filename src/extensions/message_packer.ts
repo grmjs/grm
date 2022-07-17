@@ -5,15 +5,6 @@ import { BinaryWriter } from "./binary_writer.ts";
 import type { MTProtoState } from "../network/mtproto_state.ts";
 import type { RequestState } from "../network/request_state.ts";
 
-const _USE_INVOKE_AFTER_WITH = [
-  "messages.SendMessage",
-  "messages.SendMedia",
-  "messages.SendMultiMedia",
-  "messages.ForwardMessages",
-  "messages.SendInlineBotResult",
-  "users.GetUsers",
-];
-
 export class MessagePacker {
   private _state: MTProtoState;
   private _pendingStates: RequestState[];

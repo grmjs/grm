@@ -66,8 +66,6 @@ export function buildArgConfig(name: string, argType: string) {
     useVectorId: null,
   };
 
-  const _canBeInferred = name === "random_id";
-
   if (argType !== "#") {
     currentConfig.flagIndicator = false;
     currentConfig.type = argType.replace(/^!+/, "");

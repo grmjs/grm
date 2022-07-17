@@ -34,17 +34,17 @@ const PUBLIC_KEYS = [
   },
 ];
 
-export const _serverKeys = new Map<
+export const serverKeys = new Map<
   string,
   { n: bigInt.BigInteger; e: number }
 >();
 
 PUBLIC_KEYS.forEach(({ fingerprint, ...keyInfo }) => {
-  _serverKeys.set(fingerprint.toString(), keyInfo);
+  serverKeys.set(fingerprint.toString(), keyInfo);
 });
 
 export function encrypt(fingerprint: bigInt.BigInteger, data: Buffer) {
-  const key = _serverKeys.get(fingerprint.toString());
+  const key = serverKeys.get(fingerprint.toString());
   if (!key) {
     return undefined;
   }

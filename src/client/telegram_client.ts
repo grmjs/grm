@@ -1,10 +1,9 @@
 import { TelegramBaseClient, TelegramClientParams } from "./base_client.ts";
+import { Dialog, InlineResults } from "../tl/custom/mod.ts";
 import * as twoFA from "./2fa.ts";
 import * as authMethods from "./auth.ts";
 import * as botMethods from "./bots.ts";
 import * as buttonsMethods from "./buttons.ts";
-
-import { Dialog, InlineResults } from "../tl/custom/mod.ts";
 import * as downloadMethods from "./downloads.ts";
 import * as parseMethods from "./message_parse.ts";
 import * as messageMethods from "./messages.ts";

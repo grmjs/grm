@@ -15,7 +15,7 @@ import {
 import { Api } from "../tl/api.js";
 import { SecurityError } from "../errors/mod.ts";
 import { Factorizator } from "../crypto/factorizator.ts";
-import { _serverKeys } from "../crypto/rsa.ts";
+import { serverKeys } from "../crypto/rsa.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import { AuthKey } from "../crypto/authkey.ts";
 import { IGE } from "../crypto/ige.ts";
@@ -61,7 +61,7 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
   let targetFingerprint;
   let targetKey;
   for (const fingerprint of resPQ.serverPublicKeyFingerprints) {
-    targetKey = _serverKeys.get(fingerprint.toString());
+    targetKey = serverKeys.get(fingerprint.toString());
     if (targetKey !== undefined) {
       targetFingerprint = fingerprint;
       break;

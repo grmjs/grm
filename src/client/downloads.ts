@@ -31,20 +31,7 @@ import {
   progressCallback,
 } from "./types.ts";
 
-interface Deferred {
-  // deno-lint-ignore no-explicit-any
-  promise: Promise<any>;
-  // deno-lint-ignore no-explicit-any
-  resolve: (value?: any) => void;
-}
-
-const sizeTypes = ["w", "y", "d", "x", "c", "m", "b", "a", "s"];
-
 const MIN_CHUNK_SIZE = 4096;
-const _DEFAULT_CHUNK_SIZE = 64; // kb
-const _ONE_MB = 1024 * 1024;
-const _REQUEST_TIMEOUT = 15000;
-const _DISCONNECT_SLEEP = 1000;
 const TIMED_OUT_SLEEP = 1000;
 const MAX_CHUNK_SIZE = 512 * 1024;
 
@@ -86,7 +73,7 @@ class DirectDownloadIter extends RequestIter {
     if (current.length < this.request!.limit) {
       // we finished downloading
       this.left = this.buffer!.length;
-      await this.close();
+      this.close();
       return true;
     } else {
       this.request!.offset = this.request!.offset.add(this._stride!);
@@ -184,7 +171,7 @@ class GenericDownloadIter extends DirectDownloadIter {
     // 2.3. If we are in the last chunk, we will return the last partial data
     if (done) {
       this.left = this.buffer!.length;
-      await this.close();
+      this.close();
       return;
     }
 
@@ -365,37 +352,6 @@ export async function downloadFileV2(
   }
 }
 
-class _Foreman {
-  private deferred: Deferred | undefined;
-  private activeWorkers = 0;
-
-  constructor(private maxWorkers: number) {}
-
-  requestWorker() {
-    this.activeWorkers++;
-    if (this.activeWorkers > this.maxWorkers) {
-      this.deferred = createDeferred();
-      return this.deferred.promise;
-    }
-    return Promise.resolve();
-  }
-
-  releaseWorker() {
-    this.activeWorkers--;
-    if (this.deferred && this.activeWorkers <= this.maxWorkers) {
-      this.deferred.resolve();
-    }
-  }
-}
-
-function createDeferred(): Deferred {
-  let resolve: Deferred["resolve"];
-  const promise = new Promise((_resolve) => {
-    resolve = _resolve;
-  });
-  return { promise, resolve: resolve! };
-}
-
 export function downloadMedia(
   client: AbstractTelegramClient,
   messageOrMedia: Api.Message | Api.TypeMessageMedia,
@@ -524,21 +480,6 @@ export function _downloadWebDocument(
   _args: DownloadMediaInterface,
 ): Promise<Buffer> {
   throw new Error("not implemented");
-}
-
-function _pickFileSize(sizes: Api.TypePhotoSize[], sizeType: string) {
-  if (!sizeType || !sizes || !sizes.length) {
-    return undefined;
-  }
-  const indexOfSize = sizeTypes.indexOf(sizeType);
-  let size;
-  for (let i = indexOfSize; i < sizeTypes.length; i++) {
-    size = sizes.find((s) => s.type === sizeTypes[i]);
-    if (size && !(size instanceof Api.PhotoPathSize)) {
-      return size;
-    }
-  }
-  return undefined;
 }
 
 function getThumb(

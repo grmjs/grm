@@ -3,7 +3,7 @@ import { Api } from "../tl/api.js";
 import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { LogLevel } from "../extensions/logger.ts";
 
-const _ALBUM_DELAY = 500;
+const ALBUM_DELAY = 500;
 
 export class Album extends EventBuilder {
   declare func?: { (event: Album): boolean };
@@ -55,7 +55,7 @@ export class Album extends EventBuilder {
         event._setClient(this.client!);
         event._entities = messages[0]._entities!;
         dispatch!(event);
-      }, _ALBUM_DELAY),
+      }, ALBUM_DELAY),
       [...oldValues, update],
     ]);
   }

@@ -25,7 +25,7 @@ import {
   UpdatePinMessageParams,
 } from "./types.ts";
 
-const _MAX_CHUNK_SIZE = 100;
+const MAX_CHUNK_SIZE = 100;
 
 export class _MessagesIter extends RequestIter {
   entity?: Api.TypeInputPeer;
@@ -186,7 +186,7 @@ export class _MessagesIter extends RequestIter {
       this.reverse &&
       !(this.request instanceof Api.messages.SearchGlobal)
     ) {
-      this.request.addOffset -= _MAX_CHUNK_SIZE;
+      this.request.addOffset -= MAX_CHUNK_SIZE;
     }
     this.addOffset = addOffset;
     this.maxId = maxId;
@@ -198,8 +198,8 @@ export class _MessagesIter extends RequestIter {
     if (!this.request) {
       throw new Error("Request not set yet");
     }
-    this.request.limit = Math.min(this.left, _MAX_CHUNK_SIZE);
-    if (this.reverse && this.request.limit != _MAX_CHUNK_SIZE) {
+    this.request.limit = Math.min(this.left, MAX_CHUNK_SIZE);
+    if (this.reverse && this.request.limit != MAX_CHUNK_SIZE) {
       if (!(this.request instanceof Api.messages.SearchGlobal)) {
         this.request.addOffset = this.addOffset! - this.request.limit;
       }
@@ -328,12 +328,12 @@ export class _IDsIter extends RequestIter {
   async _loadNextChunk() {
     const ids = this._ids!.slice(
       this._offset,
-      this._offset! + _MAX_CHUNK_SIZE,
+      this._offset! + MAX_CHUNK_SIZE,
     );
     if (!ids.length) {
       return false;
     }
-    this._offset! += _MAX_CHUNK_SIZE;
+    this._offset! += MAX_CHUNK_SIZE;
     let fromId;
     let r;
     if (this._ty == EntityType_.CHANNEL) {

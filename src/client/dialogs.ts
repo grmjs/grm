@@ -8,7 +8,7 @@ import { bigInt } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
 import { IterDialogsParams } from "./types.ts";
 
-const _MAX_CHUNK_SIZE = 100;
+const MAX_CHUNK_SIZE = 100;
 
 function _dialogMessageKey(peer: Api.TypePeer, messageId: number): string {
   // can't use arrays as keys for map :( need to convert to string.
@@ -77,7 +77,7 @@ export class _DialogsIter extends RequestIter {
     if (!this.request || !this.seen || !this.buffer) {
       return;
     }
-    this.request.limit = Math.min(this.left, _MAX_CHUNK_SIZE);
+    this.request.limit = Math.min(this.left, MAX_CHUNK_SIZE);
     const r = await this.client.invoke(this.request);
     if (r instanceof Api.messages.DialogsNotModified) {
       return;

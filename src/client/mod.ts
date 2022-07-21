@@ -28,5 +28,4 @@ export * as tgClient from "./abstract_telegram_client.ts";
 export * as updates from "./updates.ts";
 export * as uploads from "./uploads.ts";
 export * as users from "./users.ts";
-export * from './types.ts';
-
+export * from "./types.ts";

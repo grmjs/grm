@@ -25,4 +25,4 @@ export * from "./request_iter.ts";
 export * from "./entity_cache.ts";
 export * from "./entity_cache.ts";
 export * from "./version.ts";
-export * from './classes.ts';
+export * from "./classes.ts";

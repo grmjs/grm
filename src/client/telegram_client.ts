@@ -159,6 +159,12 @@ export class TelegramClient extends TelegramBaseClient
     return downloadMethods.downloadFileV2(this, inputLocation, fileParams);
   }
 
+  iterDownload(
+    iterFileParams: types.IterDownloadFunction,
+  ): downloadMethods.DirectDownloadIter {
+    return downloadMethods.iterDownload(this, iterFileParams);
+  }
+
   downloadProfilePhoto(
     entity: Api.TypeEntityLike,
     downloadProfilePhotoParams: types.DownloadProfilePhotoParams = {

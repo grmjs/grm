@@ -35,7 +35,7 @@ const MIN_CHUNK_SIZE = 4096;
 const TIMED_OUT_SLEEP = 1000;
 const MAX_CHUNK_SIZE = 512 * 1024;
 
-class DirectDownloadIter extends RequestIter {
+export class DirectDownloadIter extends RequestIter {
   protected request?: Api.upload.GetFile;
   private _sender?: MTProtoSender;
   private _timedOut = false;
@@ -131,7 +131,7 @@ class DirectDownloadIter extends RequestIter {
   }
 }
 
-class GenericDownloadIter extends DirectDownloadIter {
+export class GenericDownloadIter extends DirectDownloadIter {
   async _loadNextChunk(): Promise<boolean | undefined> {
     // 1. Fetch enough for one chunk
     let data = Buffer.alloc(0);
@@ -186,7 +186,7 @@ class GenericDownloadIter extends DirectDownloadIter {
   }
 }
 
-function iterDownload(
+export function iterDownload(
   client: AbstractTelegramClient,
   {
     file,

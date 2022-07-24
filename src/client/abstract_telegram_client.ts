@@ -6,6 +6,7 @@ import { MTProtoSender } from "../network/mtproto_sender.ts";
 import { Session } from "../sessions/mod.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { TotalList } from "../helpers.ts";
+import { DirectDownloadIter } from "./downloads.ts";
 import { TelegramBaseClient, TelegramClientParams } from "./base_client.ts";
 
 export abstract class AbstractTelegramClient extends TelegramBaseClient {
@@ -85,6 +86,10 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
     inputLocation: Api.TypeInputFileLocation,
     fileParams: types.DownloadFileParamsV2,
   ): Promise<string | Buffer | undefined>;
+
+  abstract iterDownload(
+    iterFileParams: types.IterDownloadFunction,
+  ): DirectDownloadIter;
 
   abstract downloadProfilePhoto(
     entity: Api.TypeEntityLike,

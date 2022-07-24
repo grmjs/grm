@@ -18,7 +18,6 @@ import { sanitizeParseMode } from "../utils.ts";
 import type { EventBuilder } from "../events/common.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import { LAYER } from "../tl/all_tl_objects.ts";
-import { DownloadMediaInterface } from "./types.ts";
 import { _handleUpdate, _updateLoop } from "./updates.ts";
 import { Session } from "../sessions/mod.ts";
 import { Album, AlbumEvent } from "../events/album.ts";
@@ -31,8 +30,8 @@ import {
 } from "../events/deleted_message.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
-import * as types from "./types.ts";
 import { TotalList } from "../helpers.ts";
+import * as types from "./types.ts";
 
 export class TelegramClient extends TelegramBaseClient
   implements AbstractTelegramClient {
@@ -180,7 +179,7 @@ export class TelegramClient extends TelegramBaseClient
 
   downloadMedia(
     messageOrMedia: Api.Message | Api.TypeMessageMedia,
-    downloadParams?: DownloadMediaInterface,
+    downloadParams?: types.DownloadMediaInterface,
   ): Promise<Buffer | string | undefined> | Buffer {
     return downloadMethods.downloadMedia(
       this,

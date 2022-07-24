@@ -143,7 +143,7 @@ export abstract class TelegramBaseClient {
     }
 
     if (this._log.logLevel !== "none") {
-      this._log.info(`Running grm v${VERSION}`);
+      this._log.info(`Running Grm v${VERSION}`);
     }
 
     if (session && typeof session == "string") {

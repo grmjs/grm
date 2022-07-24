@@ -665,5 +665,8 @@ export async function downloadProfilePhoto(
   } else {
     return Buffer.alloc(0);
   }
-  return client.downloadFile(loc, { dcId });
+  return client.downloadFile(loc, {
+    dcId,
+    outputFile: fileParams.outputFile,
+  });
 }

@@ -170,6 +170,7 @@ export interface DownloadFileParamsV2 {
 
 export interface DownloadProfilePhotoParams {
   isBig?: boolean;
+  outputFile?: OutFile;
 }
 
 export interface DirectDownloadIterInterface {

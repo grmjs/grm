@@ -105,7 +105,7 @@ Here is a list of cool projects that uses Grm.
 - [xorgram/xor](https://github.com/xorgram/xor) — Telegram user bot focusing on
   uniqueness and extensibility.
 
-Feel free to add yours to this list by opening a pull request.
+Add yours to this list by opening a pull request.
 
 ## Contributing
 

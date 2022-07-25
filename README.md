@@ -29,18 +29,18 @@ Then use your API credentials with the following example code:
 ```ts
 import { StringSession, TelegramClient } from "https://deno.land/x/grm/mod.ts";
 
-const appId = 123456;
-const appHash = "abcd1234";
+const apiId = 123456;
+const apiHash = "abcd1234";
 
 // Fill in this later with the value from `client.session.save()`,
 // so that you don't have to login every time.
 const stringSession = new StringSession("");
 
 console.log("Loading interactive example...");
-const client = new TelegramClient(stringSession, appId, appHash);
+const client = new TelegramClient(stringSession, apiId, apiHash);
 
 await client.start({
-  phoneNumber: () => prompt("Pone number:")!,
+  phoneNumber: () => prompt("Phone number:")!,
   password: () => prompt("Password:")!,
   phoneCode: () => prompt("Verification code:")!,
   onError: console.error,

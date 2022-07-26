@@ -28,7 +28,7 @@ function main() {
 
   Deno.writeTextFileSync(
     resolve(DIR_PATH, "./schema_tl.ts"),
-    `export default \`${stripTl(schemaTl)}\`;`,
+    `export default \`${stripTl(schemaTl)}\`;\n`,
   );
 }
 

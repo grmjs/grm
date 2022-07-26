@@ -48,6 +48,7 @@ export interface ArgConfig {
   isFlag: boolean;
   skipConstructorId: boolean;
   flagIndex: number;
+  flagName: string | null;
   flagIndicator: boolean;
   type: string | null;
   useVectorId: boolean | null;
@@ -61,6 +62,7 @@ export function buildArgConfig(name: string, argType: string) {
     isFlag: false,
     skipConstructorId: false,
     flagIndex: -1,
+    flagName: null,
     flagIndicator: true,
     type: null,
     useVectorId: null,
@@ -71,12 +73,15 @@ export function buildArgConfig(name: string, argType: string) {
     currentConfig.type = argType.replace(/^!+/, "");
 
     const flagMatch = currentConfig.type.match(
-      /flags(\d+)?.(\d+)\?([\w<>.]+)/,
+      /(flags(?:\d+)?).(\d+)\?([\w<>.]+)/,
     );
     if (flagMatch) {
       currentConfig.isFlag = true;
-      currentConfig.flagIndex = Number(flagMatch[1] ?? flagMatch[2]);
-      [, , , currentConfig.type] = flagMatch;
+      // As of layer 140, flagName can be "flags" or "flags2"
+      currentConfig.flagName = flagMatch[1];
+      currentConfig.flagIndex = Number(flagMatch[2]);
+      // Update the type to match the exact type, not the "flagged" one
+      currentConfig.type = flagMatch[3];
     }
 
     const vectorMatch = currentConfig.type.match(/[Vv]ector<([\w\d.]+)>/);

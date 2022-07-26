@@ -19,7 +19,7 @@ function main() {
 
   Deno.writeTextFileSync(
     resolve(DIR_PATH, "./api_tl.ts"),
-    `export default \`${stripTl(apiTl)}\`;`,
+    `export default \`${stripTl(apiTl)}\`;\n`,
   );
 
   const schemaTl = Deno.readTextFileSync(

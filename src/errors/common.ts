@@ -14,7 +14,7 @@ export class TypeNotFoundError extends Error {
 supposed to be read with ID ${invalidConstructorId}. Most likely, a TLObject \
 was trying to be read when it should not be read. Remaining bytes: ${remaining.length}`,
     );
-    alert(
+    console.warn(
       `Missing MTProto Entity: Please, make sure to add TL definition for ID ${invalidConstructorId}`,
     );
   }

@@ -173,7 +173,7 @@ function createClasses(_classesType, params) {
                 continue;
               }
 
-              if (args.flagName & (1 << arg.flagIndex)) {
+              if (args[arg.flagName] & (1 << arg.flagIndex)) {
                 args[argName] = getArgFromReader(reader, arg);
               } else {
                 args[argName] = null;

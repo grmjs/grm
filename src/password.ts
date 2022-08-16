@@ -43,7 +43,7 @@ function checkPrimeAndGood(primeBytes: Buffer, g: number) {
 }
 
 function isGoodLarge(number: bigInt.BigInteger, p: bigInt.BigInteger) {
-  return number.greater(BigInt(0)) && p.subtract(number).greater(BigInt(0));
+  return number.greater(bigInt(0)) && p.subtract(number).greater(bigInt(0));
 }
 
 function numBytesForHash(number: Buffer) {
@@ -62,7 +62,7 @@ function isGoodModExpFirst(
   const minDiffBitsCount = 2048 - 64;
   const maxModExpSize = 256;
   return !(
-    diff.lesser(BigInt(0)) ||
+    diff.lesser(bigInt(0)) ||
     diff.bitLength().toJSNumber() < minDiffBitsCount ||
     modexp.bitLength().toJSNumber() < minDiffBitsCount ||
     Math.floor((modexp.bitLength().toJSNumber() + 7) / 8) > maxModExpSize
@@ -155,7 +155,7 @@ export function computeCheck(request: Api.account.Password, password: string) {
           sha256(Buffer.concat([aForHash, bForHash])),
           false,
         );
-        if (u.greater(BigInt(0))) {
+        if (u.greater(bigInt(0))) {
           return { a: a, aForHash: aForHash, u: u };
         }
       }

@@ -120,11 +120,9 @@ export class _MessagesIter extends RequestIter {
       });
     } else if (
       search !== undefined ||
-      filter !== undefined ||
+      !(filter instanceof Api.InputMessagesFilterEmpty) ||
       fromUser !== undefined
     ) {
-      const _ty = entityType_(this.entity);
-
       this.request = new Api.messages.Search({
         peer: this.entity,
         q: search || "",

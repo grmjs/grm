@@ -111,6 +111,7 @@ interface ParticipantsIterInterface {
   entity: Api.TypeEntityLike;
   // deno-lint-ignore no-explicit-any
   filter: any;
+  offset?: number;
   search?: string;
   showTotal?: boolean;
 }
@@ -122,6 +123,7 @@ export class _ParticipantsIter extends RequestIter {
   async _init({
     entity,
     filter,
+    offset,
     search,
     showTotal,
   }: ParticipantsIterInterface): Promise<boolean | void> {
@@ -182,7 +184,7 @@ export class _ParticipantsIter extends RequestIter {
             new Api.ChannelParticipantsSearch({
               q: search || "",
             }),
-          offset: 0,
+          offset,
           limit: _MAX_PARTICIPANTS_CHUNK_SIZE,
           hash: bigInt.zero,
         }),
@@ -253,9 +255,6 @@ export class _ParticipantsIter extends RequestIter {
       this.limit - this.requests[0].offset,
       _MAX_PARTICIPANTS_CHUNK_SIZE,
     );
-    if (this.requests[0].offset > this.limit) {
-      return true;
-    }
     const results = [];
     for (const request of this.requests) {
       results.push(await this.client.invoke(request));
@@ -391,7 +390,7 @@ class _AdminLogIter extends RequestIter {
 export function iterParticipants(
   client: AbstractTelegramClient,
   entity: Api.TypeEntityLike,
-  { limit, search, filter, showTotal = true }: IterParticipantsParams,
+  { limit, filter, offset, search, showTotal = true }: IterParticipantsParams,
 ) {
   return new _ParticipantsIter(
     client,
@@ -400,6 +399,7 @@ export function iterParticipants(
     {
       entity: entity,
       filter: filter,
+      offset,
       search: search,
       showTotal: showTotal,
     },

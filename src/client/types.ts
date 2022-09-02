@@ -133,8 +133,9 @@ export interface SendFileInterface {
 
 export interface IterParticipantsParams {
   limit?: number;
-  search?: string;
   filter?: Api.TypeChannelParticipantsFilter;
+  offset?: number;
+  search?: string;
   showTotal?: boolean;
 }
 

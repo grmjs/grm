@@ -34,18 +34,6 @@ export class MessagePacker {
     if (this.setReady) {
       this.setReady(true);
     }
-    // we don't want msg acks here
-    if (state && state.request.CONSTRUCTOR_ID != 1658238041) {
-      this._pendingStates.push(state);
-      state.promise
-        // Using finally causes triggering `unhandledrejection` event
-        .catch(() => {})
-        .finally(() => {
-          this._pendingStates = this._pendingStates.filter(
-            (s) => s !== state,
-          );
-        });
-    }
   }
 
   extend(states: RequestState[]) {
@@ -60,10 +48,6 @@ export class MessagePacker {
         this.setReady = resolve;
       });
       await this._ready;
-    }
-    if (!this._queue[this._queue.length - 1]) {
-      this._queue = [];
-      return;
     }
     let data;
     let buffer = new BinaryWriter(Buffer.alloc(0));

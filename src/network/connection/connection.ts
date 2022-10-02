@@ -105,7 +105,7 @@ export class Connection {
     this._cancelLoops();
     try {
       await this.socket.close();
-    } catch (e) {
+    } catch (_e) {
       this._log.error("error while closing socket connection");
     }
   }

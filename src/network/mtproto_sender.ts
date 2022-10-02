@@ -302,16 +302,14 @@ export class MTProtoSender {
     this._log.debug("Starting send loop");
     this._sendLoopHandle = this._sendLoop();
     this._log.info(
-      "Connection to %s complete!".replace(
-        "%s",
-        this._connection!.toString(),
-      ),
+      `Connection to ${this._connection!.toString()} complete!`,
     );
   }
 
   async _disconnect(error?: Error) {
     if (!this._connection) {
       this._log.info("Not disconnecting (already have no connection)");
+      return;
     }
     this._log.info(`Disconnecting from ${this._connection!.toString()}...`);
     this._userConnected = false;
@@ -333,10 +331,7 @@ export class MTProtoSender {
       this._pendingState.clear();
       this._cancelLoops();
       this._log.info(
-        "Disconnecting from %s...".replace(
-          "%s",
-          this._connection!.toString(),
-        ),
+        `Disconnecting from ${this._connection!.toString()} complete!`,
       );
       this._connection = undefined;
     }

@@ -6,7 +6,7 @@ import { Buffer } from "../../deps.ts";
 const CURRENT_VERSION = "1";
 
 export class StringSession extends MemorySession {
-  private readonly _key?: Buffer;
+  _key?: Buffer;
 
   constructor(session?: string) {
     super();
@@ -18,7 +18,6 @@ export class StringSession extends MemorySession {
 
       session = session.slice(1);
       const r = StringSession.decode(session);
-
       const reader = new BinaryReader(r);
       this._dcId = reader.read(1).readUInt8(0);
 

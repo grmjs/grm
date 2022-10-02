@@ -7,13 +7,8 @@ import type { Raw } from "../events/raw.ts";
 import type { EventBuilder } from "../events/common.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 
-const PING_INTERVAL = 9000; // 9 sec
-const PING_TIMEOUT = 10000; // 10 sec
-const PING_FAIL_ATTEMPTS = 3;
-const PING_FAIL_INTERVAL = 100; // ms
-const PING_DISCONNECT_DELAY = 60000; // 1 min
-
 export class StopPropagation extends Error {}
+
 export function on(client: AbstractTelegramClient, event?: EventBuilder) {
   // deno-lint-ignore no-explicit-any
   return (f: { (event: any): void }) => {
@@ -172,42 +167,25 @@ export async function _dispatchUpdate(
 export async function _updateLoop(
   client: AbstractTelegramClient,
 ): Promise<void> {
-  while (!client._destroyed) {
-    await sleep(PING_INTERVAL);
-    if (client._reconnecting || client._sender!.userDisconnected) {
-      continue;
-    }
-    if (client._destroyed) return;
-
+  while (client.connected) {
     try {
-      await attempts(
-        () => {
-          return timeout(
-            client._sender!.send(
-              new Api.PingDelayDisconnect({
-                pingId: bigInt(
-                  getRandomInt(
-                    Number.MIN_SAFE_INTEGER,
-                    Number.MAX_SAFE_INTEGER,
-                  ),
-                ),
-                disconnectDelay: PING_DISCONNECT_DELAY,
-              }),
-            ),
-            PING_TIMEOUT,
-          );
-        },
-        PING_FAIL_ATTEMPTS,
-        PING_FAIL_INTERVAL,
-      );
-    } catch (_err) {
-      if (client._reconnecting || client._sender!.userDisconnected) {
+      await sleep(60 * 1000);
+      if (!client._sender?._transportConnected()) {
         continue;
       }
-
-      await client.disconnect();
-      await client.connect();
+      await client.invoke(
+        new Api.Ping({
+          pingId: bigInt(
+            getRandomInt(Number.MIN_SAFE_INTEGER, Number.MAX_SAFE_INTEGER),
+          ),
+        }),
+      );
+    } catch (_err) {
+      return;
     }
+
+    client.session.save();
+
     if (
       new Date().getTime() - (client._lastRequest || 0) >
         30 * 60 * 1000
@@ -219,28 +197,4 @@ export async function _updateLoop(
       }
     }
   }
-  await client.disconnect();
-}
-
-async function attempts(cb: CallableFunction, times: number, pause: number) {
-  for (let i = 0; i < times; i++) {
-    try {
-      return await cb();
-    } catch (err) {
-      if (i === times - 1) {
-        throw err;
-      }
-
-      await sleep(pause);
-    }
-  }
-  return undefined;
-}
-
-// deno-lint-ignore no-explicit-any
-function timeout(promise: Promise<any>, ms: number) {
-  return Promise.race([
-    promise,
-    sleep(ms).then(() => Promise.reject(new Error("TIMEOUT"))),
-  ]);
 }

@@ -364,12 +364,13 @@ export class MTProtoSender {
       this._log.debug(
         "Waiting for messages to send..." + this._reconnecting,
       );
-      const res = await this._sendQueue.get();
 
-      // TODO fix later?
-      // @ts-ignore
+      const res = await this._sendQueue.get();
+      if (!res) {
+        continue;
+      }
+
       let { data } = res;
-      // @ts-ignore
       const { batch } = res;
       this._log.debug(
         `Encrypting ${batch.length} message(s) in ${data.length} bytes for sending`,

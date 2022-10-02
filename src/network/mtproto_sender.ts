@@ -223,7 +223,14 @@ export class MTProtoSender {
   }
 
   async disconnect() {
-    await this._disconnect();
+    const release = await this._connectMutex.acquire();
+    try {
+      await this._disconnect();
+    } catch (e) {
+      this._log.error(e);
+    } finally {
+      release();
+    }
   }
 
   send(request: Api.AnyRequest): any {

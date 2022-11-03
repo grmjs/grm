@@ -4,7 +4,7 @@ import { toSignedLittleBuffer } from "../helpers.ts";
 import { InvalidBufferError } from "../errors/mod.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import type { Connection } from "./connection/connection.ts";
-import { Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 
 export class MTProtoPlainSender {
   private _state: MTProtoState;
@@ -33,10 +33,10 @@ export class MTProtoPlainSender {
 
     const reader = new BinaryReader(body);
     const authKeyId = reader.readLong();
-    if (authKeyId.neq(BigInt(0))) throw new Error("Bad authKeyId");
+    if (authKeyId.neq(bigInt(0))) throw new Error("Bad authKeyId");
 
     msgId = reader.readLong();
-    if (msgId.eq(BigInt(0))) throw new Error("Bad msgId");
+    if (msgId.eq(bigInt(0))) throw new Error("Bad msgId");
 
     const length = reader.readInt();
     if (length <= 0) throw new Error("Bad length");

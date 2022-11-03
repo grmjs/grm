@@ -1,116 +1,19 @@
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
-import type { EntitiesLike, ValueOf } from "../define.d.ts";
-import { getMinBigInt, sleep, TotalList } from "../helpers.ts";
+import { TotalList } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
-import { getDisplayName, getPeerId } from "../utils.ts";
+import { getDisplayName } from "../utils.ts";
 import { RequestIter } from "../request_iter.ts";
 import { Api } from "../tl/api.js";
 import { bigInt } from "../../deps.ts";
 import { IterParticipantsParams } from "./types.ts";
 
-const _MAX_PARTICIPANTS_CHUNK_SIZE = 200;
-const _MAX_ADMIN_LOG_CHUNK_SIZE = 100;
-const _MAX_PROFILE_PHOTO_CHUNK_SIZE = 100;
-
-interface ChatActionInterface {
-  delay: number;
-  autoCancel: boolean;
-}
-
-class _ChatAction {
-  static _str_mapping = {
-    typing: new Api.SendMessageTypingAction(),
-    contact: new Api.SendMessageChooseContactAction(),
-    game: new Api.SendMessageGamePlayAction(),
-    location: new Api.SendMessageGeoLocationAction(),
-
-    "record-audio": new Api.SendMessageRecordAudioAction(),
-    "record-voice": new Api.SendMessageRecordAudioAction(), //alias
-    "record-round": new Api.SendMessageRecordRoundAction(),
-    "record-video": new Api.SendMessageRecordVideoAction(),
-
-    audio: new Api.SendMessageUploadAudioAction({ progress: 1 }),
-    voice: new Api.SendMessageUploadAudioAction({ progress: 1 }), // alias
-    song: new Api.SendMessageUploadAudioAction({ progress: 1 }), // alias
-    round: new Api.SendMessageUploadRoundAction({ progress: 1 }),
-    video: new Api.SendMessageUploadVideoAction({ progress: 1 }),
-
-    photo: new Api.SendMessageUploadPhotoAction({ progress: 1 }),
-    document: new Api.SendMessageUploadDocumentAction({ progress: 1 }),
-    file: new Api.SendMessageUploadDocumentAction({ progress: 1 }), // alias
-
-    cancel: new Api.SendMessageCancelAction(),
-  };
-
-  private _client: AbstractTelegramClient;
-  private readonly _chat: Api.TypeEntityLike;
-  private readonly _action: ValueOf<typeof _ChatAction._str_mapping>;
-  private readonly _delay: number;
-  private readonly autoCancel: boolean;
-  private _request?: Api.AnyRequest;
-  private _task: null;
-  private _running: boolean;
-
-  constructor(
-    client: AbstractTelegramClient,
-    chat: Api.TypeEntityLike,
-    action: ValueOf<typeof _ChatAction._str_mapping>,
-    params: ChatActionInterface = {
-      delay: 4,
-      autoCancel: true,
-    },
-  ) {
-    this._client = client;
-    this._chat = chat;
-    this._action = action;
-    this._delay = params.delay;
-    this.autoCancel = params.autoCancel;
-    this._request = undefined;
-    this._task = null;
-    this._running = false;
-  }
-
-  start() {
-    this._request = new Api.messages.SetTyping({
-      peer: this._chat,
-      action: this._action,
-    });
-    this._running = true;
-    this._update();
-  }
-
-  async stop() {
-    this._running = false;
-    if (this.autoCancel) {
-      await this._client.invoke(
-        new Api.messages.SetTyping({
-          peer: this._chat,
-          action: new Api.SendMessageCancelAction(),
-        }),
-      );
-    }
-  }
-
-  async _update() {
-    while (this._running) {
-      if (this._request != undefined) {
-        await this._client.invoke(this._request);
-      }
-      await sleep(this._delay * 1000);
-    }
-  }
-
-  progress(current: number, total: number) {
-    if ("progress" in this._action) {
-      this._action.progress = 100 * Math.round(current / total);
-    }
-  }
-}
+const MAX_PARTICIPANTS_CHUNK_SIZE = 200;
 
 interface ParticipantsIterInterface {
   entity: Api.TypeEntityLike;
   // deno-lint-ignore no-explicit-any
   filter: any;
+  offset?: number;
   search?: string;
   showTotal?: boolean;
 }
@@ -122,6 +25,7 @@ export class _ParticipantsIter extends RequestIter {
   async _init({
     entity,
     filter,
+    offset,
     search,
     showTotal,
   }: ParticipantsIterInterface): Promise<boolean | void> {
@@ -182,8 +86,8 @@ export class _ParticipantsIter extends RequestIter {
             new Api.ChannelParticipantsSearch({
               q: search || "",
             }),
-          offset: 0,
-          limit: _MAX_PARTICIPANTS_CHUNK_SIZE,
+          offset,
+          limit: MAX_PARTICIPANTS_CHUNK_SIZE,
           hash: bigInt.zero,
         }),
       );
@@ -251,11 +155,8 @@ export class _ParticipantsIter extends RequestIter {
     }
     this.requests[0].limit = Math.min(
       this.limit - this.requests[0].offset,
-      _MAX_PARTICIPANTS_CHUNK_SIZE,
+      MAX_PARTICIPANTS_CHUNK_SIZE,
     );
-    if (this.requests[0].offset > this.limit) {
-      return true;
-    }
     const results = [];
     for (const request of this.requests) {
       results.push(await this.client.invoke(request));
@@ -299,99 +200,10 @@ export class _ParticipantsIter extends RequestIter {
   }
 }
 
-interface _AdminLogFilterInterface {
-  join?: boolean;
-  leave?: boolean;
-  invite?: boolean;
-  restrict?: boolean;
-  unrestrict?: boolean;
-  ban?: boolean;
-  unban?: boolean;
-  promote?: boolean;
-  demote?: boolean;
-  info?: boolean;
-  settings?: boolean;
-  pinned?: boolean;
-  edit?: boolean;
-  delete?: boolean;
-  groupCall?: boolean;
-}
-
-interface _AdminLogSearchInterface {
-  admins?: EntitiesLike;
-  search?: string;
-  minId?: bigInt.BigInteger;
-  maxId?: bigInt.BigInteger;
-}
-
-class _AdminLogIter extends RequestIter {
-  private entity?: Api.TypeInputPeer;
-  private request?: Api.channels.GetAdminLog;
-
-  async _init(
-    entity: Api.TypeEntityLike,
-    searchArgs?: _AdminLogSearchInterface,
-    filterArgs?: _AdminLogFilterInterface,
-  ) {
-    let eventsFilter = undefined;
-
-    if (
-      filterArgs &&
-      Object.values(filterArgs).find((element) => element === true)
-    ) {
-      eventsFilter = new Api.ChannelAdminLogEventsFilter({
-        ...filterArgs,
-      });
-    }
-
-    this.entity = await this.client.getInputEntity(entity);
-    const adminList = [];
-    if (searchArgs && searchArgs.admins) {
-      for (const admin of searchArgs.admins) {
-        adminList.push(await this.client.getInputEntity(admin));
-      }
-    }
-    this.request = new Api.channels.GetAdminLog({
-      channel: this.entity,
-      q: searchArgs?.search || "",
-      minId: searchArgs?.minId,
-      maxId: searchArgs?.maxId,
-      limit: 0,
-      eventsFilter: eventsFilter,
-      admins: adminList || undefined,
-    });
-  }
-
-  async _loadNextChunk() {
-    if (!this.request) {
-      return true;
-    }
-    this.request.limit = Math.min(this.left, _MAX_ADMIN_LOG_CHUNK_SIZE);
-    const r = await this.client.invoke(this.request);
-    const entities = new Map();
-    for (const entity of [...r.users, ...r.chats]) {
-      entities.set(getPeerId(entity), entity);
-    }
-    const eventIds = [];
-    for (const e of r.events) {
-      eventIds.push(e.id);
-    }
-    this.request.maxId = getMinBigInt([bigInt.zero, ...eventIds]);
-    for (const ev of r.events) {
-      if (
-        ev.action instanceof Api.ChannelAdminLogEventActionEditMessage
-      ) {
-        // TODO ev.action.prevMessage._finishInit(this.client, entities, this.entity);
-        // TODO ev.action.newMessage._finishInit(this.client, entities, this.entity);
-      }
-    }
-  }
-}
-
 export function iterParticipants(
   client: AbstractTelegramClient,
   entity: Api.TypeEntityLike,
-  { limit, search, filter, showTotal = true }: IterParticipantsParams,
+  { limit, filter, offset, search, showTotal = true }: IterParticipantsParams,
 ) {
   return new _ParticipantsIter(
     client,
@@ -400,6 +212,7 @@ export function iterParticipants(
     {
       entity: entity,
       filter: filter,
+      offset,
       search: search,
       showTotal: showTotal,
     },

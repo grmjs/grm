@@ -80,7 +80,7 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
   let encryptedData;
   for (let i = 0; i < RETRIES; i++) {
     const tempKey = generateRandomBytes(32);
-    const shaDigestKeyWithData = sha256(
+    const shaDigestKeyWithData = await sha256(
       Buffer.concat([tempKey, dataWithPadding]),
     );
     const dataWithHash = Buffer.concat([
@@ -90,7 +90,7 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
 
     const ige = new IGE(tempKey, Buffer.alloc(32));
     const aesEncrypted = ige.encryptIge(dataWithHash);
-    const tempKeyXor = bufferXor(tempKey, sha256(aesEncrypted));
+    const tempKeyXor = bufferXor(tempKey, await sha256(aesEncrypted));
 
     const keyAesEncrypted = Buffer.concat([tempKeyXor, aesEncrypted]);
     const keyAesEncryptedInt = readBigIntFromBuffer(
@@ -239,11 +239,11 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
     );
   }
   const authKey = new AuthKey();
-  authKey.setKey(getByteArray(gab));
+  await authKey.setKey(getByteArray(gab));
 
   const nonceNumber = 1 + nonceTypesString.indexOf(dhGen.className);
 
-  const newNonceHash = authKey.calcNewNonceHash(newNonce, nonceNumber);
+  const newNonceHash = await authKey.calcNewNonceHash(newNonce, nonceNumber);
   // @ts-ignore o
   const dhHash = dhGen[`newNonceHash${nonceNumber}`];
 

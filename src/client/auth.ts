@@ -363,7 +363,7 @@ export async function signInWithPassword(
         throw new Error("Password is empty");
       }
 
-      const passwordSrpCheck = computeCheck(
+      const passwordSrpCheck = await computeCheck(
         passwordSrpResult,
         password,
       );

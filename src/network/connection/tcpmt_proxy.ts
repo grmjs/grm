@@ -69,7 +69,7 @@ export class MTProxyIO {
     );
     const encryptIv = Buffer.from(random.slice(40, 56));
 
-    const decryptKey = sha256(
+    const decryptKey = await sha256(
       Buffer.concat([Buffer.from(randomReversed.slice(0, 32)), secret]),
     );
     const decryptIv = Buffer.from(randomReversed.slice(32, 48));

@@ -55,11 +55,10 @@ ${ipv4[2].toString()}.${ipv4[3].toString()}`;
     return Buffer.from(x, "base64");
   }
 
-  // deno-lint-ignore require-await
   async load() {
     if (this._key) {
       this._authKey = new AuthKey();
-      this._authKey.setKey(this._key);
+      await this._authKey.setKey(this._key);
     }
   }
 

@@ -8,12 +8,6 @@ export {
 } from "https://deno.land/std@0.164.0/path/mod.ts";
 
 // std/node/
-export {
-  createCipheriv,
-  createHash,
-  pbkdf2Sync,
-  randomBytes,
-} from "https://deno.land/std@0.164.0/node/crypto.ts";
 export { Buffer } from "https://deno.land/std@0.164.0/node/buffer.ts";
 export {
   createWriteStream,

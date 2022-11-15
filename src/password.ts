@@ -7,7 +7,9 @@ import {
   readBufferFromBigInt,
   sha256,
 } from "./helpers.ts";
-import { bigInt, Buffer, pbkdf2Sync } from "../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
+import { pbkdf2Sync } from "./crypto/crypto.ts";
+
 const SIZE_FOR_HASH = 256;
 
 function checkPrimeAndGood(primeBytes: Buffer, g: number) {
@@ -79,19 +81,19 @@ function pbkdf2sha512(password: Buffer, salt: Buffer, iterations: number) {
   return pbkdf2Sync(password, salt, iterations, 64, "sha512");
 }
 
-function computeHash(
+async function computeHash(
   algo: Api.PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow,
   password: string,
 ) {
-  const hash1 = sha256(
+  const hash1 = await sha256(
     Buffer.concat([algo.salt1, Buffer.from(password, "utf-8"), algo.salt1]),
   );
-  const hash2 = sha256(Buffer.concat([algo.salt2, hash1, algo.salt2]));
-  const hash3 = pbkdf2sha512(hash2, algo.salt1, 100000);
+  const hash2 = await sha256(Buffer.concat([algo.salt2, hash1, algo.salt2]));
+  const hash3 = await pbkdf2sha512(hash2, algo.salt1, 100000);
   return sha256(Buffer.concat([algo.salt2, hash3, algo.salt2]));
 }
 
-export function computeDigest(
+export async function computeDigest(
   algo: Api.PasswordKdfAlgoSHA256SHA256PBKDF2HMACSHA512iter100000SHA256ModPow,
   password: string,
 ) {
@@ -102,13 +104,16 @@ export function computeDigest(
   }
   const value = modExp(
     bigInt(algo.g),
-    readBigIntFromBuffer(computeHash(algo, password), false),
+    readBigIntFromBuffer(await computeHash(algo, password), false),
     readBigIntFromBuffer(algo.p, false),
   );
   return bigNumForHash(value);
 }
 
-export function computeCheck(request: Api.account.Password, password: string) {
+export async function computeCheck(
+  request: Api.account.Password,
+  password: string,
+) {
   const algo = request.currentAlgo;
   if (
     !(algo instanceof
@@ -121,7 +126,7 @@ export function computeCheck(request: Api.account.Password, password: string) {
   if (!srp_B || !srpId) {
     throw new Error(`Undefined srp_b  ${request}`);
   }
-  const pwHash = computeHash(algo, password);
+  const pwHash = await computeHash(algo, password);
   const p = readBigIntFromBuffer(algo.p, false);
   const g = algo.g;
   const B = readBigIntFromBuffer(srp_B, false);
@@ -139,11 +144,11 @@ export function computeCheck(request: Api.account.Password, password: string) {
   const bForHash = numBytesForHash(srp_B);
   const gX = modExp(bigInt(g), x, p);
   const k = readBigIntFromBuffer(
-    sha256(Buffer.concat([pForHash, gForHash])),
+    await sha256(Buffer.concat([pForHash, gForHash])),
     false,
   );
   const kgX = bigIntMod(k.multiply(gX), p);
-  const generateAndCheckRandom = () => {
+  const generateAndCheckRandom = async () => {
     const randomSize = 256;
     while (true) {
       const random = generateRandomBytes(randomSize);
@@ -152,7 +157,7 @@ export function computeCheck(request: Api.account.Password, password: string) {
       if (isGoodModExpFirst(A, p)) {
         const aForHash = bigNumForHash(A);
         const u = readBigIntFromBuffer(
-          sha256(Buffer.concat([aForHash, bForHash])),
+          await sha256(Buffer.concat([aForHash, bForHash])),
           false,
         );
         if (u.greater(bigInt(0))) {
@@ -161,7 +166,7 @@ export function computeCheck(request: Api.account.Password, password: string) {
       }
     }
   };
-  const { a, aForHash, u } = generateAndCheckRandom();
+  const { a, aForHash, u } = await generateAndCheckRandom();
   const gB = bigIntMod(B.subtract(kgX), p);
   if (!isGoodModExpFirst(gB, p)) {
     throw new Error("bad gB");
@@ -170,13 +175,13 @@ export function computeCheck(request: Api.account.Password, password: string) {
   const ux = u.multiply(x);
   const aUx = a.add(ux);
   const S = modExp(gB, aUx, p);
-  const K = sha256(bigNumForHash(S));
-  const pSha = sha256(pForHash);
-  const gSha = sha256(gForHash);
-  const salt1Sha = sha256(algo.salt1);
-  const salt2Sha = sha256(algo.salt2);
+  const K = await sha256(bigNumForHash(S));
+  const pSha = await sha256(pForHash);
+  const gSha = await sha256(gForHash);
+  const salt1Sha = await sha256(algo.salt1);
+  const salt2Sha = await sha256(algo.salt2);
 
-  const M1 = sha256(
+  const M1 = await sha256(
     Buffer.concat([
       xor(pSha, gSha),
       salt1Sha,

@@ -24,7 +24,7 @@ export class AuthKey {
     this.keyId = reader.readLong(false);
   }
 
-  setKey(value?: Buffer | AuthKey) {
+  async setKey(value?: Buffer | AuthKey) {
     if (!value) {
       this._key =
         this.auxHash =
@@ -41,7 +41,7 @@ export class AuthKey {
       return;
     }
     this._key = value;
-    this._hash = sha1(this._key);
+    this._hash = await sha1(this._key);
     const reader = new BinaryReader(this._hash);
     this.auxHash = reader.readLong(false);
     reader.read(4);
@@ -58,10 +58,10 @@ export class AuthKey {
     return this._key;
   }
 
-  calcNewNonceHash(
+  async calcNewNonceHash(
     newNonce: bigInt.BigInteger,
     number: number,
-  ): bigInt.BigInteger {
+  ): Promise<bigInt.BigInteger> {
     if (this.auxHash) {
       const nonce = toSignedLittleBuffer(newNonce, 32);
       const n = Buffer.alloc(1);
@@ -70,7 +70,7 @@ export class AuthKey {
         nonce,
         Buffer.concat([n, readBufferFromBigInt(this.auxHash, 8, true)]),
       ]);
-      const shaData = (sha1(data)).slice(4, 20);
+      const shaData = (await sha1(data)).slice(4, 20);
       return readBigIntFromBuffer(shaData, true, true);
     }
     throw new Error("Auth key not set");

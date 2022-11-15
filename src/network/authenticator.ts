@@ -243,7 +243,7 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
 
   const nonceNumber = 1 + nonceTypesString.indexOf(dhGen.className);
 
-  const newNonceHash = authKey.calcNewNonceHash(newNonce, nonceNumber);
+  const newNonceHash = await authKey.calcNewNonceHash(newNonce, nonceNumber);
   // @ts-ignore o
   const dhHash = dhGen[`newNonceHash${nonceNumber}`];
 

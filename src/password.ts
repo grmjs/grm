@@ -110,7 +110,10 @@ export async function computeDigest(
   return bigNumForHash(value);
 }
 
-export async function computeCheck(request: Api.account.Password, password: string) {
+export async function computeCheck(
+  request: Api.account.Password,
+  password: string,
+) {
   const algo = request.currentAlgo;
   if (
     !(algo instanceof
@@ -154,7 +157,7 @@ export async function computeCheck(request: Api.account.Password, password: stri
       if (isGoodModExpFirst(A, p)) {
         const aForHash = bigNumForHash(A);
         const u = readBigIntFromBuffer(
-         await sha256(Buffer.concat([aForHash, bForHash])),
+          await sha256(Buffer.concat([aForHash, bForHash])),
           false,
         );
         if (u.greater(bigInt(0))) {
@@ -175,8 +178,8 @@ export async function computeCheck(request: Api.account.Password, password: stri
   const K = await sha256(bigNumForHash(S));
   const pSha = await sha256(pForHash);
   const gSha = await sha256(gForHash);
-  const salt1Sha =await sha256(algo.salt1);
-  const salt2Sha =await sha256(algo.salt2);
+  const salt1Sha = await sha256(algo.salt1);
+  const salt2Sha = await sha256(algo.salt2);
 
   const M1 = await sha256(
     Buffer.concat([

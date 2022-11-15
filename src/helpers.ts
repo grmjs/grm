@@ -194,7 +194,7 @@ export function sha1(data: Buffer) {
 export function sha256(data: Buffer) {
   const shaSum = createHash("sha256");
   shaSum.update(data);
-  return shaSum.digest() ;
+  return shaSum.digest();
 }
 
 export async function generateKeyDataFromNonce(

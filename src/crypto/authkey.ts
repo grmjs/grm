@@ -61,7 +61,7 @@ export class AuthKey {
   async calcNewNonceHash(
     newNonce: bigInt.BigInteger,
     number: number,
-  ):Promise<bigInt.BigInteger> {
+  ): Promise<bigInt.BigInteger> {
     if (this.auxHash) {
       const nonce = toSignedLittleBuffer(newNonce, 32);
       const n = Buffer.alloc(1);

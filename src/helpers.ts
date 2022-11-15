@@ -1,4 +1,5 @@
-import { bigInt, Buffer, createHash, randomBytes } from "../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
+import { createHash, randomBytes } from "./crypto/crypto.ts";
 
 export function readBigIntFromBuffer(
   buffer: Buffer,
@@ -184,16 +185,16 @@ export function convertToLittle(buf: Buffer) {
   return correct;
 }
 
-export function sha1(data: Buffer): Buffer {
+export function sha1(data: Buffer) {
   const shaSum = createHash("sha1");
   shaSum.update(data);
-  return shaSum.digest() as Buffer;
+  return shaSum.digest();
 }
 
 export function sha256(data: Buffer) {
   const shaSum = createHash("sha256");
   shaSum.update(data);
-  return shaSum.digest() as Buffer;
+  return shaSum.digest();
 }
 
 export async function generateKeyDataFromNonce(

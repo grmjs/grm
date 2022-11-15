@@ -74,7 +74,7 @@ export class MessageButton {
         const pwd = await this.client.invoke(
           new Api.account.GetPassword(),
         );
-        encryptedPassword = computeCheck(pwd, password);
+        encryptedPassword = await computeCheck(pwd, password);
       }
       const request = new Api.messages.GetBotCallbackAnswer({
         peer: this._chat,

@@ -14,7 +14,6 @@ export class StoreSession extends MemorySession {
     this.sessionName = sessionName + divider;
   }
 
-  // deno-lint-ignore require-await
   async load() {
     const authKey_ = this.store.getItem(this.sessionName + "authKey");
     if (authKey_) {

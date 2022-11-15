@@ -509,7 +509,7 @@ export class TelegramClient extends TelegramBaseClient
     this.session.setDC(newDc, DC.ipAddress, DC.port);
     // authKey's are associated with a server, which has now changed
     // so it's not valid anymore. Set to undefined to force recreating it.
-    this._sender!.authKey.setKey(undefined);
+    await this._sender!.authKey.setKey(undefined);
     this.session.setAuthKey(undefined);
     this.session.save();
     await this._disconnect();

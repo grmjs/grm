@@ -105,7 +105,7 @@ export class DatabaseSession extends MemorySession {
         if ("data" in authKey) {
           authKey = Buffer.from(authKey.data);
         }
-        this._authKey.setKey(authKey);
+        await this._authKey.setKey(authKey);
       }
 
       if (session.dcId) this._dcId = Number(session.dcId);

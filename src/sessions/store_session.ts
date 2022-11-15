@@ -24,7 +24,7 @@ export class StoreSession extends MemorySession {
         if ("data" in authKey) {
           authKey = Buffer.from(authKey.data);
         }
-        this._authKey.setKey(authKey);
+        await this._authKey.setKey(authKey);
       }
     }
 

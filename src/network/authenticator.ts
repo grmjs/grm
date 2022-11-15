@@ -239,7 +239,7 @@ export async function doAuthentication(sender: MTProtoPlainSender, log: any) {
     );
   }
   const authKey = new AuthKey();
-  authKey.setKey(getByteArray(gab));
+  await authKey.setKey(getByteArray(gab));
 
   const nonceNumber = 1 + nonceTypesString.indexOf(dhGen.className);
 

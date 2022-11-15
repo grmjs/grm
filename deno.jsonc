@@ -7,5 +7,8 @@
       "indentWidth": 2,
       "proseWrap": "preserve"
     }
+  },
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "dom.asynciterable", "deno.ns"]
   }
 }

@@ -293,10 +293,12 @@ function returnWriterValue(writer: any): Buffer | string | undefined {
     return writer.getValue();
   }
   if (writer instanceof WriteStream) {
-    if (typeof writer.path == "string") {
-      return resolve(writer.path);
+    // @ts-expect-error: it has this property
+    const { path } = writer;
+    if (typeof path == "string") {
+      return resolve(path);
     } else {
-      return Buffer.from(writer.path);
+      return Buffer.from(path);
     }
   }
 }

@@ -19,7 +19,7 @@ export {
   createWriteStream,
   existsSync,
   WriteStream,
-} from "https://deno.land/std@0.164.0/node/fs.ts"; // Gotta update
+} from "https://deno.land/std@0.164.0/node/fs.ts";
 export { Socket } from "https://deno.land/std@0.164.0/node/net.ts";
 
 // x/

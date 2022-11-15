@@ -52,10 +52,10 @@ export class MTProtoState {
     message.msgId = this._getNewMsgId();
   }
 
-  _calcKey(authKey: Buffer, msgKey: Buffer, client: boolean) {
+ async _calcKey(authKey: Buffer, msgKey: Buffer, client: boolean) {
     const x = client ? 0 : 8;
-    const sha256a = sha256(Buffer.concat([msgKey, authKey.slice(x, x + 36)]));
-    const sha256b = sha256(
+    const sha256a =await sha256(Buffer.concat([msgKey, authKey.slice(x, x + 36)]));
+    const sha256b =await sha256(
       Buffer.concat([authKey.slice(x + 40, x + 76), msgKey]),
     );
 
@@ -128,13 +128,13 @@ export class MTProtoState {
     );
     // Being substr(what, offset, length); x = 0 for client
     // "msg_key_large = SHA256(substr(auth_key, 88+x, 32) + pt + padding)"
-    const msgKeyLarge = sha256(
+    const msgKeyLarge =await sha256(
       Buffer.concat([authKey.slice(88, 88 + 32), data, padding]),
     );
     // "msg_key = substr (msg_key_large, 8, 16)"
     const msgKey = msgKeyLarge.slice(8, 24);
 
-    const { iv, key } = this._calcKey(authKey, msgKey, true);
+    const { iv, key } = await this._calcKey(authKey, msgKey, true);
 
     const keyId = readBufferFromBigInt(this.authKey.keyId, 8);
     return Buffer.concat([

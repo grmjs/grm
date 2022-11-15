@@ -43,7 +43,7 @@ export async function updateTwoFaSettings(
   }
 
   const password = currentPassword
-    ? computeCheck(pwd, currentPassword!)
+    ? await computeCheck(pwd, currentPassword!)
     : new Api.InputCheckPasswordEmpty();
 
   if (isCheckPassword) {
@@ -60,7 +60,7 @@ export async function updateTwoFaSettings(
         newSettings: new Api.account.PasswordInputSettings({
           newAlgo: pwd.newAlgo,
           newPasswordHash: newPassword
-            ? computeDigest(pwd.newAlgo, newPassword)
+            ? await computeDigest(pwd.newAlgo, newPassword)
             : Buffer.alloc(0),
           hint,
           email,

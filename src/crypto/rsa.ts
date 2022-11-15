@@ -43,7 +43,7 @@ PUBLIC_KEYS.forEach(({ fingerprint, ...keyInfo }) => {
   serverKeys.set(fingerprint.toString(), keyInfo);
 });
 
-export function encrypt(fingerprint: bigInt.BigInteger, data: Buffer) {
+export async function encrypt(fingerprint: bigInt.BigInteger, data: Buffer) {
   const key = serverKeys.get(fingerprint.toString());
   if (!key) {
     return undefined;
@@ -52,7 +52,7 @@ export function encrypt(fingerprint: bigInt.BigInteger, data: Buffer) {
   // len(sha1.digest) is always 20, so we're left with 255 - 20 - x padding
   const rand = generateRandomBytes(235 - data.length);
 
-  const toEncrypt = Buffer.concat([sha1(data), data, rand]);
+  const toEncrypt = Buffer.concat([await sha1(data), data, rand]);
 
   // rsa module rsa.encrypt adds 11 bits for padding which we don't want
   // rsa module uses rsa.transform.bytes2int(to_encrypt), easier way:

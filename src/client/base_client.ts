@@ -59,7 +59,7 @@ const clientParamsDefault = {
   connection: ConnectionTCPFull, // ConnectionTCPObfuscated,
   networkSocket: typeof document === "undefined"
     ? PromisedNetSockets
-    : PromisedWebSockets, // PromisedWebSockets,
+    : PromisedWebSockets,
   useIPV6: false,
   timeout: 10,
   requestRetries: 5,

@@ -44,7 +44,7 @@ if (typeof document === "undefined") {
   Socket = (await import("https://deno.land/std@0.164.0/node/net.ts")).Socket;
 }
 
-export { Socket };
+export { Socket, Socket_ };
 
 export class WriteStream {
   constructor(public path: string, public file: Deno.FsFile) {

@@ -1,7 +1,7 @@
 import { Api } from "./tl/api.js";
 import { CustomFile } from "./classes.ts";
 import { Button } from "./tl/custom/button.ts";
-import { bigInt, Buffer } from "../deps.ts";
+import { bigInt, Buffer, WriteStream } from "../deps.ts";
 
 type ValueOf<T> = T[keyof T];
 type Phone = string;
@@ -33,9 +33,7 @@ type FileLike =
 type OutFile =
   | string
   | Buffer
-  // | WritableStream
-  // deno-lint-ignore ban-types
-  | { write: Function; close?: Function };
+  | WriteStream;
 type ProgressCallback = (
   total: bigInt.BigInteger,
   downloaded: bigInt.BigInteger,

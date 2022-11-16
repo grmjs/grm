@@ -24,7 +24,9 @@ const EXPORTED_SENDER_RECONNECT_TIMEOUT = 1000; // 1 sec
 const EXPORTED_SENDER_RELEASE_TIMEOUT = 30000; // 30 sec
 
 const DEFAULT_DC_ID = 4;
-const DEFAULT_IPV4_IP = "149.154.167.91"; // "vesta.web.telegram.org";
+const DEFAULT_IPV4_IP = typeof document === "undefined"
+  ? "149.154.167.91"
+  : "vesta.web.telegram.org";
 const DEFAULT_IPV6_IP = "2001:067c:04e8:f004:0000:0000:0000:000a";
 
 export interface TelegramClientParams {
@@ -55,7 +57,9 @@ export interface TelegramClientParams {
 
 const clientParamsDefault = {
   connection: ConnectionTCPFull, // ConnectionTCPObfuscated,
-  networkSocket: PromisedNetSockets, // PromisedWebSockets,
+  networkSocket: typeof document === "undefined"
+    ? PromisedNetSockets
+    : PromisedWebSockets,
   useIPV6: false,
   timeout: 10,
   requestRetries: 5,
@@ -170,7 +174,10 @@ export abstract class TelegramBaseClient {
       clientParams.maxConcurrentDownloads || 1,
     );
     this.testServers = clientParams.testServers || false;
-    this.networkSocket = clientParams.networkSocket || PromisedNetSockets;
+    this.networkSocket = clientParams.networkSocket ||
+      (typeof document === "undefined"
+        ? PromisedNetSockets
+        : PromisedWebSockets);
     if (!(clientParams.connection instanceof Function)) {
       throw new Error("Connection should be a class not an instance");
     }
@@ -240,6 +247,19 @@ export abstract class TelegramBaseClient {
       );
     } else {
       this._useIPV6 = this.session.serverAddress.includes(":");
+      // Replaces IP address with FQDN in browsers.
+      // This makes string sessions generated on the server side work in browsers.
+      if (typeof document != "undefined" && !this._useIPV6) {
+        try {
+          new URL(this.session.serverAddress);
+        } catch (_err) {
+          this.session.setDC(
+            this.session.dcId,
+            DEFAULT_IPV4_IP,
+            this.session.port,
+          );
+        }
+      }
     }
   }
 

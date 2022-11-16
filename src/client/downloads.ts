@@ -17,7 +17,6 @@ import {
   bigInt,
   Buffer,
   createWriteStream,
-  existsSync,
   join,
   resolve,
   WriteStream,
@@ -272,16 +271,13 @@ function getWriter(outputFile?: OutFile) {
   if (!outputFile || Buffer.isBuffer(outputFile)) {
     return new BinaryWriter(Buffer.alloc(0));
   } else if (typeof outputFile == "string") {
-    return createWriteStream(outputFile, {});
+    return createWriteStream(outputFile);
   } else {
     return outputFile;
   }
 }
 
-function closeWriter(
-  // deno-lint-ignore ban-types
-  writer: BinaryWriter | { write: Function; close?: Function },
-) {
+function closeWriter(writer: WriteStream | BinaryWriter) {
   if ("close" in writer && writer.close) {
     writer.close();
   }
@@ -293,7 +289,6 @@ function returnWriterValue(writer: any): Buffer | string | undefined {
     return writer.getValue();
   }
   if (writer instanceof WriteStream) {
-    // @ts-expect-error: it has this property
     const { path } = writer;
     if (typeof path == "string") {
       return resolve(path);
@@ -566,7 +561,7 @@ function getProperFilename(
     return file;
   }
 
-  if (existsSync(file) && Deno.lstatSync(file).isDirectory) {
+  if (Deno.lstatSync(file).isDirectory) {
     const fullName = fileType + date + extension;
     return join(file, fullName);
   }

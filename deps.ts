@@ -14,7 +14,6 @@ export {
   existsSync,
   WriteStream,
 } from "https://deno.land/std@0.164.0/node/fs.ts";
-export { Socket } from "https://deno.land/std@0.164.0/node/net.ts";
 
 // x/
 export { SocksClient } from "https://deno.land/x/deno_socks@v2.6.1/mod.ts";
@@ -41,3 +40,13 @@ export {
   type Handler,
   Parser,
 } from "https://ghc.deno.dev/tbjgolden/deno-htmlparser2@1f76cdf/htmlparser2/Parser.ts";
+
+import { type Socket as Socket_ } from "https://deno.land/std@0.164.0/node/net.ts";
+
+let Socket: typeof Socket_ = null as unknown as typeof Socket_;
+
+if (typeof document === "undefined") {
+  Socket = (await import("https://deno.land/std@0.164.0/node/net.ts")).Socket;
+}
+
+export { Socket };

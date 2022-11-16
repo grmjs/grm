@@ -6,7 +6,7 @@ const mutex = new Mutex();
 const closeError = new Error("NetSocket was closed");
 
 export class PromisedNetSockets {
-  private client?: Socket;
+  private client?: typeof Socket;
   private closed: boolean;
   private stream: Buffer;
   private canRead?: boolean | Promise<boolean>;

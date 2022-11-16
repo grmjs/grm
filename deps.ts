@@ -9,11 +9,27 @@ export {
 
 // std/node/
 export { Buffer } from "https://deno.land/std@0.164.0/node/buffer.ts";
-export {
-  createWriteStream,
-  existsSync,
-  WriteStream,
-} from "https://deno.land/std@0.164.0/node/fs.ts";
+
+export class WriteStream {
+  constructor(public path: string, public file: Deno.FsFile) {
+  }
+
+  write(p: Uint8Array) {
+    return this.file.write(p);
+  }
+
+  close() {
+    this.file.close();
+  }
+}
+
+export function createWriteStream(path: string) {
+  return new WriteStream(
+    path,
+    Deno.openSync(path, { write: true, create: true }),
+  );
+}
+
 export { Socket } from "https://deno.land/std@0.164.0/node/net.ts";
 
 // x/

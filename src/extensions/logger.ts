@@ -86,7 +86,11 @@ export class Logger {
   }
 
   log(level: LogLevel, message: string, color: string) {
-    console.log(this.colors.start + this.format(message, level), color);
+    console[level == "none" ? "log" : level](
+      (typeof document === "undefined" ? this.colors.start : "") +
+        this.format(message, level),
+      typeof document === "undefined" ? color : "",
+    );
   }
 
   getDateTime() {

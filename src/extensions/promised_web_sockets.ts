@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer, Mutex, w3cwebsocket } from "../../deps.ts";
+import { Buffer, Mutex } from "../../deps.ts";
 
 const mutex = new Mutex();
 const closeError = new Error("WebSocket was closed");
@@ -9,7 +9,7 @@ export class PromisedWebSockets {
   private stream: Buffer;
   private canRead?: boolean | Promise<boolean>;
   private resolveRead: ((value?: any) => void) | undefined;
-  private client: w3cwebsocket | undefined;
+  private client: WebSocket | undefined;
   private website?: string;
 
   constructor() {
@@ -73,7 +73,7 @@ export class PromisedWebSockets {
     });
     this.closed = false;
     this.website = this.getWebSocketLink(ip, port, testServers);
-    this.client = new w3cwebsocket(this.website, "binary");
+    this.client = new WebSocket(this.website, "binary");
 
     return new Promise((resolve, reject) => {
       if (this.client) {

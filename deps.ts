@@ -26,9 +26,6 @@ export { inflate } from "https://cdn.skypack.dev/pako@v2.1.0?dts";
 export { getExtension, getType } from "https://cdn.skypack.dev/mime?dts";
 export { default as bigInt } from "https://cdn.skypack.dev/big-integer?dts";
 
-// esm.sh/
-export { w3cwebsocket } from "https://esm.sh/websocket@1.0.34";
-
 // ghc.deno.dev/
 export {
   type Handler,

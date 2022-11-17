@@ -8,6 +8,7 @@ import { LogLevel } from "../extensions/logger.ts";
 import { TotalList } from "../helpers.ts";
 import { DirectDownloadIter } from "./downloads.ts";
 import { TelegramBaseClient, TelegramClientParams } from "./base_client.ts";
+import { Buffer } from "../../deps.ts";
 
 export abstract class AbstractTelegramClient extends TelegramBaseClient {
   constructor(

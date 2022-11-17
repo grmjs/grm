@@ -8,6 +8,7 @@ import {
   ProgressCallback,
 } from "../define.d.ts";
 import { CustomFile } from "../classes.ts";
+import { Buffer } from "../../deps.ts";
 
 export interface ParseInterface {
   parse: (message: string) => [string, Api.TypeMessageEntity[]];

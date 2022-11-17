@@ -11,7 +11,6 @@ export {
 export { Buffer } from "https://deno.land/std@0.164.0/node/buffer.ts";
 
 // x/
-export { SocksClient } from "https://deno.land/x/deno_socks@v2.6.1/mod.ts";
 export { getWords } from "https://deno.land/x/dryptography@v0.1.4/aes/utils/words.ts";
 
 // cdn.skypack.dev/
@@ -36,15 +35,16 @@ export {
   Parser,
 } from "https://ghc.deno.dev/tbjgolden/deno-htmlparser2@1f76cdf/htmlparser2/Parser.ts";
 
-import { type Socket as Socket_ } from "https://deno.land/std@0.164.0/node/net.ts";
+export { type Socket } from "https://deno.land/std@0.164.0/node/net.ts";
 
-let Socket: typeof Socket_ = null as unknown as typeof Socket_;
+import { type SocksClient as SocksClient_ } from "https://deno.land/x/deno_socks@v2.6.1/mod.ts";
+
+export let SocksClient = null as unknown as typeof SocksClient_;
 
 if (typeof document === "undefined") {
-  Socket = (await import("https://deno.land/std@0.164.0/node/net.ts")).Socket;
+  SocksClient =
+    (await import("https://deno.land/x/deno_socks@v2.6.1/mod.ts")).SocksClient;
 }
-
-export { Socket, Socket_ };
 
 export class WriteStream {
   constructor(public path: string, public file: Deno.FsFile) {

@@ -32,6 +32,7 @@ import { LogLevel } from "../extensions/logger.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { TotalList } from "../helpers.ts";
 import * as types from "./types.ts";
+import { Buffer } from "../../deps.ts";
 
 export class TelegramClient extends TelegramBaseClient
   implements AbstractTelegramClient {

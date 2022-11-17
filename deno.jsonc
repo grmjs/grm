@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "generate-mod": "deno run --allow-read --allow-env --allow-write src/tl/generate_module.ts && deno fmt src/tl/api.d.ts"
+    "generate-mod": "deno run --allow-read --allow-env --allow-net --allow-write src/tl/generate_module.ts && deno fmt src/tl/api.d.ts"
   },
   "fmt": {
     "options": {

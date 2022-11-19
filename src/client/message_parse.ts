@@ -103,7 +103,7 @@ export function _getResponseMessage(
     return;
   }
   const randomToId = new Map<string, number>();
-  const idToMessage = new Map<number, Api.Message>();
+  const idToMessage = new Map<number, CustomMessage>();
   let schedMessage;
   for (const update of updates) {
     if (update instanceof Api.UpdateMessageID) {
@@ -112,7 +112,11 @@ export function _getResponseMessage(
       update instanceof Api.UpdateNewChannelMessage ||
       update instanceof Api.UpdateNewMessage
     ) {
-      new CustomMessage(update.message as unknown as Api.Message)._finishInit(
+      const message = new CustomMessage(
+        update.message as unknown as Api.Message,
+      );
+
+      message._finishInit(
         client,
         entities,
         inputChat,
@@ -120,17 +124,20 @@ export function _getResponseMessage(
       if ("randomId" in request || isArrayLike(request)) {
         idToMessage.set(
           update.message.id,
-          update.message as unknown as Api.Message,
+          message,
         );
       } else {
-        return update.message as unknown as Api.Message;
+        return message;
       }
     } else if (
       update instanceof Api.UpdateEditMessage &&
       "peer" in request &&
       entityType_(request.peer) !== EntityType_.CHANNEL
     ) {
-      new CustomMessage(update.message as unknown as Api.Message)._finishInit(
+      const message = new CustomMessage(
+        update.message as unknown as Api.Message,
+      );
+      message._finishInit(
         client,
         entities,
         inputChat,
@@ -138,10 +145,10 @@ export function _getResponseMessage(
       if ("randomId" in request) {
         idToMessage.set(
           update.message.id,
-          update.message as unknown as Api.Message,
+          message,
         );
       } else if ("id" in request && request.id === update.message.id) {
-        return update.message;
+        return message;
       }
     } else if (
       update instanceof Api.UpdateEditChannelMessage &&
@@ -150,23 +157,29 @@ export function _getResponseMessage(
         getPeerId((update.message as unknown as Api.Message).peerId!)
     ) {
       if (request.id === update.message.id) {
-        new CustomMessage(update.message as unknown as Api.Message)._finishInit(
+        const message = new CustomMessage(
+          update.message as unknown as Api.Message,
+        );
+        message._finishInit(
           client,
           entities,
           inputChat,
         );
-        return update.message;
+        return message;
       }
     } else if (update instanceof Api.UpdateNewScheduledMessage) {
-      new CustomMessage(update.message as unknown as Api.Message)._finishInit(
+      const message = new CustomMessage(
+        update.message as unknown as Api.Message,
+      );
+      message._finishInit(
         client,
         entities,
         inputChat,
       );
-      schedMessage = update.message as unknown as Api.Message;
+      schedMessage = message;
       idToMessage.set(
         update.message.id,
-        update.message as unknown as Api.Message,
+        message,
       );
     } else if (update instanceof Api.UpdateMessagePoll) {
       if (request.media.poll.id === update.pollId) {

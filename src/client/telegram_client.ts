@@ -592,8 +592,8 @@ export class TelegramClient extends TelegramBaseClient
   ):
     | CustomMessage
     | Api.TypeMessage
-    | Map<number, Api.Message>
-    | (Api.Message | undefined)[]
+    | Map<number, CustomMessage>
+    | (CustomMessage | undefined)[]
     | undefined {
     return parseMethods._getResponseMessage(this, req, result, inputChat);
   }

@@ -1,6 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
 import { TLMessage } from "./tl_message.ts";
-import type { BinaryReader } from "../../extensions/binary_reader.ts";
 
 export class MessageContainer {
   static CONSTRUCTOR_ID = 0x73f1f8dc;
@@ -17,7 +16,7 @@ export class MessageContainer {
     this.classType = "constructor";
   }
 
-  static fromReader(reader: BinaryReader) {
+  static fromReader(reader: any) {
     const messages = [];
     const length = reader.readInt();
     for (let x = 0; x < length; x++) {

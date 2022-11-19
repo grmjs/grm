@@ -1,5 +1,4 @@
 import { serializeBytes } from "../generation_helpers.ts";
-import type { BinaryReader } from "../../extensions/binary_reader.ts";
 import { Buffer, inflate } from "../../../deps.ts";
 
 export class GZIPPacked {
@@ -44,7 +43,8 @@ export class GZIPPacked {
     ]);
   }
 
-  static read(reader: BinaryReader) {
+  // deno-lint-ignore no-explicit-any
+  static read(reader: any) {
     const constructor = reader.readInt(false);
     if (constructor !== GZIPPacked.CONSTRUCTOR_ID) {
       throw new Error("not equal");
@@ -52,7 +52,8 @@ export class GZIPPacked {
     return GZIPPacked.gzip(reader.tgReadBytes());
   }
 
-  static fromReader(reader: BinaryReader) {
+  // deno-lint-ignore no-explicit-any
+  static fromReader(reader: any) {
     const data = reader.tgReadBytes();
     return new GZIPPacked(GZIPPacked.ungzip(data));
   }

@@ -2,7 +2,9 @@
 import { CustomMessage } from "./custom/message.ts";
 import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
+import { CustomFile } from "../classes.ts";
 import { bigInt, Buffer } from "../../deps.ts";
+import { BotFileID, ExternalUrl, LocalPath } from "../define.d.ts";
 
 export namespace Api {
   // deno-lint-ignore no-explicit-any
@@ -22444,7 +22446,7 @@ export namespace Api {
     | messages.ChatFull
     | ChatFull
     | ChannelFull;
-  export type TypeEntityLike =
+  type TypeEntityLike =
     | bigInt.BigInteger
     | TypePhone
     | TypeUsername
@@ -22457,6 +22459,32 @@ export namespace Api {
     | TypeChat
     | TypeInputChannel
     | TypeInputUser;
+  type TypeFileLike =
+    | LocalPath
+    | ExternalUrl
+    | BotFileID
+    | Buffer
+    | Api.TypeMessageMedia
+    | Api.TypeInputMedia
+    | Api.TypeInputFile
+    | Api.TypeInputFileLocation
+    | File
+    | Api.TypePhoto
+    | Api.TypeDocument
+    | CustomFile;
+  interface Button {
+    button: Api.TypeKeyboardButton;
+    resize: boolean | undefined;
+    selective: boolean | undefined;
+    singleUse: boolean | undefined;
+  }
+  type TypeButtonLike = Api.TypeKeyboardButton | Button;
+  type TypeMarkupLike =
+    | Api.TypeReplyMarkup
+    | Api.TypeButtonLike
+    | Api.TypeButtonLike[]
+    | Api.TypeButtonLike[][];
+  type TypeMessageLike = string | Api.Message;
   export type TypeInputPeer =
     | InputPeerEmpty
     | InputPeerSelf

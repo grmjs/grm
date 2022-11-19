@@ -1,12 +1,9 @@
 import * as types from "./types.ts";
-import { Dialog, InlineResults } from "../tl/custom/mod.ts";
-import type { ButtonLike } from "../define.d.ts";
 import { Api } from "../tl/api.js";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import { Session } from "../sessions/mod.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { TotalList } from "../helpers.ts";
-import { DirectDownloadIter } from "./downloads.ts";
 import { TelegramBaseClient, TelegramClientParams } from "./base_client.ts";
 import { Buffer } from "../../deps.ts";
 
@@ -71,15 +68,13 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
     entity?: Api.InputPeerSelf,
     offset?: string,
     geoPoint?: Api.TypeInputGeoPoint,
-  ): Promise<InlineResults>;
+    // deno-lint-ignore no-explicit-any
+  ): Promise<any>;
 
   abstract buildReplyMarkup(
     buttons:
-      | Api.TypeReplyMarkup
-      | undefined
-      | ButtonLike
-      | ButtonLike[]
-      | ButtonLike[][],
+      | Api.TypeMarkupLike
+      | undefined,
     inlineOnly?: boolean,
   ): Api.TypeReplyMarkup | undefined;
 
@@ -90,7 +85,8 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
 
   abstract iterDownload(
     iterFileParams: types.IterDownloadFunction,
-  ): DirectDownloadIter;
+    // deno-lint-ignore no-explicit-any
+  ): AsyncIterable<any>;
 
   abstract downloadProfilePhoto(
     entity: Api.TypeEntityLike,
@@ -186,11 +182,13 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
 
   abstract iterDialogs(
     iterDialogsParams: types.IterDialogsParams,
-  ): AsyncIterable<Dialog>;
+    // deno-lint-ignore no-explicit-any
+  ): AsyncIterable<any>;
 
   abstract getDialogs(
     params: types.IterDialogsParams,
-  ): Promise<TotalList<Dialog>>;
+    // deno-lint-ignore no-explicit-any
+  ): Promise<TotalList<any>>;
 
   abstract iterParticipants(
     entity: Api.TypeEntityLike,
@@ -362,8 +360,4 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
     | Map<number, Api.Message>
     | (Api.Message | undefined)[]
     | undefined;
-
-  static get events() {
-    return import("../events/mod.ts");
-  }
 }

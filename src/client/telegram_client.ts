@@ -12,7 +12,6 @@ import * as uploadMethods from "./uploads.ts";
 import * as userMethods from "./users.ts";
 import * as chatMethods from "./chats.ts";
 import * as dialogMethods from "./dialogs.ts";
-import type { ButtonLike } from "../define.d.ts";
 import { Api } from "../tl/api.js";
 import { sanitizeParseMode } from "../utils.ts";
 import type { EventBuilder } from "../events/common.ts";
@@ -144,9 +143,9 @@ export class TelegramClient extends TelegramBaseClient
     buttons:
       | Api.TypeReplyMarkup
       | undefined
-      | ButtonLike
-      | ButtonLike[]
-      | ButtonLike[][],
+      | Api.TypeButtonLike
+      | Api.TypeButtonLike[]
+      | Api.TypeButtonLike[][],
     inlineOnly = false,
   ) {
     return buttonsMethods.buildReplyMarkup(buttons, inlineOnly);
@@ -595,9 +594,5 @@ export class TelegramClient extends TelegramBaseClient
     | (Api.Message | undefined)[]
     | undefined {
     return parseMethods._getResponseMessage(this, req, result, inputChat);
-  }
-
-  static get events() {
-    return import("../events/mod.ts");
   }
 }

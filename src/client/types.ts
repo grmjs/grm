@@ -1,12 +1,5 @@
 import { Api } from "../tl/api.js";
-import {
-  DateLike,
-  FileLike,
-  MarkupLike,
-  MessageLike,
-  OutFile,
-  ProgressCallback,
-} from "../define.d.ts";
+import { DateLike, OutFile, ProgressCallback } from "../define.d.ts";
 import { CustomFile } from "../classes.ts";
 import { Buffer } from "../../deps.ts";
 
@@ -16,18 +9,18 @@ export interface ParseInterface {
 }
 
 export interface SendMessageParams {
-  message?: MessageLike;
+  message?: Api.TypeMessageLike;
   replyTo?: number | Api.Message;
   attributes?: Api.TypeDocumentAttribute[];
   // deno-lint-ignore no-explicit-any
   parseMode?: any;
   formattingEntities?: Api.TypeMessageEntity[];
   linkPreview?: boolean;
-  file?: FileLike | FileLike[];
-  thumb?: FileLike;
+  file?: Api.TypeFileLike | Api.TypeFileLike[];
+  thumb?: Api.TypeFileLike;
   forceDocument?: false;
   clearDraft?: false;
-  buttons?: MarkupLike;
+  buttons?: Api.TypeMarkupLike;
   silent?: boolean;
   supportStreaming?: boolean;
   schedule?: DateLike;
@@ -50,9 +43,9 @@ export interface EditMessageParams {
   parseMode?: any;
   formattingEntities?: Api.TypeMessageEntity[];
   linkPreview?: boolean;
-  file?: FileLike;
+  file?: Api.TypeFileLike;
   forceDocument?: false;
-  buttons?: MarkupLike;
+  buttons?: Api.TypeMarkupLike;
   schedule?: DateLike;
 }
 
@@ -109,7 +102,7 @@ export interface UploadFileParams {
 }
 
 export interface SendFileInterface {
-  file: FileLike | FileLike[];
+  file: Api.TypeFileLike | Api.TypeFileLike[];
   caption?: string | string[];
   forceDocument?: boolean;
   fileSize?: number;
@@ -117,7 +110,7 @@ export interface SendFileInterface {
   progressCallback?: OnProgress;
   replyTo?: Api.TypeMessageIDLike;
   attributes?: Api.TypeDocumentAttribute[];
-  thumb?: FileLike;
+  thumb?: Api.TypeFileLike;
   voiceNote?: boolean;
   videoNote?: boolean;
   supportsStreaming?: boolean;
@@ -126,7 +119,7 @@ export interface SendFileInterface {
   formattingEntities?: Api.TypeMessageEntity[];
   silent?: boolean;
   scheduleDate?: number;
-  buttons?: MarkupLike;
+  buttons?: Api.TypeMarkupLike;
   workers?: number;
   noforwards?: boolean;
   commentTo?: number | Api.Message;
@@ -261,12 +254,12 @@ export interface DownloadMediaInterface {
 }
 
 export interface FileToMediaInterface {
-  file: FileLike;
+  file: Api.TypeFileLike;
   forceDocument?: boolean;
   fileSize?: number;
   progressCallback?: OnProgress;
   attributes?: Api.TypeDocumentAttribute[];
-  thumb?: FileLike;
+  thumb?: Api.TypeFileLike;
   voiceNote?: boolean;
   videoNote?: boolean;
   supportsStreaming?: boolean;

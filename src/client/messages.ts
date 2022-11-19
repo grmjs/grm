@@ -219,9 +219,12 @@ export class _MessagesIter extends RequestIter {
     for (const x of [...r.users, ...r.chats]) {
       entities.set(getPeerId(x), x);
     }
-    const messages = (this.reverse
-      ? (r.messages.reverse() as unknown as Api.Message[])
-      : (r.messages as unknown as Api.Message[])).map(v=>new CustomMessage(v));
+    const messages =
+      (this.reverse
+        ? (r.messages.reverse() as unknown as Api.Message[])
+        : (r.messages as unknown as Api.Message[])).map((v) =>
+          new CustomMessage(v)
+        );
     for (const message of messages) {
       if (!this._messageInRange(message)) {
         return true;
@@ -377,7 +380,7 @@ export class _IDsIter extends RequestIter {
       ) {
         this.buffer?.push(undefined);
       } else {
-        const temp= new CustomMessage(message as unknown as Api.Message);
+        const temp = new CustomMessage(message as unknown as Api.Message);
         temp._finishInit(this.client, entities, this._entity);
         temp._entities = entities;
         this.buffer?.push(temp);

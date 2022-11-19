@@ -52,7 +52,10 @@ export class Album extends EventBuilder {
             messages.push(new CustomMessage(update.message));
           }
         }
-        const event = new AlbumEvent(messages.map(v=>v.originalMessage!), values[1]);
+        const event = new AlbumEvent(
+          messages.map((v) => v.originalMessage!),
+          values[1],
+        );
         event._setClient(this.client!);
         event._entities = messages[0]._entities!;
         dispatch!(event);

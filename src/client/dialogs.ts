@@ -136,7 +136,12 @@ export class _DialogsIter extends RequestIter {
       if (!this.seen.has(peerId)) {
         this.seen.add(peerId);
         if (!entities.has(peerId)) continue;
-        const cd = new Dialog(this.client, d, entities, message?.originalMessage);
+        const cd = new Dialog(
+          this.client,
+          d,
+          entities,
+          message?.originalMessage,
+        );
         if (
           !this.ignoreMigrated ||
           (cd.entity != undefined && "migratedTo" in cd.entity)

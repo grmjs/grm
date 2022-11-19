@@ -352,7 +352,7 @@ export async function downloadFileV2(
 
 export function downloadMedia(
   client: AbstractTelegramClient,
-  messageOrMedia: Api.Message | Api.TypeMessageMedia,
+  messageOrMedia: CustomMessage | Api.Message | Api.TypeMessageMedia,
   outputFile?: OutFile,
   thumb?: number | Api.TypePhotoSize,
   progressCallback?: ProgressCallback,
@@ -362,13 +362,19 @@ export function downloadMedia(
   let media;
 
   if (messageOrMedia instanceof Api.Message) {
-    const mom = new CustomMessage(messageOrMedia);
+    const message = new CustomMessage(messageOrMedia);
+    media = message.media;
+    date = message.date;
+    msgData = message.inputChat ? [message.inputChat, message.id] : undefined;
+  } else if (messageOrMedia instanceof CustomMessage) {
     media = messageOrMedia.media;
     date = messageOrMedia.date;
-    msgData = mom.inputChat ? [mom.inputChat, messageOrMedia.id] : undefined;
+    msgData = messageOrMedia.inputChat
+      ? [messageOrMedia.inputChat, messageOrMedia.id]
+      : undefined;
   } else {
     media = messageOrMedia;
-    date = Date.now();
+    date = new Date().getTime();
   }
   if (typeof media == "string") {
     throw new Error("not implemented");

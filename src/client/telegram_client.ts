@@ -179,7 +179,7 @@ export class TelegramClient extends TelegramBaseClient
   }
 
   downloadMedia(
-    messageOrMedia: Api.Message | Api.TypeMessageMedia,
+    messageOrMedia: CustomMessage | Api.Message | Api.TypeMessageMedia,
     downloadParams?: types.DownloadMediaInterface,
   ): Promise<Buffer | string | undefined> | Buffer {
     return downloadMethods.downloadMedia(

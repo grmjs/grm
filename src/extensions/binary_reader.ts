@@ -3,8 +3,9 @@ import { coreObjects } from "../tl/core/core_objects.ts";
 import { tlObjects } from "../tl/all_tl_objects.ts";
 import { readBigIntFromBuffer } from "../helpers.ts";
 import { Buffer } from "../../deps.ts";
+import { BinaryReader as IBinaryReader } from "./interfaces.ts";
 
-export class BinaryReader {
+export class BinaryReader implements IBinaryReader {
   private readonly stream: Buffer;
   private _last?: Buffer;
   offset: number;

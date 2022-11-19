@@ -1,5 +1,6 @@
 import { Api } from "../api.js";
 import { GZIPPacked } from "./gzip_packed.ts";
+import { BinaryReader } from "../../extensions/interfaces.ts";
 import { bigInt, Buffer } from "../../../deps.ts";
 
 export class RPCResult {
@@ -23,8 +24,7 @@ export class RPCResult {
     this.classType = "constructor";
   }
 
-  // deno-lint-ignore no-explicit-any
-  static fromReader(reader: any) {
+  static fromReader(reader: BinaryReader) {
     const msgId = reader.readLong();
     const innerCode = reader.readInt(false);
 

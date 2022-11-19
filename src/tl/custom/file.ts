@@ -1,7 +1,6 @@
 import { Api } from "../api.js";
 import { _photoSizeByteCount } from "../../utils.ts";
 
-
 export class File {
   private readonly media: Api.TypeFileLike;
 

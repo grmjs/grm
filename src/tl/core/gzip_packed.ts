@@ -1,4 +1,5 @@
 import { serializeBytes } from "../generation_helpers.ts";
+import { BinaryReader } from "../../extensions/interfaces.ts";
 import { Buffer, inflate } from "../../../deps.ts";
 
 export class GZIPPacked {
@@ -52,8 +53,7 @@ export class GZIPPacked {
     return GZIPPacked.gzip(reader.tgReadBytes());
   }
 
-  // deno-lint-ignore no-explicit-any
-  static fromReader(reader: any) {
+  static fromReader(reader: BinaryReader) {
     const data = reader.tgReadBytes();
     return new GZIPPacked(GZIPPacked.ungzip(data));
   }

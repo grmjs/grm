@@ -76,4 +76,3 @@ export class TimedOutError extends RPCError {
   code = 503; // Only witnessed as -503
   errorMessage = "Timeout";
 }
-

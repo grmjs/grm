@@ -1,11 +1,9 @@
 // deno-lint-ignore-file no-explicit-any
-import {
-  AsyncQueue,
-  CancelHelper,
-  Logger,
-  PromisedNetSockets,
-  PromisedWebSockets,
-} from "../../extensions/mod.ts";
+import { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
+import { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
+import { CancelHelper } from "../../extensions/cancel_helper.ts";
+import { Logger } from "../../extensions/logger.ts";
+import { AsyncQueue } from "../../extensions/async_queue.ts";
 import { Buffer } from "../../../deps.ts";
 import { ProxyInterface } from "./types.ts";
 

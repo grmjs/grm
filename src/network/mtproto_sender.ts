@@ -1,13 +1,10 @@
 // deno-lint-ignore-file no-explicit-any
 import { AuthKey } from "../crypto/authkey.ts";
 import { MTProtoState } from "./mtproto_state.ts";
-import {
-  BinaryReader,
-  CancelHelper,
-  Logger,
-  LogLevel,
-  MessagePacker,
-} from "../extensions/mod.ts";
+import { Logger, LogLevel } from "../extensions/logger.ts";
+import { CancelHelper } from "../extensions/cancel_helper.ts";
+import { MessagePacker } from "../extensions/message_packer.ts";
+import { BinaryReader } from "../extensions/binary_reader.ts";
 import {
   GZIPPacked,
   MessageContainer,

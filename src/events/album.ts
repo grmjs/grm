@@ -2,6 +2,7 @@ import { DefaultEventInterface, EventBuilder, EventCommon } from "./common.ts";
 import { Api } from "../tl/api.js";
 import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { LogLevel } from "../extensions/logger.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 
 const ALBUM_DELAY = 500;
 
@@ -41,17 +42,17 @@ export class Album extends EventBuilder {
         if (!updates) {
           return;
         }
-        const messages: Api.Message[] = [];
+        const messages = new Array<CustomMessage>();
         for (const update of updates) {
           // there is probably an easier way
           if (
             "message" in update &&
             update.message instanceof Api.Message
           ) {
-            messages.push(update.message);
+            messages.push(new CustomMessage(update.message));
           }
         }
-        const event = new AlbumEvent(messages, values[1]);
+        const event = new AlbumEvent(messages.map(v=>v.originalMessage!), values[1]);
         event._setClient(this.client!);
         event._entities = messages[0]._entities!;
         dispatch!(event);
@@ -62,7 +63,7 @@ export class Album extends EventBuilder {
 }
 
 export class AlbumEvent extends EventCommon {
-  messages: Api.Message[];
+  messages: CustomMessage[];
   originalUpdates:
     (Api.TypeUpdate & { _entities?: Map<string, Api.TypeEntity> })[];
 
@@ -73,7 +74,7 @@ export class AlbumEvent extends EventCommon {
       broadcast: messages[0].post,
     });
     this.originalUpdates = originalUpdates;
-    this.messages = messages;
+    this.messages = messages.map((v) => new CustomMessage(v));
   }
 
   _setClient(client: AbstractTelegramClient) {

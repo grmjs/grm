@@ -8,6 +8,7 @@ import {
   strippedPhotoToJpg,
 } from "../utils.ts";
 import { sleep } from "../helpers.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { OutFile, ProgressCallback } from "../define.d.ts";
 import { RequestIter } from "../request_iter.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
@@ -361,11 +362,10 @@ export function downloadMedia(
   let media;
 
   if (messageOrMedia instanceof Api.Message) {
+    const mom = new CustomMessage(messageOrMedia);
     media = messageOrMedia.media;
     date = messageOrMedia.date;
-    msgData = messageOrMedia.inputChat
-      ? [messageOrMedia.inputChat, messageOrMedia.id]
-      : undefined;
+    msgData = mom.inputChat ? [mom.inputChat, messageOrMedia.id] : undefined;
   } else {
     media = messageOrMedia;
     date = Date.now();

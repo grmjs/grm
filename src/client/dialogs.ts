@@ -6,6 +6,7 @@ import { TotalList } from "../helpers.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { bigInt } from "../../deps.ts";
 import { getPeerId } from "../utils.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { IterDialogsParams } from "./types.ts";
 
 const MAX_CHUNK_SIZE = 100;
@@ -88,7 +89,7 @@ export class _DialogsIter extends RequestIter {
       this.total = r.dialogs.length;
     }
     const entities = new Map<string, Api.TypeUser | Api.TypeChat>();
-    const messages = new Map<string, Api.Message>();
+    const messages = new Map<string, CustomMessage>();
 
     for (const entity of [...r.users, ...r.chats]) {
       if (
@@ -100,7 +101,7 @@ export class _DialogsIter extends RequestIter {
       entities.set(getPeerId(entity), entity);
     }
     for (const m of r.messages) {
-      const message = m as unknown as Api.Message;
+      const message = new CustomMessage(m as unknown as Api.Message);
       try {
         // todo make sure this never fails
         message._finishInit(this.client, entities, undefined);
@@ -135,7 +136,7 @@ export class _DialogsIter extends RequestIter {
       if (!this.seen.has(peerId)) {
         this.seen.add(peerId);
         if (!entities.has(peerId)) continue;
-        const cd = new Dialog(this.client, d, entities, message);
+        const cd = new Dialog(this.client, d, entities, message?.originalMessage);
         if (
           !this.ignoreMigrated ||
           (cd.entity != undefined && "migratedTo" in cd.entity)

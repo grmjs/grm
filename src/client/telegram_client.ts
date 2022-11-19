@@ -16,6 +16,7 @@ import { Api } from "../tl/api.js";
 import { sanitizeParseMode } from "../utils.ts";
 import type { EventBuilder } from "../events/common.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { LAYER } from "../tl/all_tl_objects.ts";
 import { _handleUpdate, _updateLoop } from "./updates.ts";
 import { Session } from "../sessions/mod.ts";
@@ -395,7 +396,7 @@ export class TelegramClient extends TelegramBaseClient
   sendFile(
     entity: Api.TypeEntityLike,
     sendFileParams: types.SendFileInterface,
-  ): Promise<Api.Message> {
+  ): Promise<CustomMessage> {
     return uploadMethods.sendFile(this, entity, sendFileParams);
   }
 
@@ -589,6 +590,7 @@ export class TelegramClient extends TelegramBaseClient
     // deno-lint-ignore no-explicit-any
     inputChat: any,
   ):
+    | CustomMessage
     | Api.TypeMessage
     | Map<number, Api.Message>
     | (Api.Message | undefined)[]

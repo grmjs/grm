@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 import * as types from "./types.ts";
 import { Api } from "../tl/api.js";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
@@ -68,7 +69,6 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
     entity?: Api.InputPeerSelf,
     offset?: string,
     geoPoint?: Api.TypeInputGeoPoint,
-    // deno-lint-ignore no-explicit-any
   ): Promise<any>;
 
   abstract buildReplyMarkup(
@@ -85,7 +85,6 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
 
   abstract iterDownload(
     iterFileParams: types.IterDownloadFunction,
-    // deno-lint-ignore no-explicit-any
   ): AsyncIterable<any>;
 
   abstract downloadProfilePhoto(
@@ -94,7 +93,7 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
   ): Promise<string | Buffer | undefined>;
 
   abstract downloadMedia(
-    messageOrMedia: Api.Message | Api.TypeMessageMedia,
+    messageOrMedia: any | Api.TypeMessageMedia,
     downloadParams?: types.DownloadMediaInterface,
   ): Promise<Buffer | string | undefined> | Buffer;
 
@@ -112,27 +111,27 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
   abstract iterMessages(
     entity: Api.TypeEntityLike | undefined,
     iterParams: Partial<types.IterMessagesParams>,
-  ): AsyncIterable<Api.Message>;
+  ): AsyncIterable<any>;
 
   abstract getMessages(
     entity: Api.TypeEntityLike | undefined,
     getMessagesParams: Partial<types.IterMessagesParams>,
-  ): Promise<TotalList<Api.Message>>;
+  ): Promise<TotalList<any>>;
 
   abstract sendMessage(
     entity: Api.TypeEntityLike,
     sendMessageParams: types.SendMessageParams,
-  ): Promise<Api.Message>;
+  ): Promise<any>;
 
   abstract forwardMessages(
     entity: Api.TypeEntityLike,
     forwardMessagesParams: types.ForwardMessagesParams,
-  ): Promise<Api.Message[]>;
+  ): Promise<any[]>;
 
   abstract editMessage(
     entity: Api.TypeEntityLike,
     editMessageParams: types.EditMessageParams,
-  ): Promise<Api.Message>;
+  ): Promise<any>;
 
   abstract deleteMessages(
     entity: Api.TypeEntityLike | undefined,
@@ -149,13 +148,12 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
     entity: Api.TypeEntityLike,
     message: Api.TypeMessageIDLike,
     pinMessageParams?: types.UpdatePinMessageParams,
-  ): Promise<Api.Message>;
+  ): Promise<any>;
   abstract pinMessage(
     entity: Api.TypeEntityLike,
-    // deno-lint-ignore no-explicit-any
     message?: any,
     pinMessageParams?: types.UpdatePinMessageParams,
-  ): Promise<Api.Message | Api.messages.AffectedHistory | undefined>;
+  ): Promise<any | Api.messages.AffectedHistory | undefined>;
 
   abstract unpinMessage(
     entity: Api.TypeEntityLike,
@@ -169,10 +167,9 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
   ): Promise<undefined>;
   abstract unpinMessage(
     entity: Api.TypeEntityLike,
-    // deno-lint-ignore no-explicit-any
     message?: any,
     unpinMessageParams?: types.UpdatePinMessageParams,
-  ): Promise<Api.Message | Api.messages.AffectedHistory | undefined>;
+  ): Promise<any | Api.messages.AffectedHistory | undefined>;
 
   abstract markAsRead(
     entity: Api.TypeEntityLike,
@@ -182,12 +179,10 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
 
   abstract iterDialogs(
     iterDialogsParams: types.IterDialogsParams,
-    // deno-lint-ignore no-explicit-any
   ): AsyncIterable<any>;
 
   abstract getDialogs(
     params: types.IterDialogsParams,
-    // deno-lint-ignore no-explicit-any
   ): Promise<TotalList<any>>;
 
   abstract iterParticipants(
@@ -200,23 +195,18 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
     params: types.IterParticipantsParams,
   ): Promise<TotalList<Api.User>>;
 
-  // deno-lint-ignore no-explicit-any
   abstract on(event: any): void;
 
   abstract addEventHandler(
-    // deno-lint-ignore no-explicit-any
     callback: { (event: any): void },
-    // deno-lint-ignore no-explicit-any
     event?: any, // This should be EventBuilder when implemented
   ): void;
 
   abstract removeEventHandler(
     callback: CallableFunction,
-    // deno-lint-ignore no-explicit-any
     event: any, // This should be EventBuilder when implemented
   ): void;
 
-  // deno-lint-ignore no-explicit-any
   abstract listEventHandlers(): [any, CallableFunction][];
   // This above any should be EventBuilder when implemented
 
@@ -227,7 +217,7 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
   abstract sendFile(
     entity: Api.TypeEntityLike,
     sendFileParams: types.SendFileInterface,
-  ): Promise<Api.Message>;
+  ): Promise<any>;
 
   abstract invoke<R extends Api.AnyRequest>(
     request: R,
@@ -242,7 +232,7 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
 
   abstract getEntity(entity: Api.TypeEntityLike): Promise<Api.TypeEntity>;
   abstract getEntity(entity: Api.TypeEntityLike[]): Promise<Api.TypeEntity[]>;
-  // deno-lint-ignore no-explicit-any
+
   abstract getEntity(entity: any): Promise<Api.TypeEntity>;
 
   abstract getInputEntity(
@@ -255,11 +245,11 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
   ): Promise<string>;
 
   /** @hidden */
-  // deno-lint-ignore no-explicit-any
+
   abstract _getInputDialog(peer: any): Promise<any>;
 
   /** @hidden */
-  // deno-lint-ignore no-explicit-any
+
   abstract _getInputNotify(notify: any): Promise<any>;
 
   async _handleReconnect() {
@@ -354,10 +344,11 @@ export abstract class AbstractTelegramClient extends TelegramBaseClient {
   }
 
   /** @hidden */
-  // deno-lint-ignore no-explicit-any
+
   abstract _getResponseMessage(req: any, result: any, inputChat: any):
+    | any
     | Api.TypeMessage
-    | Map<number, Api.Message>
-    | (Api.Message | undefined)[]
+    | Map<number, any>
+    | (any | undefined)[]
     | undefined;
 }

@@ -1,6 +1,7 @@
 import { Api } from "../tl/api.js";
 import { groupBy, isArrayLike, TotalList } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { RequestIter } from "../request_iter.ts";
 import {
@@ -218,9 +219,9 @@ export class _MessagesIter extends RequestIter {
     for (const x of [...r.users, ...r.chats]) {
       entities.set(getPeerId(x), x);
     }
-    const messages: Api.Message[] = this.reverse
+    const messages = (this.reverse
       ? (r.messages.reverse() as unknown as Api.Message[])
-      : (r.messages as unknown as Api.Message[]);
+      : (r.messages as unknown as Api.Message[])).map(v=>new CustomMessage(v));
     for (const message of messages) {
       if (!this._messageInRange(message)) {
         return true;
@@ -246,7 +247,7 @@ export class _MessagesIter extends RequestIter {
     }
   }
 
-  _messageInRange(message: Api.Message) {
+  _messageInRange(message: CustomMessage) {
     if (this.entity) {
       if (this.reverse) {
         if (message.id <= this.lastId! || message.id >= this.maxId!) {
@@ -267,7 +268,7 @@ export class _MessagesIter extends RequestIter {
   }
 
   // deno-lint-ignore no-explicit-any
-  _updateOffset(lastMessage: Api.Message, response: any) {
+  _updateOffset(lastMessage: CustomMessage, response: any) {
     if (!this.request) {
       throw new Error("Request not set yet");
     }
@@ -376,7 +377,7 @@ export class _IDsIter extends RequestIter {
       ) {
         this.buffer?.push(undefined);
       } else {
-        const temp: Api.Message = message as unknown as Api.Message;
+        const temp= new CustomMessage(message as unknown as Api.Message);
         temp._finishInit(this.client, entities, this._entity);
         temp._entities = entities;
         this.buffer?.push(temp);
@@ -597,9 +598,9 @@ export async function sendMessage(
   }
   const result = await client.invoke(request);
   if (result instanceof Api.UpdateShortSentMessage) {
-    const msg = new Api.Message({
+    const msg = new CustomMessage({
       id: result.id,
-      peerId: await _getPeer(client, entity),
+      peerId: (await _getPeer(client, entity))!,
       message: message,
       date: result.date,
       out: result.out,
@@ -633,7 +634,7 @@ export async function forwardMessages(
   }
   const getKey = (m: string | Api.Message) => {
     if (m instanceof Api.Message) {
-      return m.chatId;
+      return new CustomMessage(m).chatId;
     }
     const msgId = parseID(m);
 
@@ -659,7 +660,7 @@ export async function forwardMessages(
       chat = fromPeer;
       numbers = chunk as number[];
     } else {
-      chat = await chunk[0].getInputChat();
+      chat = await new CustomMessage(chunk[0]).getInputChat();
       numbers = (chunk as Api.Message[]).map((m: Api.Message) => m.id);
     }
     chunk.push();

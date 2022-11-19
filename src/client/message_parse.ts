@@ -4,6 +4,7 @@ import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { isArrayLike } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { bigInt } from "../../deps.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { ParseInterface } from "./types.ts";
 
 export type messageEntities =
@@ -111,7 +112,7 @@ export function _getResponseMessage(
       update instanceof Api.UpdateNewChannelMessage ||
       update instanceof Api.UpdateNewMessage
     ) {
-      (update.message as unknown as Api.Message)._finishInit(
+      new CustomMessage(update.message as unknown as Api.Message)._finishInit(
         client,
         entities,
         inputChat,
@@ -129,7 +130,7 @@ export function _getResponseMessage(
       "peer" in request &&
       entityType_(request.peer) !== EntityType_.CHANNEL
     ) {
-      (update.message as unknown as Api.Message)._finishInit(
+      new CustomMessage(update.message as unknown as Api.Message)._finishInit(
         client,
         entities,
         inputChat,
@@ -149,7 +150,7 @@ export function _getResponseMessage(
         getPeerId((update.message as unknown as Api.Message).peerId!)
     ) {
       if (request.id === update.message.id) {
-        (update.message as unknown as Api.Message)._finishInit(
+        new CustomMessage(update.message as unknown as Api.Message)._finishInit(
           client,
           entities,
           inputChat,
@@ -157,7 +158,7 @@ export function _getResponseMessage(
         return update.message;
       }
     } else if (update instanceof Api.UpdateNewScheduledMessage) {
-      (update.message as unknown as Api.Message)._finishInit(
+      new CustomMessage(update.message as unknown as Api.Message)._finishInit(
         client,
         entities,
         inputChat,
@@ -169,7 +170,7 @@ export function _getResponseMessage(
       );
     } else if (update instanceof Api.UpdateMessagePoll) {
       if (request.media.poll.id === update.pollId) {
-        const m = new Api.Message({
+        const m = new CustomMessage({
           id: request.id,
           peerId: getPeerId(request.peer),
           media: new Api.MessageMediaPoll({

@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer, Mutex, type Socket, SocksClient } from "../../deps.ts";
+import { Buffer, Mutex, Socket, SocksClient } from "../../deps.ts";
 import { ProxyInterface } from "../network/connection/types.ts";
 
 const mutex = new Mutex();

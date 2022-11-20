@@ -2,7 +2,7 @@ import { Api } from "../api.js";
 import { getInputUser } from "../../utils.ts";
 import { Buffer } from "../../../deps.ts";
 
-export class Button {
+export class Button implements Api.Button {
   public button: Api.TypeKeyboardButton;
   public resize: boolean | undefined;
   public selective: boolean | undefined;

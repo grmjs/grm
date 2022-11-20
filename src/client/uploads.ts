@@ -4,9 +4,9 @@ import {
   getInputMedia,
   getMessageId,
 } from "../utils.ts";
-import { FileLike } from "../define.d.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { _parseMessageText } from "./message_parse.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { getCommentData } from "./messages.ts";
 import {
   generateRandomBytes,
@@ -130,12 +130,12 @@ export async function uploadFile(
 }
 
 interface FileToMediaInterface {
-  file: FileLike;
+  file: Api.TypeFileLike;
   forceDocument?: boolean;
   fileSize?: number;
   progressCallback?: OnProgress;
   attributes?: Api.TypeDocumentAttribute[];
-  thumb?: FileLike;
+  thumb?: Api.TypeFileLike;
   voiceNote?: boolean;
   videoNote?: boolean;
   supportsStreaming?: boolean;
@@ -255,7 +255,9 @@ export async function _sendAlbum(
     }),
   );
   const randomIds = albumFiles.map((m) => m.randomId);
-  return client._getResponseMessage(randomIds, result, entity) as Api.Message;
+  return new CustomMessage(
+    client._getResponseMessage(randomIds, result, entity) as Api.Message,
+  );
 }
 
 export async function sendFile(
@@ -353,7 +355,9 @@ export async function sendFile(
     noforwards: noforwards,
   });
   const result = await client.invoke(request);
-  return client._getResponseMessage(request, result, entity) as Api.Message;
+  return new CustomMessage(
+    client._getResponseMessage(request, result, entity) as Api.Message,
+  );
 }
 
 function fileToBuffer(file: File | CustomFile): Promise<Buffer> | Buffer {

@@ -1,6 +1,6 @@
 import { Api } from "../api.js";
 import { GZIPPacked } from "./gzip_packed.ts";
-import type { BinaryReader } from "../../extensions/binary_reader.ts";
+import { BinaryReader } from "../../extensions/interfaces.ts";
 import { bigInt, Buffer } from "../../../deps.ts";
 
 export class RPCResult {

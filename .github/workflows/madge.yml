@@ -1,0 +1,11 @@
+name: Circular Dependencies
+
+on: push
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: npx madge --circular --extensions ts ./

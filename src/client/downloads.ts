@@ -8,6 +8,7 @@ import {
   strippedPhotoToJpg,
 } from "../utils.ts";
 import { sleep } from "../helpers.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { OutFile, ProgressCallback } from "../define.d.ts";
 import { RequestIter } from "../request_iter.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
@@ -351,7 +352,7 @@ export async function downloadFileV2(
 
 export function downloadMedia(
   client: AbstractTelegramClient,
-  messageOrMedia: Api.Message | Api.TypeMessageMedia,
+  messageOrMedia: CustomMessage | Api.Message | Api.TypeMessageMedia,
   outputFile?: OutFile,
   thumb?: number | Api.TypePhotoSize,
   progressCallback?: ProgressCallback,
@@ -361,6 +362,11 @@ export function downloadMedia(
   let media;
 
   if (messageOrMedia instanceof Api.Message) {
+    const message = new CustomMessage(messageOrMedia);
+    media = message.media;
+    date = message.date;
+    msgData = message.inputChat ? [message.inputChat, message.id] : undefined;
+  } else if (messageOrMedia instanceof CustomMessage) {
     media = messageOrMedia.media;
     date = messageOrMedia.date;
     msgData = messageOrMedia.inputChat
@@ -368,7 +374,7 @@ export function downloadMedia(
       : undefined;
   } else {
     media = messageOrMedia;
-    date = Date.now();
+    date = new Date().getTime();
   }
   if (typeof media == "string") {
     throw new Error("not implemented");

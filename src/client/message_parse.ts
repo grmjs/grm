@@ -4,22 +4,8 @@ import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { isArrayLike } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { bigInt } from "../../deps.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { ParseInterface } from "./types.ts";
-
-export type messageEntities =
-  | typeof Api.MessageEntityBold
-  | typeof Api.MessageEntityItalic
-  | typeof Api.MessageEntityStrike
-  | typeof Api.MessageEntityCode
-  | typeof Api.MessageEntityPre;
-
-export const DEFAULT_DELIMITERS: { [key: string]: messageEntities } = {
-  "**": Api.MessageEntityBold,
-  __: Api.MessageEntityItalic,
-  "~~": Api.MessageEntityStrike,
-  "`": Api.MessageEntityCode,
-  "```": Api.MessageEntityPre,
-};
 
 export async function _replaceWithMention(
   client: AbstractTelegramClient,
@@ -102,7 +88,7 @@ export function _getResponseMessage(
     return;
   }
   const randomToId = new Map<string, number>();
-  const idToMessage = new Map<number, Api.Message>();
+  const idToMessage = new Map<number, CustomMessage>();
   let schedMessage;
   for (const update of updates) {
     if (update instanceof Api.UpdateMessageID) {
@@ -111,7 +97,11 @@ export function _getResponseMessage(
       update instanceof Api.UpdateNewChannelMessage ||
       update instanceof Api.UpdateNewMessage
     ) {
-      (update.message as unknown as Api.Message)._finishInit(
+      const message = new CustomMessage(
+        update.message as unknown as Api.Message,
+      );
+
+      message._finishInit(
         client,
         entities,
         inputChat,
@@ -119,17 +109,20 @@ export function _getResponseMessage(
       if ("randomId" in request || isArrayLike(request)) {
         idToMessage.set(
           update.message.id,
-          update.message as unknown as Api.Message,
+          message,
         );
       } else {
-        return update.message as unknown as Api.Message;
+        return message;
       }
     } else if (
       update instanceof Api.UpdateEditMessage &&
       "peer" in request &&
       entityType_(request.peer) !== EntityType_.CHANNEL
     ) {
-      (update.message as unknown as Api.Message)._finishInit(
+      const message = new CustomMessage(
+        update.message as unknown as Api.Message,
+      );
+      message._finishInit(
         client,
         entities,
         inputChat,
@@ -137,10 +130,10 @@ export function _getResponseMessage(
       if ("randomId" in request) {
         idToMessage.set(
           update.message.id,
-          update.message as unknown as Api.Message,
+          message,
         );
       } else if ("id" in request && request.id === update.message.id) {
-        return update.message;
+        return message;
       }
     } else if (
       update instanceof Api.UpdateEditChannelMessage &&
@@ -149,27 +142,33 @@ export function _getResponseMessage(
         getPeerId((update.message as unknown as Api.Message).peerId!)
     ) {
       if (request.id === update.message.id) {
-        (update.message as unknown as Api.Message)._finishInit(
+        const message = new CustomMessage(
+          update.message as unknown as Api.Message,
+        );
+        message._finishInit(
           client,
           entities,
           inputChat,
         );
-        return update.message;
+        return message;
       }
     } else if (update instanceof Api.UpdateNewScheduledMessage) {
-      (update.message as unknown as Api.Message)._finishInit(
+      const message = new CustomMessage(
+        update.message as unknown as Api.Message,
+      );
+      message._finishInit(
         client,
         entities,
         inputChat,
       );
-      schedMessage = update.message as unknown as Api.Message;
+      schedMessage = message;
       idToMessage.set(
         update.message.id,
-        update.message as unknown as Api.Message,
+        message,
       );
     } else if (update instanceof Api.UpdateMessagePoll) {
       if (request.media.poll.id === update.pollId) {
-        const m = new Api.Message({
+        const m = new CustomMessage({
           id: request.id,
           peerId: getPeerId(request.peer),
           media: new Api.MessageMediaPoll({

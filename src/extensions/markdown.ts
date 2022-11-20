@@ -1,5 +1,19 @@
 import { Api } from "../tl/api.js";
-import { DEFAULT_DELIMITERS } from "../client/message_parse.ts";
+
+type messageEntities =
+  | typeof Api.MessageEntityBold
+  | typeof Api.MessageEntityItalic
+  | typeof Api.MessageEntityStrike
+  | typeof Api.MessageEntityCode
+  | typeof Api.MessageEntityPre;
+
+const DEFAULT_DELIMITERS: { [key: string]: messageEntities } = {
+  "**": Api.MessageEntityBold,
+  __: Api.MessageEntityItalic,
+  "~~": Api.MessageEntityStrike,
+  "`": Api.MessageEntityCode,
+  "```": Api.MessageEntityPre,
+};
 
 export class MarkdownParser {
   static parse(message: string): [string, Api.TypeMessageEntity[]] {

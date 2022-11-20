@@ -12,11 +12,11 @@ import * as uploadMethods from "./uploads.ts";
 import * as userMethods from "./users.ts";
 import * as chatMethods from "./chats.ts";
 import * as dialogMethods from "./dialogs.ts";
-import type { ButtonLike } from "../define.d.ts";
 import { Api } from "../tl/api.js";
 import { sanitizeParseMode } from "../utils.ts";
 import type { EventBuilder } from "../events/common.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 import { LAYER } from "../tl/all_tl_objects.ts";
 import { _handleUpdate, _updateLoop } from "./updates.ts";
 import { Session } from "../sessions/mod.ts";
@@ -144,9 +144,9 @@ export class TelegramClient extends TelegramBaseClient
     buttons:
       | Api.TypeReplyMarkup
       | undefined
-      | ButtonLike
-      | ButtonLike[]
-      | ButtonLike[][],
+      | Api.TypeButtonLike
+      | Api.TypeButtonLike[]
+      | Api.TypeButtonLike[][],
     inlineOnly = false,
   ) {
     return buttonsMethods.buildReplyMarkup(buttons, inlineOnly);
@@ -179,7 +179,7 @@ export class TelegramClient extends TelegramBaseClient
   }
 
   downloadMedia(
-    messageOrMedia: Api.Message | Api.TypeMessageMedia,
+    messageOrMedia: CustomMessage | Api.Message | Api.TypeMessageMedia,
     downloadParams?: types.DownloadMediaInterface,
   ): Promise<Buffer | string | undefined> | Buffer {
     return downloadMethods.downloadMedia(
@@ -396,7 +396,7 @@ export class TelegramClient extends TelegramBaseClient
   sendFile(
     entity: Api.TypeEntityLike,
     sendFileParams: types.SendFileInterface,
-  ): Promise<Api.Message> {
+  ): Promise<CustomMessage> {
     return uploadMethods.sendFile(this, entity, sendFileParams);
   }
 
@@ -590,14 +590,11 @@ export class TelegramClient extends TelegramBaseClient
     // deno-lint-ignore no-explicit-any
     inputChat: any,
   ):
+    | CustomMessage
     | Api.TypeMessage
-    | Map<number, Api.Message>
-    | (Api.Message | undefined)[]
+    | Map<number, CustomMessage>
+    | (CustomMessage | undefined)[]
     | undefined {
     return parseMethods._getResponseMessage(this, req, result, inputChat);
-  }
-
-  static get events() {
-    return import("../events/mod.ts");
   }
 }

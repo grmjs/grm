@@ -5,6 +5,7 @@ import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { getInputPeer } from "../utils.ts";
 import { getEntityPair_ } from "../entity_cache.ts";
 import { EditMessageParams, SendMessageParams } from "../client/types.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 
 export interface NewCallbackQueryInterface {
   chats: Api.TypeEntityLike[];
@@ -98,7 +99,7 @@ export interface AnswerCallbackQueryParams {
 export class CallbackQueryEvent extends EventCommonSender {
   query: Api.UpdateBotCallbackQuery | Api.UpdateInlineBotCallbackQuery;
   patternMatch: RegExpMatchArray | undefined;
-  private _message: Api.Message | undefined;
+  private _message: CustomMessage | undefined;
   private _answered: boolean;
 
   constructor(
@@ -153,7 +154,7 @@ export class CallbackQueryEvent extends EventCommonSender {
     const messages = await this._client!.getMessages(chat, {
       ids: this._messageId,
     });
-    this._message = messages[0];
+    this._message = new CustomMessage(messages[0]);
 
     return this._message;
   }

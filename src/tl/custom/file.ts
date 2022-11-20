@@ -1,11 +1,10 @@
 import { Api } from "../api.js";
 import { _photoSizeByteCount } from "../../utils.ts";
-import type { FileLike } from "../../define.d.ts";
 
 export class File {
-  private readonly media: FileLike;
+  private readonly media: Api.TypeFileLike;
 
-  constructor(media: FileLike) {
+  constructor(media: Api.TypeFileLike) {
     this.media = media;
   }
 

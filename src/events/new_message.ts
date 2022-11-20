@@ -8,6 +8,7 @@ import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { Api } from "../tl/api.js";
 import { LogLevel } from "../extensions/logger.ts";
 import { bigInt } from "../../deps.ts";
+import { CustomMessage } from "../tl/custom/message.ts";
 
 export interface NewMessageInterface extends DefaultEventInterface {
   func?: { (event: NewMessageEvent): boolean };
@@ -177,7 +178,7 @@ export class NewMessage extends EventBuilder {
 }
 
 export class NewMessageEvent extends EventCommon {
-  message: Api.Message;
+  message: CustomMessage;
   originalUpdate: (Api.TypeUpdate | Api.TypeUpdates) & {
     _entities?: Map<number, Api.TypeEntity>;
   };
@@ -192,7 +193,7 @@ export class NewMessageEvent extends EventCommon {
       broadcast: message.post,
     });
     this.originalUpdate = originalUpdate;
-    this.message = message;
+    this.message = new CustomMessage(message);
   }
 
   _setClient(client: AbstractTelegramClient) {

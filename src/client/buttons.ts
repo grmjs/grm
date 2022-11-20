@@ -1,5 +1,4 @@
 import { Api } from "../tl/api.js";
-import type { ButtonLike } from "../define.d.ts";
 import { Button } from "../tl/custom/button.ts";
 import { MessageButton } from "../tl/custom/message_button.ts";
 import { isArrayLike } from "../helpers.ts";
@@ -8,9 +7,9 @@ export function buildReplyMarkup(
   buttons:
     | Api.TypeReplyMarkup
     | undefined
-    | ButtonLike
-    | ButtonLike[]
-    | ButtonLike[][],
+    | Api.TypeButtonLike
+    | Api.TypeButtonLike[]
+    | Api.TypeButtonLike[][],
   inlineOnly = false,
 ): Api.TypeReplyMarkup | undefined {
   if (buttons == undefined) {

@@ -1,5 +1,5 @@
 import { serializeBytes } from "../generation_helpers.ts";
-import type { BinaryReader } from "../../extensions/binary_reader.ts";
+import { BinaryReader } from "../../extensions/interfaces.ts";
 import { Buffer, inflate } from "../../../deps.ts";
 
 export class GZIPPacked {
@@ -44,7 +44,8 @@ export class GZIPPacked {
     ]);
   }
 
-  static read(reader: BinaryReader) {
+  // deno-lint-ignore no-explicit-any
+  static read(reader: any) {
     const constructor = reader.readInt(false);
     if (constructor !== GZIPPacked.CONSTRUCTOR_ID) {
       throw new Error("not equal");

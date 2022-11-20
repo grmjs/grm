@@ -112,7 +112,7 @@ export class CustomMessage extends SenderGetter {
   /** @hidden */
   _file?: File;
   /** @hidden */
-  _replyMessage?: Api.Message;
+  _replyMessage?: CustomMessage;
   /** @hidden */
   _buttons?: MessageButton[][];
   /** @hidden */
@@ -137,6 +137,8 @@ export class CustomMessage extends SenderGetter {
   getBytes(): Buffer;
   originalArgs: any;
   patternMatch?: RegExpMatchArray;
+
+  originalMessage?: Api.Message;
 
   init({
     id,
@@ -236,9 +238,12 @@ export class CustomMessage extends SenderGetter {
     this._forward = undefined;
   }
 
-  constructor(args: MessageBaseInterface) {
+  constructor(args: MessageBaseInterface | Api.Message) {
     super();
     this.init(args);
+    if (args instanceof Api.Message) {
+      this.originalMessage = args;
+    }
   }
 
   _finishInit(
@@ -375,7 +380,7 @@ export class CustomMessage extends SenderGetter {
       const chat = this.isChannel ? await this.getInputChat() : undefined;
       const temp = await this._client.getMessages(chat, { ids: this.id });
       if (temp) {
-        msg = temp[0] as CustomMessage;
+        msg = new CustomMessage(temp[0]);
       }
     } catch (e) {
       this._client._log.error(
@@ -612,13 +617,13 @@ export class CustomMessage extends SenderGetter {
     return zip([ent, texts]);
   }
 
-  async getReplyMessage(): Promise<Api.Message | undefined> {
+  async getReplyMessage(): Promise<CustomMessage | undefined> {
     if (!this._replyMessage && this._client) {
       if (!this.replyTo) return undefined;
 
       // Bots cannot access other bots' messages by their ID.
       // However they can access them through replies...
-      this._replyMessage = (
+      const message = (
         await this._client.getMessages(
           this.isChannel ? await this.getInputChat() : undefined,
           {
@@ -626,20 +631,24 @@ export class CustomMessage extends SenderGetter {
           },
         )
       )[0];
+      if (message) {
+        this._replyMessage = new CustomMessage(message);
+      }
 
       if (!this._replyMessage) {
         // ...unless the current message got deleted.
         //
         // If that's the case, give it a second chance accessing
         // directly by its ID.
-        this._replyMessage = (
+        const message = (
           await this._client.getMessages(
             this.isChannel ? this._inputChat : undefined,
-            {
-              ids: this.replyToMsgId,
-            },
+            { ids: this.replyToMsgId },
           )
         )[0];
+        if (message) {
+          this._replyMessage = new CustomMessage(message);
+        }
       }
     }
     return this._replyMessage;

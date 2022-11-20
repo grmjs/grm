@@ -1,6 +1,5 @@
-// deno-lint-ignore-file no-explicit-any
 import { TLMessage } from "./tl_message.ts";
-import type { BinaryReader } from "../../extensions/binary_reader.ts";
+import { BinaryReader } from "../../extensions/interfaces.ts";
 
 export class MessageContainer {
   static CONSTRUCTOR_ID = 0x73f1f8dc;
@@ -8,10 +7,10 @@ export class MessageContainer {
   static MAXIMUM_SIZE = 1044456 - 8;
   static MAXIMUM_LENGTH = 100;
   private CONSTRUCTOR_ID: number;
-  private messages: any[];
   private classType: string;
 
-  constructor(messages: any[]) {
+  // deno-lint-ignore no-explicit-any
+  constructor(private messages: any[]) {
     this.CONSTRUCTOR_ID = 0x73f1f8dc;
     this.messages = messages;
     this.classType = "constructor";

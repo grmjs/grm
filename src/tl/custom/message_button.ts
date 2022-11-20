@@ -2,18 +2,17 @@ import { Api } from "../api.js";
 import { Button } from "./button.ts";
 import { computeCheck } from "../../password.ts";
 import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
-import type { ButtonLike } from "../../define.d.ts";
 
 export class MessageButton {
   private readonly _client: AbstractTelegramClient;
   private readonly _chat: Api.TypeEntityLike;
-  public readonly button: ButtonLike;
+  public readonly button: Api.TypeButtonLike;
   private readonly _bot?: Api.TypeEntityLike;
   private readonly _msgId: Api.TypeMessageIDLike;
 
   constructor(
     client: AbstractTelegramClient,
-    original: ButtonLike,
+    original: Api.TypeButtonLike,
     chat: Api.TypeEntityLike,
     bot: Api.TypeEntityLike | undefined,
     msgId: Api.TypeMessageIDLike,
@@ -30,6 +29,7 @@ export class MessageButton {
   }
 
   get text() {
+    // @ts-expect-error: TODO
     return !(this.button instanceof Button) ? this.button.text : "";
   }
 

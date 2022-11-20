@@ -1,12 +1,12 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer, Mutex, type Socket, SocksClient } from "../../deps.ts";
+import { Buffer, Mutex, Socket, SocksClient } from "../../deps.ts";
 import { ProxyInterface } from "../network/connection/types.ts";
 
 const mutex = new Mutex();
 const closeError = new Error("NetSocket was closed");
 
 export class PromisedNetSockets {
-  private client?: Socket;
+  private client?: InstanceType<typeof Socket>;
   private closed: boolean;
   private stream: Buffer;
   private canRead?: boolean | Promise<boolean>;

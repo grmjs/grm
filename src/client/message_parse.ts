@@ -7,21 +7,6 @@ import { bigInt } from "../../deps.ts";
 import { CustomMessage } from "../tl/custom/message.ts";
 import { ParseInterface } from "./types.ts";
 
-export type messageEntities =
-  | typeof Api.MessageEntityBold
-  | typeof Api.MessageEntityItalic
-  | typeof Api.MessageEntityStrike
-  | typeof Api.MessageEntityCode
-  | typeof Api.MessageEntityPre;
-
-export const DEFAULT_DELIMITERS: { [key: string]: messageEntities } = {
-  "**": Api.MessageEntityBold,
-  __: Api.MessageEntityItalic,
-  "~~": Api.MessageEntityStrike,
-  "`": Api.MessageEntityCode,
-  "```": Api.MessageEntityPre,
-};
-
 export async function _replaceWithMention(
   client: AbstractTelegramClient,
   entities: Api.TypeMessageEntity[],

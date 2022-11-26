@@ -370,7 +370,7 @@ export async function _getEntityFromString(
   }
   const id = parseID(string);
   if (id !== undefined) {
-    return getInputEntity(client, id);
+    return await getInputEntity(client, id);
   } else if (["me", "this"].includes(string.toLowerCase())) {
     return client.getMe();
   } else {

@@ -1,7 +1,11 @@
 // deno-lint-ignore-file no-explicit-any
 import { VERSION } from "../version.ts";
 import { sleep } from "../helpers.ts";
-import { Connection, ConnectionTCPFull } from "../network/mod.ts";
+import {
+  Connection,
+  ConnectionTCPFull,
+  ConnectionTCPObfuscated,
+} from "../network/mod.ts";
 import { Session, StoreSession } from "../sessions/mod.ts";
 import { Logger, LogLevel } from "../extensions/logger.ts";
 import { PromisedNetSockets } from "../extensions/promised_net_sockets.ts";
@@ -56,7 +60,9 @@ export interface TelegramClientParams {
 }
 
 const clientParamsDefault = {
-  connection: ConnectionTCPFull, // ConnectionTCPObfuscated,
+  connection: typeof document === "undefined"
+    ? ConnectionTCPFull
+    : ConnectionTCPObfuscated,
   networkSocket: typeof document === "undefined"
     ? PromisedNetSockets
     : PromisedWebSockets,

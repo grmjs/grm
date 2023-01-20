@@ -278,7 +278,7 @@ export async function getInputEntity(
 
   try {
     if (peer != undefined) {
-      return client.session.getInputEntity(peer);
+      return await client.session.getInputEntity(peer);
     }
   } catch (_e) {
     //

@@ -15,13 +15,12 @@ import {
 } from "../helpers.ts";
 import { FloodWaitError } from "../errors/mod.ts";
 import { bigInt, Buffer } from "../../deps.ts";
-import { OnProgress, SendFileInterface, UploadFileParams } from "./types.ts";
+import { SendFileInterface, UploadFileParams } from "./types.ts";
 import { CustomFile } from "../classes.ts";
 import { _fileToMedia } from "./utils.ts";
 
 const KB_TO_BYTES = 1024;
 const LARGE_FILE_THRESHOLD = 10 * 1024 * 1024;
-const _UPLOAD_TIMEOUT = 15 * 1000;
 const DISCONNECT_SLEEP = 1000;
 
 export async function uploadFile(
@@ -127,21 +126,6 @@ export async function uploadFile(
       name,
       md5Checksum: "", // This is not a "flag", so not sure if we can make it optional.
     });
-}
-
-interface FileToMediaInterface {
-  file: Api.TypeFileLike;
-  forceDocument?: boolean;
-  fileSize?: number;
-  progressCallback?: OnProgress;
-  attributes?: Api.TypeDocumentAttribute[];
-  thumb?: Api.TypeFileLike;
-  voiceNote?: boolean;
-  videoNote?: boolean;
-  supportsStreaming?: boolean;
-  mimeType?: string;
-  asImage?: boolean;
-  workers?: number;
 }
 
 export async function _sendAlbum(

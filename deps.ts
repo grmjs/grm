@@ -5,10 +5,10 @@ export {
   fromFileUrl,
   join,
   resolve,
-} from "https://deno.land/std@0.175.0/path/mod.ts";
+} from "https://deno.land/std@0.176.0/path/mod.ts";
 
 // std/node/
-export { Buffer } from "https://deno.land/std@0.175.0/node/buffer.ts";
+export { Buffer } from "https://deno.land/std@0.176.0/node/buffer.ts";
 
 // x/
 export { getWords } from "https://deno.land/x/dryptography@v0.1.4/aes/utils/words.ts";
@@ -37,12 +37,12 @@ export {
   Parser,
 } from "https://ghc.deno.dev/tbjgolden/deno-htmlparser2@1f76cdf/htmlparser2/Parser.ts";
 
-import { type Socket as Socket_ } from "https://deno.land/std@0.175.0/node/net.ts";
+import { type Socket as Socket_ } from "https://deno.land/std@0.176.0/node/net.ts";
 
 export let Socket = null as unknown as typeof Socket_;
 
 if (typeof document === "undefined") {
-  Socket = (await import("https://deno.land/std@0.175.0/node/net.ts")).Socket;
+  Socket = (await import("https://deno.land/std@0.176.0/node/net.ts")).Socket;
 }
 
 import { type SocksClient as SocksClient_ } from "https://deno.land/x/deno_socks@v2.6.1/mod.ts";

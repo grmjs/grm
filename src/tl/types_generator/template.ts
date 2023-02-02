@@ -312,7 +312,6 @@ export namespace Api {
   }
 // Types
   type TypePhone = string;
-  type TypeUsername = string;
   type TypePeerID = number;
   type TypeMessageIDLike =
     | number

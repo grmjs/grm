@@ -1072,6 +1072,7 @@ export namespace Api {
     blocked?: boolean;
     // flags2: null;
     canDeleteChannel?: boolean;
+    antispam?: boolean;
     id: long;
     about: string;
     participantsCount?: int;
@@ -1124,6 +1125,7 @@ export namespace Api {
     blocked?: boolean;
     // flags2: null;
     canDeleteChannel?: boolean;
+    antispam?: boolean;
     id: long;
     about: string;
     participantsCount?: int;
@@ -1850,14 +1852,18 @@ export namespace Api {
     users: long[];
   }
   export class MessageActionSetMessagesTTL extends VirtualClass<{
+    // flags: null;
     period: int;
+    autoSettingFrom?: long;
   }> {
-    CONSTRUCTOR_ID: 2853895165;
+    CONSTRUCTOR_ID: 1007897979;
     SUBCLASS_OF_ID: 2256589094;
     classType: "constructor";
     className: "MessageActionSetMessagesTTL";
     static fromReader(reader: Reader): MessageActionSetMessagesTTL;
+    // flags: null;
     period: int;
+    autoSettingFrom?: long;
   }
   export class MessageActionGroupCallScheduled extends VirtualClass<{
     call: Api.TypeInputGroupCall;
@@ -1945,8 +1951,9 @@ export namespace Api {
     title?: string;
     iconEmojiId?: long;
     closed?: Bool;
+    hidden?: Bool;
   }> {
-    CONSTRUCTOR_ID: 2978628380;
+    CONSTRUCTOR_ID: 3230943264;
     SUBCLASS_OF_ID: 2256589094;
     classType: "constructor";
     className: "MessageActionTopicEdit";
@@ -1955,6 +1962,7 @@ export namespace Api {
     title?: string;
     iconEmojiId?: long;
     closed?: Bool;
+    hidden?: Bool;
   }
   export class Dialog extends VirtualClass<{
     // flags: null;
@@ -1971,8 +1979,9 @@ export namespace Api {
     pts?: int;
     draft?: Api.TypeDraftMessage;
     folderId?: int;
+    ttlPeriod?: int;
   }> {
-    CONSTRUCTOR_ID: 2834157813;
+    CONSTRUCTOR_ID: 3582593222;
     SUBCLASS_OF_ID: 1120787796;
     classType: "constructor";
     className: "Dialog";
@@ -1991,6 +2000,7 @@ export namespace Api {
     pts?: int;
     draft?: Api.TypeDraftMessage;
     folderId?: int;
+    ttlPeriod?: int;
   }
   export class DialogFolder extends VirtualClass<{
     // flags: null;
@@ -4074,17 +4084,33 @@ export namespace Api {
   }
   export class UpdateChannelPinnedTopic extends VirtualClass<{
     // flags: null;
+    pinned?: boolean;
     channelId: long;
-    topicId?: int;
+    topicId: int;
   }> {
-    CONSTRUCTOR_ID: 4136939694;
+    CONSTRUCTOR_ID: 422509539;
     SUBCLASS_OF_ID: 2676568142;
     classType: "constructor";
     className: "UpdateChannelPinnedTopic";
     static fromReader(reader: Reader): UpdateChannelPinnedTopic;
     // flags: null;
+    pinned?: boolean;
     channelId: long;
-    topicId?: int;
+    topicId: int;
+  }
+  export class UpdateChannelPinnedTopics extends VirtualClass<{
+    // flags: null;
+    channelId: long;
+    order?: int[];
+  }> {
+    CONSTRUCTOR_ID: 4263085570;
+    SUBCLASS_OF_ID: 2676568142;
+    classType: "constructor";
+    className: "UpdateChannelPinnedTopics";
+    static fromReader(reader: Reader): UpdateChannelPinnedTopics;
+    // flags: null;
+    channelId: long;
+    order?: int[];
   }
   export class UpdatesTooLong extends VirtualClass<void> {
     CONSTRUCTOR_ID: 3809980286;
@@ -8874,6 +8900,16 @@ export namespace Api {
     prevTopic?: Api.TypeForumTopic;
     newTopic?: Api.TypeForumTopic;
   }
+  export class ChannelAdminLogEventActionToggleAntiSpam extends VirtualClass<{
+    newValue: Bool;
+  }> {
+    CONSTRUCTOR_ID: 1693675004;
+    SUBCLASS_OF_ID: 2998503411;
+    classType: "constructor";
+    className: "ChannelAdminLogEventActionToggleAntiSpam";
+    static fromReader(reader: Reader): ChannelAdminLogEventActionToggleAntiSpam;
+    newValue: Bool;
+  }
   export class ChannelAdminLogEvent extends VirtualClass<{
     id: long;
     date: int;
@@ -11851,6 +11887,8 @@ export namespace Api {
     my?: boolean;
     closed?: boolean;
     pinned?: boolean;
+    short?: boolean;
+    hidden?: boolean;
     id: int;
     date: int;
     title: string;
@@ -11875,6 +11913,8 @@ export namespace Api {
     my?: boolean;
     closed?: boolean;
     pinned?: boolean;
+    short?: boolean;
+    hidden?: boolean;
     id: int;
     date: int;
     title: string;
@@ -11889,6 +11929,28 @@ export namespace Api {
     fromId: Api.TypePeer;
     notifySettings: Api.TypePeerNotifySettings;
     draft?: Api.TypeDraftMessage;
+  }
+  export class DefaultHistoryTTL extends VirtualClass<{
+    period: int;
+  }> {
+    CONSTRUCTOR_ID: 1135897376;
+    SUBCLASS_OF_ID: 4027396967;
+    classType: "constructor";
+    className: "DefaultHistoryTTL";
+    static fromReader(reader: Reader): DefaultHistoryTTL;
+    period: int;
+  }
+  export class ExportedContactToken extends VirtualClass<{
+    url: string;
+    expires: int;
+  }> {
+    CONSTRUCTOR_ID: 1103040667;
+    SUBCLASS_OF_ID: 2262679249;
+    classType: "constructor";
+    className: "ExportedContactToken";
+    static fromReader(reader: Reader): ExportedContactToken;
+    url: string;
+    expires: int;
   }
   export class ResPQ extends VirtualClass<{
     nonce: int128;
@@ -12930,6 +12992,13 @@ export namespace Api {
       className: "auth.CodeTypeMissedCall";
       static fromReader(reader: Reader): CodeTypeMissedCall;
     }
+    export class CodeTypeFragmentSms extends VirtualClass<void> {
+      CONSTRUCTOR_ID: 116234636;
+      SUBCLASS_OF_ID: 3019105281;
+      classType: "constructor";
+      className: "auth.CodeTypeFragmentSms";
+      static fromReader(reader: Reader): CodeTypeFragmentSms;
+    }
     export class SentCodeTypeApp extends VirtualClass<{
       length: int;
     }> {
@@ -13015,6 +13084,18 @@ export namespace Api {
       // flags: null;
       appleSigninAllowed?: boolean;
       googleSigninAllowed?: boolean;
+    }
+    export class SentCodeTypeFragmentSms extends VirtualClass<{
+      url: string;
+      length: int;
+    }> {
+      CONSTRUCTOR_ID: 3646315577;
+      SUBCLASS_OF_ID: 4284159374;
+      classType: "constructor";
+      className: "auth.SentCodeTypeFragmentSms";
+      static fromReader(reader: Reader): SentCodeTypeFragmentSms;
+      url: string;
+      length: int;
     }
     export class LoginToken extends VirtualClass<{
       expires: int;
@@ -13282,10 +13363,11 @@ export namespace Api {
       count: int;
       offsetIdOffset?: int;
       messages: Api.TypeMessage[];
+      topics: Api.TypeForumTopic[];
       chats: Api.TypeChat[];
       users: Api.TypeUser[];
     }> {
-      CONSTRUCTOR_ID: 1682413576;
+      CONSTRUCTOR_ID: 3346446926;
       SUBCLASS_OF_ID: 3568569182;
       classType: "constructor";
       className: "messages.ChannelMessages";
@@ -13296,6 +13378,7 @@ export namespace Api {
       count: int;
       offsetIdOffset?: int;
       messages: Api.TypeMessage[];
+      topics: Api.TypeForumTopic[];
       chats: Api.TypeChat[];
       users: Api.TypeUser[];
     }
@@ -15483,7 +15566,8 @@ export namespace Api {
       | auth.CodeTypeSms
       | auth.CodeTypeCall
       | auth.CodeTypeFlashCall
-      | auth.CodeTypeMissedCall;
+      | auth.CodeTypeMissedCall
+      | auth.CodeTypeFragmentSms;
     export type TypeSentCodeType =
       | auth.SentCodeTypeApp
       | auth.SentCodeTypeSms
@@ -15491,7 +15575,8 @@ export namespace Api {
       | auth.SentCodeTypeFlashCall
       | auth.SentCodeTypeMissedCall
       | auth.SentCodeTypeEmailCode
-      | auth.SentCodeTypeSetUpEmailRequired;
+      | auth.SentCodeTypeSetUpEmailRequired
+      | auth.SentCodeTypeFragmentSms;
     export type TypeLoginToken =
       | auth.LoginToken
       | auth.LoginTokenMigrateTo
@@ -16001,6 +16086,23 @@ export namespace Api {
       className: "auth.CheckRecoveryPassword";
       static fromReader(reader: Reader): CheckRecoveryPassword;
       code: string;
+    }
+    export class ImportWebTokenAuthorization extends Request<
+      Partial<{
+        apiId: int;
+        apiHash: string;
+        webAuthToken: string;
+      }>,
+      auth.TypeAuthorization
+    > {
+      CONSTRUCTOR_ID: 767062953;
+      SUBCLASS_OF_ID: 3118485049;
+      classType: "request";
+      className: "auth.ImportWebTokenAuthorization";
+      static fromReader(reader: Reader): ImportWebTokenAuthorization;
+      apiId: int;
+      apiHash: string;
+      webAuthToken: string;
     }
   }
 
@@ -17502,6 +17604,27 @@ export namespace Api {
       static fromReader(reader: Reader): ResolvePhone;
       phone: string;
     }
+    export class ExportContactToken
+      extends Request<void, Api.TypeExportedContactToken> {
+      CONSTRUCTOR_ID: 4167385127;
+      SUBCLASS_OF_ID: 2262679249;
+      classType: "request";
+      className: "contacts.ExportContactToken";
+      static fromReader(reader: Reader): ExportContactToken;
+    }
+    export class ImportContactToken extends Request<
+      Partial<{
+        token: string;
+      }>,
+      Api.TypeUser
+    > {
+      CONSTRUCTOR_ID: 318789512;
+      SUBCLASS_OF_ID: 765557111;
+      classType: "request";
+      className: "contacts.ImportContactToken";
+      static fromReader(reader: Reader): ImportContactToken;
+      token: string;
+    }
   }
 
   export namespace messages {
@@ -17964,18 +18087,22 @@ export namespace Api {
     }
     export class CreateChat extends Request<
       Partial<{
+        // flags: null;
         users: Api.TypeEntityLike[];
         title: string;
+        ttlPeriod?: int;
       }>,
       Api.TypeUpdates
     > {
-      CONSTRUCTOR_ID: 164303470;
+      CONSTRUCTOR_ID: 3450904;
       SUBCLASS_OF_ID: 2331323052;
       classType: "request";
       className: "messages.CreateChat";
       static fromReader(reader: Reader): CreateChat;
+      // flags: null;
       users: Api.TypeEntityLike[];
       title: string;
+      ttlPeriod?: int;
     }
     export class GetDhConfig extends Request<
       Partial<{
@@ -20637,6 +20764,27 @@ export namespace Api {
       peer: Api.TypeEntityLike;
       id: int[];
     }
+    export class SetDefaultHistoryTTL extends Request<
+      Partial<{
+        period: int;
+      }>,
+      Bool
+    > {
+      CONSTRUCTOR_ID: 2662667333;
+      SUBCLASS_OF_ID: 4122188204;
+      classType: "request";
+      className: "messages.SetDefaultHistoryTTL";
+      static fromReader(reader: Reader): SetDefaultHistoryTTL;
+      period: int;
+    }
+    export class GetDefaultHistoryTTL
+      extends Request<void, Api.TypeDefaultHistoryTTL> {
+      CONSTRUCTOR_ID: 1703637384;
+      SUBCLASS_OF_ID: 4027396967;
+      classType: "request";
+      className: "messages.GetDefaultHistoryTTL";
+      static fromReader(reader: Reader): GetDefaultHistoryTTL;
+    }
   }
 
   export namespace updates {
@@ -21289,10 +21437,11 @@ export namespace Api {
         about: string;
         geoPoint?: Api.TypeInputGeoPoint;
         address?: string;
+        ttlPeriod?: int;
       }>,
       Api.TypeUpdates
     > {
-      CONSTRUCTOR_ID: 1029681423;
+      CONSTRUCTOR_ID: 2432722695;
       SUBCLASS_OF_ID: 2331323052;
       classType: "request";
       className: "channels.CreateChannel";
@@ -21305,6 +21454,7 @@ export namespace Api {
       about: string;
       geoPoint?: Api.TypeInputGeoPoint;
       address?: string;
+      ttlPeriod?: int;
     }
     export class EditAdmin extends Request<
       Partial<{
@@ -21925,10 +22075,11 @@ export namespace Api {
         title?: string;
         iconEmojiId?: long;
         closed?: Bool;
+        hidden?: Bool;
       }>,
       Api.TypeUpdates
     > {
-      CONSTRUCTOR_ID: 1820868141;
+      CONSTRUCTOR_ID: 4108296581;
       SUBCLASS_OF_ID: 2331323052;
       classType: "request";
       className: "channels.EditForumTopic";
@@ -21939,6 +22090,7 @@ export namespace Api {
       title?: string;
       iconEmojiId?: long;
       closed?: Bool;
+      hidden?: Bool;
     }
     export class UpdatePinnedForumTopic extends Request<
       Partial<{
@@ -21971,6 +22123,55 @@ export namespace Api {
       static fromReader(reader: Reader): DeleteTopicHistory;
       channel: Api.TypeEntityLike;
       topMsgId: TypeMessageIDLike;
+    }
+    export class ReorderPinnedForumTopics extends Request<
+      Partial<{
+        // flags: null;
+        force?: boolean;
+        channel: Api.TypeEntityLike;
+        order: int[];
+      }>,
+      Api.TypeUpdates
+    > {
+      CONSTRUCTOR_ID: 693150095;
+      SUBCLASS_OF_ID: 2331323052;
+      classType: "request";
+      className: "channels.ReorderPinnedForumTopics";
+      static fromReader(reader: Reader): ReorderPinnedForumTopics;
+      // flags: null;
+      force?: boolean;
+      channel: Api.TypeEntityLike;
+      order: int[];
+    }
+    export class ToggleAntiSpam extends Request<
+      Partial<{
+        channel: Api.TypeEntityLike;
+        enabled: Bool;
+      }>,
+      Api.TypeUpdates
+    > {
+      CONSTRUCTOR_ID: 1760814315;
+      SUBCLASS_OF_ID: 2331323052;
+      classType: "request";
+      className: "channels.ToggleAntiSpam";
+      static fromReader(reader: Reader): ToggleAntiSpam;
+      channel: Api.TypeEntityLike;
+      enabled: Bool;
+    }
+    export class ReportAntiSpamFalsePositive extends Request<
+      Partial<{
+        channel: Api.TypeEntityLike;
+        msgId: TypeMessageIDLike;
+      }>,
+      Bool
+    > {
+      CONSTRUCTOR_ID: 2823857811;
+      SUBCLASS_OF_ID: 4122188204;
+      classType: "request";
+      className: "channels.ReportAntiSpamFalsePositive";
+      static fromReader(reader: Reader): ReportAntiSpamFalsePositive;
+      channel: Api.TypeEntityLike;
+      msgId: TypeMessageIDLike;
     }
   }
 
@@ -23468,7 +23669,8 @@ export namespace Api {
     | UpdateRecentReactions
     | UpdateMoveStickerSetToTop
     | UpdateMessageExtendedMedia
-    | UpdateChannelPinnedTopic;
+    | UpdateChannelPinnedTopic
+    | UpdateChannelPinnedTopics;
   export type TypeUpdates =
     | UpdatesTooLong
     | UpdateShortMessage
@@ -23845,7 +24047,8 @@ export namespace Api {
     | ChannelAdminLogEventActionCreateTopic
     | ChannelAdminLogEventActionEditTopic
     | ChannelAdminLogEventActionDeleteTopic
-    | ChannelAdminLogEventActionPinTopic;
+    | ChannelAdminLogEventActionPinTopic
+    | ChannelAdminLogEventActionToggleAntiSpam;
   export type TypeChannelAdminLogEvent = ChannelAdminLogEvent;
   export type TypeChannelAdminLogEventsFilter = ChannelAdminLogEventsFilter;
   export type TypePopularContact = PopularContact;
@@ -24079,6 +24282,8 @@ export namespace Api {
   export type TypeStickerKeyword = StickerKeyword;
   export type TypeUsername = Username;
   export type TypeForumTopic = ForumTopicDeleted | ForumTopic;
+  export type TypeDefaultHistoryTTL = DefaultHistoryTTL;
+  export type TypeExportedContactToken = ExportedContactToken;
   export type TypeResPQ = ResPQ;
   export type TypeP_Q_inner_data =
     | PQInnerData
@@ -24164,6 +24369,7 @@ export namespace Api {
     | auth.ImportLoginToken
     | auth.AcceptLoginToken
     | auth.CheckRecoveryPassword
+    | auth.ImportWebTokenAuthorization
     | account.RegisterDevice
     | account.UnregisterDevice
     | account.UpdateNotifySettings
@@ -24270,6 +24476,8 @@ export namespace Api {
     | contacts.GetLocated
     | contacts.BlockFromReplies
     | contacts.ResolvePhone
+    | contacts.ExportContactToken
+    | contacts.ImportContactToken
     | messages.GetMessages
     | messages.GetDialogs
     | messages.GetHistory
@@ -24447,6 +24655,8 @@ export namespace Api {
     | messages.GetRecentReactions
     | messages.ClearRecentReactions
     | messages.GetExtendedMedia
+    | messages.SetDefaultHistoryTTL
+    | messages.GetDefaultHistoryTTL
     | updates.GetState
     | updates.GetDifference
     | updates.GetChannelDifference
@@ -24536,6 +24746,9 @@ export namespace Api {
     | channels.EditForumTopic
     | channels.UpdatePinnedForumTopic
     | channels.DeleteTopicHistory
+    | channels.ReorderPinnedForumTopics
+    | channels.ToggleAntiSpam
+    | channels.ReportAntiSpamFalsePositive
     | bots.SendCustomRequest
     | bots.AnswerWebhookJSONQuery
     | bots.SetBotCommands

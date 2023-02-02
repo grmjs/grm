@@ -477,7 +477,7 @@ export class MTProtoSender {
       try {
         await this._processMessage(message);
       } catch (e: any) {
-        this._log.error("Unhandled error while receiving data");
+        this._log.error("Unhandled error while processing data");
         this._log.error(e);
       }
     }
@@ -564,9 +564,13 @@ export class MTProtoSender {
       );
       state.reject(error);
     } else {
-      const reader = new BinaryReader(RPCResult.body);
-      const read = state.request.readResult(reader);
-      state.resolve(read);
+      try {
+        const reader = new BinaryReader(RPCResult.body);
+        const read = state.request.readResult(reader);
+        state.resolve(read);
+      } catch (e) {
+        state.reject(e);
+      }
     }
   }
 

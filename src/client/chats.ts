@@ -29,6 +29,7 @@ export class _ParticipantsIter extends RequestIter {
     search,
     showTotal,
   }: ParticipantsIterInterface): Promise<boolean | void> {
+    if (!offset) offset = 0;
     if (filter && filter.constructor === Function) {
       if (
         [
@@ -212,7 +213,7 @@ export function iterParticipants(
     {
       entity: entity,
       filter: filter,
-      offset,
+      offset: offset ?? 0,
       search: search,
       showTotal: showTotal,
     },

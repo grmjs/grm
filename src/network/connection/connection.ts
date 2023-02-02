@@ -1,10 +1,14 @@
 // deno-lint-ignore-file no-explicit-any
 import { PromisedNetSockets } from "../../extensions/promised_net_sockets.ts";
 import { PromisedWebSockets } from "../../extensions/promised_web_sockets.ts";
-import { CancelHelper } from "../../extensions/cancel_helper.ts";
 import { Logger } from "../../extensions/logger.ts";
 import { AsyncQueue } from "../../extensions/async_queue.ts";
-import { Buffer } from "../../../deps.ts";
+import {
+  Buffer,
+  CancellablePromise,
+  Cancellation,
+  pseudoCancellable,
+} from "../../../deps.ts";
 import { ProxyInterface } from "./types.ts";
 
 export interface ConnectionInterfaceParams {
@@ -31,10 +35,8 @@ export class Connection {
   protected _obfuscation: any;
   _sendArray: AsyncQueue;
   _recvArray: AsyncQueue;
-  private _recvCancelPromise: Promise<CancelHelper>;
-  private _recvCancelResolve?: (value: CancelHelper) => void;
-  private _sendCancelPromise: Promise<CancelHelper>;
-  private _sendCancelResolve?: (value: CancelHelper) => void;
+  recvCancel?: CancellablePromise<any>;
+  sendCancel?: CancellablePromise<any>;
 
   socket: PromisedNetSockets | PromisedWebSockets;
   public _testServers: boolean;
@@ -62,13 +64,6 @@ export class Connection {
     this._recvArray = new AsyncQueue();
     this.socket = new socket(proxy);
     this._testServers = testServers;
-
-    this._recvCancelPromise = new Promise((resolve) => {
-      this._recvCancelResolve = resolve;
-    });
-    this._sendCancelPromise = new Promise((resolve) => {
-      this._sendCancelResolve = resolve;
-    });
   }
 
   async _connect() {
@@ -88,14 +83,8 @@ export class Connection {
   }
 
   _cancelLoops() {
-    this._recvCancelResolve!(new CancelHelper());
-    this._sendCancelResolve!(new CancelHelper());
-    this._recvCancelPromise = new Promise((resolve) => {
-      this._recvCancelResolve = resolve;
-    });
-    this._sendCancelPromise = new Promise((resolve) => {
-      this._sendCancelResolve = resolve;
-    });
+    this.recvCancel!.cancel();
+    this.sendCancel!.cancel();
   }
 
   async disconnect() {
@@ -126,17 +115,13 @@ export class Connection {
   async _sendLoop() {
     try {
       while (this._connected) {
-        const data = await Promise.race([
-          this._sendCancelPromise,
-          this._sendArray.pop(),
-        ]);
-        if (data instanceof CancelHelper) {
-          break;
-        }
+        this.sendCancel = pseudoCancellable(this._sendArray.pop());
+        const data = await this.sendCancel;
         if (!data) continue;
         await this._send(data);
       }
-    } catch (_e) {
+    } catch (e) {
+      if (e instanceof Cancellation) return;
       this._log.info("The server closed the connection while sending");
       await this.disconnect();
     }
@@ -146,12 +131,10 @@ export class Connection {
     let data;
     while (this._connected) {
       try {
-        data = await Promise.race([
-          this._recvCancelPromise,
-          await this._recv(),
-        ]);
-        if (data instanceof CancelHelper) return;
-      } catch (_e) {
+        this.recvCancel = pseudoCancellable(this._recv());
+        data = await this.recvCancel;
+      } catch (e) {
+        if (e instanceof Cancellation) return;
         this._log.info("The server closed the connection");
         await this.disconnect();
         if (!this._recvArray._queue.length) {

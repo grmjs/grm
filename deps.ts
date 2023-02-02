@@ -25,6 +25,11 @@ export {
 export { inflate } from "https://cdn.skypack.dev/pako@v2.1.0?dts";
 export { getExtension, getType } from "https://cdn.skypack.dev/mime@v3.0.0?dts";
 export { default as bigInt } from "https://cdn.skypack.dev/big-integer@v1.6.51?dts";
+export {
+  CancellablePromise,
+  Cancellation,
+  pseudoCancellable,
+} from "https://cdn.skypack.dev/real-cancellable-promise@v1.1.2?dts";
 
 // ghc.deno.dev/
 export {

@@ -2,7 +2,6 @@
 import { AuthKey } from "../crypto/authkey.ts";
 import { MTProtoState } from "./mtproto_state.ts";
 import { Logger, LogLevel } from "../extensions/logger.ts";
-import { CancelHelper } from "../extensions/cancel_helper.ts";
 import { MessagePacker } from "../extensions/message_packer.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import {
@@ -24,7 +23,13 @@ import {
   TypeNotFoundError,
 } from "../errors/mod.ts";
 import { Connection } from "./connection/connection.ts";
-import { bigInt, Mutex } from "../../deps.ts";
+import {
+  bigInt,
+  CancellablePromise,
+  Cancellation,
+  Mutex,
+  pseudoCancellable,
+} from "../../deps.ts";
 
 export class UpdateConnectionState {
   static disconnected = -1;
@@ -102,11 +107,8 @@ export class MTProtoSender {
   _authenticated: boolean;
   private _securityChecks: boolean;
   private _connectMutex: Mutex;
-  private _recvCancelPromise: Promise<CancelHelper>;
-  private _recvCancelResolve?: (value: CancelHelper) => void;
-  private _sendCancelPromise: Promise<CancelHelper>;
-  private _sendCancelResolve?: (value: CancelHelper) => void;
   private _cancelSend: boolean;
+  cancellableRecvLoopPromise?: CancellablePromise<any>;
 
   constructor(authKey: undefined | AuthKey, opts: DEFAULT_OPTIONS) {
     const args = { ...MTProtoSender.DEFAULT_OPTIONS, ...opts };
@@ -127,12 +129,6 @@ export class MTProtoSender {
     this._onConnectionBreak = args.onConnectionBreak;
     this._securityChecks = args.securityChecks;
     this._connectMutex = new Mutex();
-    this._recvCancelPromise = new Promise((resolve) => {
-      this._recvCancelResolve = resolve;
-    });
-    this._sendCancelPromise = new Promise((resolve) => {
-      this._sendCancelResolve = resolve;
-    });
 
     this.userDisconnected = false;
     this.isConnecting = false;
@@ -336,14 +332,7 @@ export class MTProtoSender {
 
   _cancelLoops() {
     this._cancelSend = true;
-    this._recvCancelResolve!(new CancelHelper());
-    this._sendCancelResolve!(new CancelHelper());
-    this._recvCancelPromise = new Promise((resolve) => {
-      this._recvCancelResolve = resolve;
-    });
-    this._sendCancelPromise = new Promise((resolve) => {
-      this._sendCancelResolve = resolve;
-    });
+    this.cancellableRecvLoopPromise!.cancel();
   }
 
   async _sendLoop() {
@@ -411,12 +400,12 @@ export class MTProtoSender {
     while (this._userConnected && !this._reconnecting) {
       this._log.debug("Receiving items from the network...");
       try {
-        body = await Promise.race([
+        this.cancellableRecvLoopPromise = pseudoCancellable(
           this._connection!.recv(),
-          this._recvCancelPromise,
-        ]);
-        if (body instanceof CancelHelper) return;
+        );
+        body = await this.cancellableRecvLoopPromise;
       } catch (e: any) {
+        if (e instanceof Cancellation) return;
         this._log.error(e);
         this._log.warn("Connection closed while receiving data...");
         this._startReconnecting(e);

@@ -1,4 +1,4 @@
-import { bigInt, Buffer, WriteStream } from "../deps.ts";
+import { bigInt, Buffer, WriteStream } from "./deps.ts";
 
 type ValueOf<T> = T[keyof T];
 type Phone = string;

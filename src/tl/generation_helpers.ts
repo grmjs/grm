@@ -1,7 +1,7 @@
 // deno-lint-ignore-file no-explicit-any
 import { crc32 } from "../helpers.ts";
 import { DateLike } from "../define.d.ts";
-import { Buffer } from "../../deps.ts";
+import { Buffer } from "../deps.ts";
 
 export const CORE_TYPES = new Set([
   0xbc799737, // boolFalse#bc799737 = Bool;

@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer, Mutex } from "../../deps.ts";
+import { Buffer, Mutex } from "../deps.ts";
 
 const mutex = new Mutex();
 const closeError = new Error("WebSocket was closed");

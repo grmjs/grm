@@ -1,5 +1,5 @@
 import { Api } from "../tl/api.js";
-import { Handler, Parser } from "../../deps.ts";
+import { Handler, Parser } from "../deps.ts";
 
 function stripText(text: string, entities: Api.TypeMessageEntity[]) {
   if (!entities || !entities.length) {

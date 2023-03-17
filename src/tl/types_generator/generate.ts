@@ -1,6 +1,6 @@
 import { template } from "./template.ts";
 import { Config, parseTl } from "../generation_helpers.ts";
-import { dirname, fromFileUrl, resolve } from "../../../deps.ts";
+import { dirname, fromFileUrl, resolve } from "../../deps.ts";
 
 const DIR_PATH = dirname(fromFileUrl(import.meta.url));
 const INPUT_FILE = resolve(DIR_PATH, "../static/api.tl");

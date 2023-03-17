@@ -16,7 +16,7 @@ import {
 } from "../../client/types.ts";
 import { DownloadMediaInterface } from "../../client/types.ts";
 import { _selfId } from "../../client/users.ts";
-import { bigInt, Buffer } from "../../../deps.ts";
+import { bigInt, Buffer } from "../../deps.ts";
 import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 interface MessageBaseInterface {

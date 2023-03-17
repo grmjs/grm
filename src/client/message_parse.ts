@@ -3,7 +3,7 @@ import { getPeerId, sanitizeParseMode } from "../utils.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { isArrayLike } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { CustomMessage } from "../tl/custom/message.ts";
 import { ParseInterface } from "./types.ts";
 

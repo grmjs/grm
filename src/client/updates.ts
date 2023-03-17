@@ -1,5 +1,5 @@
 import { Api } from "../tl/api.js";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { UpdateConnectionState } from "../network/mod.ts";
 import { getPeerId } from "../utils.ts";
 import { getRandomInt, returnBigInt, sleep } from "../helpers.ts";

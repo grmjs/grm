@@ -2,7 +2,7 @@ import { Api } from "../tl/api.js";
 import { getAttributes, getInputMedia, isImage } from "../utils.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { _parseMessageText } from "./message_parse.ts";
-import { basename, Buffer } from "../../deps.ts";
+import { basename, Buffer } from "../deps.ts";
 import { CustomFile } from "../classes.ts";
 import { FileToMediaInterface } from "./types.ts";
 

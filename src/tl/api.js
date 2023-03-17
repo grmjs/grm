@@ -13,7 +13,7 @@ import {
 } from "../helpers.ts";
 import { default as tlContent } from "./api_tl.ts";
 import { default as schemaContent } from "./schema_tl.ts";
-import { bigInt, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
 
 const NAMED_AUTO_CASTS = new Set(["chatId,int"]);
 const _NAMED_BLACKLIST = new Set(["discardEncryption"]);

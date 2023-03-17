@@ -1,6 +1,6 @@
 import { Api } from "../tl/api.js";
 import { DefaultEventInterface, EventBuilder, EventCommon } from "./common.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 
 export class DeletedMessage extends EventBuilder {
   constructor(eventParams: DefaultEventInterface) {

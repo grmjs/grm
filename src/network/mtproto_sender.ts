@@ -29,7 +29,7 @@ import {
   Cancellation,
   Mutex,
   pseudoCancellable,
-} from "../../deps.ts";
+} from "../deps.ts";
 
 export class UpdateConnectionState {
   static disconnected = -1;

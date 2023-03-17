@@ -14,7 +14,7 @@ import {
   sleep,
 } from "../helpers.ts";
 import { FloodWaitError } from "../errors/mod.ts";
-import { bigInt, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
 import { SendFileInterface, UploadFileParams } from "./types.ts";
 import { CustomFile } from "../classes.ts";
 import { _fileToMedia } from "./utils.ts";

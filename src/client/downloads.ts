@@ -21,7 +21,7 @@ import {
   join,
   resolve,
   WriteStream,
-} from "../../deps.ts";
+} from "../deps.ts";
 import {
   DirectDownloadIterInterface,
   DownloadFileParamsV2,

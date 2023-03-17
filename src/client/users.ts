@@ -12,7 +12,7 @@ import * as utils from "../utils.ts";
 import { isArrayLike, returnBigInt, sleep } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { LogLevel } from "../extensions/logger.ts";
 import { MTProtoSender } from "../network/mtproto_sender.ts";
 import {

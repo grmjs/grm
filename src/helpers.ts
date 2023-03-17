@@ -1,4 +1,4 @@
-import { bigInt, Buffer } from "../deps.ts";
+import { bigInt, Buffer } from "./deps.ts";
 import { createHash, randomBytes } from "./crypto/crypto.ts";
 
 export function readBigIntFromBuffer(

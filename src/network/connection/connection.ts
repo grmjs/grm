@@ -8,7 +8,7 @@ import {
   CancellablePromise,
   Cancellation,
   pseudoCancellable,
-} from "../../../deps.ts";
+} from "../../deps.ts";
 import { ProxyInterface } from "./types.ts";
 
 export interface ConnectionInterfaceParams {

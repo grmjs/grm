@@ -4,7 +4,7 @@ import { toSignedLittleBuffer } from "../helpers.ts";
 import { InvalidBufferError } from "../errors/mod.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import type { Connection } from "./connection/connection.ts";
-import { bigInt, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
 
 export class MTProtoPlainSender {
   private _state: MTProtoState;

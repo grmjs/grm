@@ -23,4 +23,4 @@ jobs:
         run: deno lint
 
       - name: Check
-        run: deno check mod.ts
+        run: deno check src/mod.ts

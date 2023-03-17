@@ -19,7 +19,7 @@ import { serverKeys } from "../crypto/rsa.ts";
 import { BinaryReader } from "../extensions/binary_reader.ts";
 import { AuthKey } from "../crypto/authkey.ts";
 import { IGE } from "../crypto/ige.ts";
-import { bigInt, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
 
 const RETRIES = 20;
 

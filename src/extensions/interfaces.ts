@@ -1,4 +1,4 @@
-import { bigInt, Buffer } from "../../deps.ts";
+import { bigInt, Buffer } from "../deps.ts";
 
 export interface BinaryReader {
   offset: number;

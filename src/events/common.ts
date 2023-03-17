@@ -4,7 +4,7 @@ import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { isArrayLike, returnBigInt } from "../helpers.ts";
 import { getPeerId, parseID } from "../utils.ts";
 import { SenderGetter } from "../tl/custom/sender_getter.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 
 export async function _intoIdSet(
   client: AbstractTelegramClient,

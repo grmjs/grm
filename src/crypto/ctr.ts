@@ -1,5 +1,5 @@
 // deno-lint-ignore-file no-explicit-any
-import { Buffer } from "../../deps.ts";
+import { Buffer } from "../deps.ts";
 import { createCipheriv } from "../crypto/mod.ts";
 
 export class CTR {

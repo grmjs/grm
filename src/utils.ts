@@ -10,7 +10,7 @@ import {
   Buffer,
   getExtension as mGetExtension,
   getType,
-} from "../deps.ts";
+} from "./deps.ts";
 
 import TypeInputFile = Api.TypeInputFile;
 

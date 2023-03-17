@@ -2,7 +2,7 @@
 import { Api } from "./tl/api.js";
 import { getInputPeer, getPeerId } from "./utils.ts";
 import { isArrayLike, returnBigInt } from "./helpers.ts";
-import { bigInt } from "../deps.ts";
+import { bigInt } from "./deps.ts";
 
 export function getEntityPair_(
   entityId: string,

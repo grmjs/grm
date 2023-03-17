@@ -7,7 +7,7 @@ import {
 import { AbstractTelegramClient } from "../client/abstract_telegram_client.ts";
 import { Api } from "../tl/api.js";
 import { LogLevel } from "../extensions/logger.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { CustomMessage } from "../tl/custom/message.ts";
 
 export interface NewMessageInterface extends DefaultEventInterface {

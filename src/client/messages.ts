@@ -12,7 +12,7 @@ import {
   getPeerId,
   parseID,
 } from "../utils.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { _getPeer } from "./users.ts";
 import { _parseMessageText } from "./message_parse.ts";
 import { _fileToMedia } from "./utils.ts";

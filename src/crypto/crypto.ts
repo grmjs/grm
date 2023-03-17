@@ -1,5 +1,5 @@
 import { ab2i, i2ab } from "./converters.ts";
-import { AES, Buffer, getWords } from "../../deps.ts";
+import { AES, Buffer, getWords } from "../deps.ts";
 
 export class Counter {
   _counter: Buffer;

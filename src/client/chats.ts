@@ -4,7 +4,7 @@ import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { getDisplayName } from "../utils.ts";
 import { RequestIter } from "../request_iter.ts";
 import { Api } from "../tl/api.js";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { IterParticipantsParams } from "./types.ts";
 
 const MAX_PARTICIPANTS_CHUNK_SIZE = 200;

@@ -22,7 +22,7 @@ import {
   ConnectionTCPMTProxyAbridged,
 } from "../network/connection/tcpmt_proxy.ts";
 import { ProxyInterface } from "../network/connection/types.ts";
-import { Semaphore } from "../../deps.ts";
+import { Semaphore } from "../deps.ts";
 
 const EXPORTED_SENDER_RECONNECT_TIMEOUT = 1000; // 1 sec
 const EXPORTED_SENDER_RELEASE_TIMEOUT = 30000; // 30 sec

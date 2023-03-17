@@ -1,6 +1,6 @@
 import { serializeBytes } from "../generation_helpers.ts";
 import { BinaryReader } from "../../extensions/interfaces.ts";
-import { Buffer, inflate } from "../../../deps.ts";
+import { Buffer, inflate } from "../../deps.ts";
 
 export class GZIPPacked {
   static CONSTRUCTOR_ID = 0x3072cfa1;

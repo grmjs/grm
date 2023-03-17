@@ -4,7 +4,7 @@ import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
 import { Dialog } from "../tl/custom/dialog.ts";
 import { TotalList } from "../helpers.ts";
 import { LogLevel } from "../extensions/logger.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 import { getPeerId } from "../utils.ts";
 import { CustomMessage } from "../tl/custom/message.ts";
 import { IterDialogsParams } from "./types.ts";

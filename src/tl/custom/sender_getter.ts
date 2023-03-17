@@ -1,6 +1,6 @@
 import { Api } from "../api.js";
 import { ChatGetter } from "./chat_getter.ts";
-import { bigInt } from "../../../deps.ts";
+import { bigInt } from "../../deps.ts";
 import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 interface SenderGetterConstructorInterface {

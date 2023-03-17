@@ -7,7 +7,7 @@ import {
   readBufferFromBigInt,
   sha256,
 } from "./helpers.ts";
-import { bigInt, Buffer } from "../deps.ts";
+import { bigInt, Buffer } from "./deps.ts";
 import { pbkdf2Sync } from "./crypto/crypto.ts";
 
 const SIZE_FOR_HASH = 256;

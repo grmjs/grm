@@ -2,7 +2,7 @@ import { Api } from "../api.js";
 import { Draft } from "./draft.ts";
 import { getDisplayName, getInputPeer, getPeerId } from "../../utils.ts";
 import { returnBigInt } from "../../helpers.ts";
-import { bigInt } from "../../../deps.ts";
+import { bigInt } from "../../deps.ts";
 import { AbstractTelegramClient } from "../../client/abstract_telegram_client.ts";
 
 export class Dialog {

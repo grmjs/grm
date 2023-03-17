@@ -12,7 +12,7 @@ import {
   resolveId,
 } from "../utils.ts";
 import { isArrayLike, returnBigInt } from "../helpers.ts";
-import { bigInt } from "../../deps.ts";
+import { bigInt } from "../deps.ts";
 
 export class MemorySession extends Session {
   protected _serverAddress?: string;

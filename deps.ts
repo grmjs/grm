@@ -73,4 +73,3 @@ export function createWriteStream(path: string) {
     Deno.openSync(path, { write: true, create: true }),
   );
 }
-

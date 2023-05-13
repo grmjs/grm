@@ -1,5 +1,10 @@
 import { Api } from "../tl/api.js";
-import { generateRandomBigInt, groupBy, isArrayLike, TotalList } from "../helpers.ts";
+import {
+  generateRandomBigInt,
+  groupBy,
+  isArrayLike,
+  TotalList,
+} from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { CustomMessage } from "../tl/custom/message.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";

@@ -512,6 +512,7 @@ export async function sendMessage(
     schedule,
     noforwards,
     commentTo,
+    topMsgId,
   }: SendMessageParams = {},
 ) {
   if (file) {
@@ -533,6 +534,7 @@ export async function sendMessage(
       buttons: buttons,
       noforwards: noforwards,
       commentTo: commentTo,
+      topMsgId: getMessageId(topMsgId),
     });
   }
   entity = await client.getInputEntity(entity);
@@ -563,6 +565,7 @@ export async function sendMessage(
         buttons: markup,
         formattingEntities: message.entities,
         scheduleDate: schedule,
+        topMsgId,
       });
     }
     request = new Api.messages.SendMessage({
@@ -597,6 +600,7 @@ export async function sendMessage(
       entities: formattingEntities,
       noWebpage: !linkPreview,
       replyToMsgId: getMessageId(replyTo),
+      topMsgId: getMessageId(topMsgId),
       clearDraft: clearDraft,
       silent: silent,
       replyMarkup: client.buildReplyMarkup(buttons),

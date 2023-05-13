@@ -150,6 +150,7 @@ export async function _sendAlbum(
     workers = 1,
     noforwards,
     commentTo,
+    topMsgId,
   }: SendFileInterface,
 ) {
   entity = await client.getInputEntity(entity);
@@ -236,6 +237,7 @@ export async function _sendAlbum(
       scheduleDate: scheduleDate,
       clearDraft: clearDraft,
       noforwards: noforwards,
+      topMsgId: getMessageId(topMsgId),
     }),
   );
   const randomIds = albumFiles.map((m) => m.randomId);
@@ -268,6 +270,7 @@ export async function sendFile(
     workers = 1,
     noforwards,
     commentTo,
+    topMsgId,
   }: SendFileInterface,
 ) {
   if (!file) {
@@ -330,6 +333,7 @@ export async function sendFile(
     peer: entity,
     media: media,
     replyToMsgId: replyTo,
+    topMsgId: getMessageId(topMsgId),
     message: caption,
     entities: msgEntities,
     replyMarkup: markup,

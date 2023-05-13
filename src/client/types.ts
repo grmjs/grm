@@ -26,6 +26,7 @@ export interface SendMessageParams {
   schedule?: DateLike;
   noforwards?: boolean;
   commentTo?: number | Api.Message;
+  topMsgId?: number | Api.Message;
 }
 
 export interface ForwardMessagesParams {
@@ -123,6 +124,7 @@ export interface SendFileInterface {
   workers?: number;
   noforwards?: boolean;
   commentTo?: number | Api.Message;
+  topMsgId?: number | Api.Message;
 }
 
 export interface IterParticipantsParams {

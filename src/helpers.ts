@@ -129,13 +129,12 @@ export function readBufferFromBigInt(
   const hex = bigIntVar.toString(16).padStart(bytesNumber * 2, "0");
   let buffer = Buffer.from(hex, "hex");
 
-
   if (signed && below) {
-      buffer[buffer.length - 1] = 256 -
-        buffer[buffer.length - 1];
-      for (let i = 0; i < buffer.length - 1; i++) {
-        buffer[i] = 255 - buffer[i];
-      }
+    buffer[buffer.length - 1] = 256 -
+      buffer[buffer.length - 1];
+    for (let i = 0; i < buffer.length - 1; i++) {
+      buffer[i] = 255 - buffer[i];
+    }
   }
 
   if (little) {

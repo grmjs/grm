@@ -1,5 +1,5 @@
 import { Api } from "../tl/api.js";
-import { groupBy, isArrayLike, TotalList } from "../helpers.ts";
+import { generateRandomBigInt, groupBy, isArrayLike, TotalList } from "../helpers.ts";
 import { EntityType_, entityType_ } from "../tl/helpers.ts";
 import { CustomMessage } from "../tl/custom/message.ts";
 import { AbstractTelegramClient } from "./abstract_telegram_client.ts";
@@ -135,7 +135,7 @@ export class _MessagesIter extends RequestIter {
         limit: 0,
         maxId: 0,
         minId: 0,
-        hash: bigInt.zero,
+        hash: generateRandomBigInt(),
         fromId: fromUser,
       });
       if (

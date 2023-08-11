@@ -12,7 +12,7 @@ import {
   getType,
 } from "./deps.ts";
 
-import TypeInputFile = Api.TypeInputFile;
+type TypeInputFile = Api.TypeInputFile;
 
 function _raiseCastFail(entity: any, target: string): never {
   let toWrite = entity;

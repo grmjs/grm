@@ -12,6 +12,8 @@ import {
   getType,
 } from "./deps.ts";
 
+type TypeInputFile = Api.TypeInputFile;
+
 function _raiseCastFail(entity: any, target: string): never {
   let toWrite = entity;
   if (typeof entity === "object" && "className" in entity) {

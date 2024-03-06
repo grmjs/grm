@@ -1,5 +1,9 @@
 # Grm [![deno module](https://shield.deno.dev/x/grm)](https://deno.land/x/grm)
 
+> [!TIP]
+> As of now, Grm is not regularly updated.
+> [MTKruto](https://github.com/MTKruto/MTKruto) is recommended as an alternative for Deno users.
+
 > MTProto client for Deno ported from [GramJS](https://github.com/gram-js/gramjs).
 
 ## Documentation

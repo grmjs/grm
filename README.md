@@ -1,8 +1,8 @@
-# Grm [![deno module](https://shield.deno.dev/x/grm)](https://deno.land/x/grm)
+> [!IMPORTANT]
+> 
+> Grm is no longer maintained. Check out [MTKruto](https://mtkru.to) or [mtcute](https://mtcute.dev). Have a great day, good bye!
 
-> [!TIP]
-> As of now, Grm is not regularly updated.
-> [MTKruto](https://github.com/MTKruto/MTKruto) is recommended as an alternative for Deno users.
+# Grm [![deno module](https://shield.deno.dev/x/grm)](https://deno.land/x/grm)
 
 > MTProto client for Deno ported from [GramJS](https://github.com/gram-js/gramjs).
 
